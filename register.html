@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KanziPlus 新規作成</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fffaf5;
+      color: #333;
+      margin: 0;
+      padding: 2rem;
+    }
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 600px;
+      margin: auto;
+      position: relative;
+    }
+    h1 {
+      color: #ff6f3c;
+      margin: 0 auto;
+    }
+    .back-link {
+      position: absolute;
+      left: 70px;
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    form {
+      max-width: 400px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 0.6rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .btn {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .sub-link {
+      display: block;
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #ff6f3c;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="back-link" href="login.html">← 戻る</a>
+    <h1>KanziPlus</h1>
+  </header>
+
+  <form onsubmit="return false;">
+    <h2 style="color: #ff6f3c; text-align: center;">新規アカウント作成</h2>
+    <input type="email" id="email" placeholder="メールアドレス" required>
+    <input type="password" id="password" placeholder="パスワード" required>
+    <button class="btn" onclick="registerUser()">新規登録</button>
+    <div id="message" style="margin-top:1rem; color: gray; text-align:center;"></div>
+  </form>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
+      authDomain: "kanziplus.firebaseapp.com",
+      projectId: "kanziplus",
+      storageBucket: "kanziplus.appspot.com",
+      messagingSenderId: "643577108018",
+      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.registerUser = () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const message = document.getElementById('message');
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(userCredential => {
+          sendEmailVerification(userCredential.user)
+            .then(() => {
+              message.textContent = '確認メールを送信しました。メールを確認してください...';
+
+              // 認証メール確認後に自動遷移
+              const checkVerification = setInterval(() => {
+                userCredential.user.reload().then(() => {
+                  if (userCredential.user.emailVerified) {
+                    clearInterval(checkVerification);
+                    message.textContent = 'メール確認済みです。トップページに移動します...';
+                    setTimeout(() => {
+                      window.location.href = 'index.html';
+                    }, 1000);
+                  }
+                });
+              }, 3000);
+
+            });
+        })
+        .catch(error => {
+          message.textContent = error.message;
+        });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KanziPlus マイページ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fffaf5;
+      color: #333;
+      margin: 0;
+      padding: 2rem;
+    }
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 600px;
+      margin: auto;
+      position: relative;
+    }
+    h1 {
+      color: #ff6f3c;
+      margin: 0 auto;
+    }
+    .back-link {
+      position: absolute;
+      left: 20px;
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .logout-btn {
+      position: absolute;
+      right: 20px;
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      border: none;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .card {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    ul {
+      padding-left: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="back-link" href="index.html">← 戻る</a>
+    <h1>KanziPlus</h1>
+    <button class="logout-btn" onclick="logout()">ログアウト</button>
+  </header>
+
+  <div class="card">
+    <div id="user-info"></div>
+    <h2 style="color:#ff6f3c;">過去の割り勘履歴：</h2>
+    <ul id="history-list">
+      <li>読み込み中...</li>
+    </ul>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
+      authDomain: "kanziplus.firebaseapp.com",
+      projectId: "kanziplus",
+      storageBucket: "kanziplus.appspot.com",
+      messagingSenderId: "643577108018",
+      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const userInfo = document.getElementById('user-info');
+    const historyList = document.getElementById('history-list');
+
+    onAuthStateChanged(auth, async user => {
+      if (user) {
+        userInfo.innerHTML = `<strong>ログイン中：</strong> ${user.email}`;
+
+        const historyRef = collection(db, "users", user.uid, "history");
+        const q = query(historyRef, orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
+
+        historyList.innerHTML = '';
+        if (snapshot.empty) {
+          historyList.innerHTML = '<li>履歴はまだありません</li>';
+        } else {
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const date = new Date(data.timestamp.seconds * 1000).toLocaleString('ja-JP');
+            const total = data.total;
+            const num = data.members.length;
+            historyList.innerHTML += `<li>${date} - 合計 ${total}円 - ${num}人</li>`;
+          });
+        }
+
+      } else {
+        window.location.href = 'login.html';
+      }
+    });
+
+    window.logout = () => {
+      signOut(auth).then(() => {
+        window.location.href = 'index.html';
+      });
+    }
+  </script>
+</body>
+</html>
+
+
