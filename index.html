@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KanziPlus - 傾斜割り勘計算</title>
   <style>
     body {
@@ -12,9 +12,29 @@
       margin: 0;
       padding: 2rem;
     }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 2rem;
+    }
     h1 {
-      text-align: center;
       color: #ff6f3c;
+      margin: 0;
+      font-size: 2rem;
+    }
+    .auth-link {
+      position: absolute;
+      left: calc(50% + 120px);
+    }
+    .auth-link a {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
     }
     form, .result {
       max-width: 600px;
@@ -72,9 +92,16 @@
       }
     }
   </style>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <h1>KanziPlus</h1>
+  <header>
+    <h1>KanziPlus</h1>
+    <div class="auth-link" id="authLinks"></div>
+  </header>
+
   <form id="form">
     <label>総額（円）:<br>
       <input type="number" id="total" required>
@@ -97,6 +124,28 @@
   </div>
 
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
+      authDomain: "kanziplus.firebaseapp.com",
+      projectId: "kanziplus",
+      storageBucket: "kanziplus.appspot.com",
+      messagingSenderId: "643577108018",
+      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const authLinks = document.getElementById('authLinks');
+    auth.onAuthStateChanged(user => {
+      authLinks.innerHTML = '';
+      const link = document.createElement('a');
+      link.href = user ? "mypage.html" : "login.html";
+      link.textContent = user ? "マイページ" : "ログイン/新規作成";
+      authLinks.appendChild(link);
+    });
+
     const membersDiv = document.getElementById('members');
     const form = document.getElementById('form');
     const resultDiv = document.getElementById('result');
@@ -122,7 +171,7 @@
       alert("結果をコピーしました！");
     }
 
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
       e.preventDefault();
 
       const total = parseFloat(document.getElementById('total').value);
@@ -150,7 +199,6 @@
 
       resultDiv.style.display = 'block';
 
-      // URL共有用にパラメータを生成
       const params = new URLSearchParams();
       params.set('total', total);
       names.forEach((n, i) => {
@@ -158,9 +206,22 @@
         params.append('weight[]', weights[i]);
       });
       history.replaceState(null, '', '?' + params.toString());
+
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          const membersData = names.map((n, i) => ({ name: n, weight: weights[i] }));
+          await db.collection("users").doc(user.uid).collection("history").add({
+            total,
+            members: membersData,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        } catch (error) {
+          console.error("保存に失敗しました", error);
+        }
+      }
     });
 
-    // ページ読み込み時、URLからデータを復元
     window.onload = () => {
       const urlParams = new URLSearchParams(location.search);
       const total = urlParams.get('total');
@@ -176,3 +237,10 @@
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
