@@ -12,30 +12,35 @@
       margin: 0;
       padding: 2rem;
     }
+
     header {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
       margin-bottom: 2rem;
-      position: relative;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
     }
+
     h1 {
       color: #ff6f3c;
-      margin: 0 auto;
+      margin: 0;
+      font-size: 2rem;
     }
+
     .back-link {
-      position: absolute;
-      left: 70px;
       background-color: #ff6f3c;
       color: white;
       padding: 0.4rem 1rem;
       border-radius: 6px;
       text-decoration: none;
       font-size: 0.9rem;
+      margin-top: 0.6rem;
+      align-self: flex-start;
+      margin-left: 0.5rem;
     }
+
     form {
       max-width: 400px;
       margin: 0 auto;
@@ -44,6 +49,7 @@
       padding: 2rem;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
+
     input[type="email"], input[type="password"] {
       width: 100%;
       padding: 0.6rem;
@@ -51,6 +57,7 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
+
     .btn {
       background-color: #ff6f3c;
       color: white;
@@ -62,9 +69,11 @@
       width: 100%;
       margin-top: 1rem;
     }
+
     .btn:hover {
       opacity: 0.9;
     }
+
     .sub-link {
       display: block;
       text-align: center;
@@ -77,8 +86,8 @@
 </head>
 <body>
   <header>
-    <a class="back-link" href="index.html">← 戻る</a>
     <h1>KanziPlus</h1>
+    <a class="back-link" href="index.html">← 戻る</a>
   </header>
 
   <form onsubmit="return false;">
@@ -125,4 +134,3 @@
   </script>
 </body>
 </html>
-

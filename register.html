@@ -12,6 +12,7 @@
       margin: 0;
       padding: 2rem;
     }
+
     header {
       display: flex;
       justify-content: center;
@@ -19,29 +20,38 @@
       max-width: 600px;
       margin: auto;
       position: relative;
+      margin-bottom: 2rem;
     }
+
     h1 {
       color: #ff6f3c;
-      margin: 0 auto;
+      margin: 0;
+      font-size: 2rem;
     }
+
     .back-link {
       position: absolute;
-      left: 70px;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
       background-color: #ff6f3c;
       color: white;
       padding: 0.4rem 1rem;
       border-radius: 6px;
       text-decoration: none;
       font-size: 0.9rem;
+      white-space: nowrap;
     }
+
     form {
       max-width: 400px;
-      margin: 2rem auto;
+      margin: 0 auto;
       background: white;
       border-radius: 12px;
       padding: 2rem;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
+
     input[type="email"], input[type="password"] {
       width: 100%;
       padding: 0.6rem;
@@ -49,6 +59,7 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
+
     .btn {
       background-color: #ff6f3c;
       color: white;
@@ -60,9 +71,11 @@
       width: 100%;
       margin-top: 1rem;
     }
+
     .btn:hover {
       opacity: 0.9;
     }
+
     .sub-link {
       display: block;
       text-align: center;
@@ -70,6 +83,15 @@
       font-size: 0.9rem;
       color: #ff6f3c;
       text-decoration: none;
+    }
+
+    @media (max-width: 600px) {
+      .back-link {
+        top: 2.5rem; /* スマホでは少し下にずらす */
+        transform: none;
+        font-size: 0.8rem;
+        padding: 0.3rem 0.8rem;
+      }
     }
   </style>
 </head>
@@ -89,7 +111,11 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      sendEmailVerification
+    } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
@@ -114,7 +140,6 @@
             .then(() => {
               message.textContent = '確認メールを送信しました。メールを確認してください...';
 
-              // 認証メール確認後に自動遷移
               const checkVerification = setInterval(() => {
                 userCredential.user.reload().then(() => {
                   if (userCredential.user.emailVerified) {
@@ -126,7 +151,6 @@
                   }
                 });
               }, 3000);
-
             });
         })
         .catch(error => {
