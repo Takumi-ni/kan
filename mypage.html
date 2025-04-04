@@ -68,7 +68,7 @@
 </head>
 <body>
   <header>
-    <a class="back-link" href="index.html">← 戻る</a>
+    <a class="back-link" href="toppage.html">← 戻る</a>
     <h1>KanziPlus</h1>
     <button class="logout-btn" onclick="logout()">ログアウト</button>
   </header>
@@ -130,11 +130,9 @@
 
     window.logout = () => {
       signOut(auth).then(() => {
-        window.location.href = 'index.html';
+        window.location.href = 'toppage.html';
       });
     }
   </script>
 </body>
 </html>
-
-

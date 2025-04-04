@@ -4,258 +4,72 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
-  <title>KanziPlus - 傾斜割り勘計算</title>
+  <title>幹事のためのアプリ｜KanziPlus（カンジプラス）</title>
+  <meta name="description" content="KanziPlus（カンジプラス）は、幹事に特化したアプリ。傾斜割り勘など、幹事が欲しい機能を集約。飲み会や旅行にも使え、今後も便利な機能を続々リリース予定。もう幹事をやりたくないとは言わせません。">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
     body {
-      font-family: sans-serif;
+      font-family: 'Roboto', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
       background: #fffaf5;
       color: #333;
       margin: 0;
-      padding: 2rem;
-    }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      margin-bottom: 2rem;
+      padding: 4rem 2rem;
     }
     h1 {
-      color: #ff6f3c;
-      margin: 0;
       font-size: 2rem;
+      color: #ff6f3c;
+      margin-bottom: 1.5rem;
+      text-align: center;
     }
-    .auth-link {
-      position: absolute;
-      right: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
+    .content {
+      max-width: 720px;
+      margin: 0 auto;
     }
-    .auth-link a {
+    .description {
+      text-align: left;
+      line-height: 1.9;
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+    }
+    .start-btn {
+      display: inline-block;
       background-color: #ff6f3c;
       color: white;
-      padding: 0.3rem 0.8rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 0.8rem;
-      white-space: nowrap;
-    }
-    form, .result {
-      max-width: 600px;
-      margin: auto;
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    .member {
-      margin-bottom: 1rem;
-    }
-    input[type="text"], input[type="number"] {
-      padding: 0.5rem;
-      margin: 0.3rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 40%;
-    }
-    .btn {
-      background-color: #ff6f3c;
-      color: white;
-      padding: 0.6rem 1.2rem;
+      padding: 0.8rem 2rem;
+      font-size: 1.1rem;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1rem;
-      margin-top: 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.3s;
     }
-    .btn:hover {
-      opacity: 0.9;
-    }
-    .flex {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-    .small {
-      font-size: 0.85rem;
-      color: gray;
-    }
-    .copy-btn {
-      float: right;
-      background: #ddd;
-      color: #333;
-      margin-top: 1rem;
-    }
-    @media (max-width: 600px) {
-      input[type="text"], input[type="number"] {
-        width: 100%;
-      }
-      .flex {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      header {
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .auth-link {
-        position: static;
-        transform: none;
-        align-self: flex-end;
-        margin-right: 0.5rem;
-      }
-      .auth-link a {
-        font-size: 0.8rem;
-        padding: 0.3rem 0.6rem;
-      }
+    .start-btn:hover {
+      background-color: #e55c28;
     }
   </style>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <header>
-    <h1>KanziPlus</h1>
-    <div class="auth-link" id="authLinks"></div>
-  </header>
+  <h1>幹事の「面倒くさい」をゼロに。KanziPlus（カンジプラス）</h1>
 
-  <form id="form">
-    <label>総額（円）:<br>
-      <input type="number" id="total" required>
-    </label><br><br>
-    <div id="members">
-      <div class="member flex">
-        <input type="text" placeholder="名前" required>
-        <input type="number" placeholder="傾斜係数" step="0.1" value="1.0" required>
-      </div>
+  <div class="content">
+    <div class="description">
+      <p>
+        KanziPlus（カンジプラス）は、これまで多数の幹事を経験してきた開発者による、幹事のためのサービスです。
+      </p>
+      <p>
+        「傾斜割り勘」「履歴の保存」など、今まさに欲しかった機能を集約。飲み会、旅行、イベント…どんな場面でも使えて、これからも幹事を助ける機能をどんどん追加していきます。
+      </p>
+      <p>
+        「誰も幹事をやりたがらず、会が開けなかった」。そんな経験から生まれたKanziPlusが、あなたの幹事ライフを支えます。
+      </p>
     </div>
-    <button type="button" class="btn" onclick="addMember()">＋ 参加者追加</button><br>
-    <button type="submit" class="btn">計算する</button>
-  </form>
-
-  <div class="result" id="result" style="display:none;">
-    <h2>結果</h2>
-    <ul id="output"></ul>
-    <button class="btn copy-btn" onclick="copyResult()">コピー</button>
-    <div class="small">このページのURLを共有すれば結果を再表示できます。</div>
+    <div style="text-align: center;">
+      <a href="toppage.html" class="start-btn">今すぐ始める</a>
+    </div>
   </div>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
-      authDomain: "kanziplus.firebaseapp.com",
-      projectId: "kanziplus",
-      storageBucket: "kanziplus.appspot.com",
-      messagingSenderId: "643577108018",
-      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    const authLinks = document.getElementById('authLinks');
-    auth.onAuthStateChanged(user => {
-      authLinks.innerHTML = '';
-      const link = document.createElement('a');
-      link.href = user ? "mypage.html" : "login.html";
-      link.textContent = user ? "マイページ" : "ログイン/新規作成";
-      authLinks.appendChild(link);
-    });
-
-    const membersDiv = document.getElementById('members');
-    const form = document.getElementById('form');
-    const resultDiv = document.getElementById('result');
-    const outputUl = document.getElementById('output');
-
-    function addMember(name = '', weight = 1.0) {
-      const div = document.createElement('div');
-      div.className = 'member flex';
-      div.innerHTML = `
-        <input type="text" placeholder="名前" value="${name}" required>
-        <input type="number" placeholder="傾斜係数" step="0.1" value="${weight}" required>
-      `;
-      membersDiv.appendChild(div);
-    }
-
-    function copyResult() {
-      const range = document.createRange();
-      range.selectNode(outputUl);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-      document.execCommand("copy");
-      alert("結果をコピーしました！");
-    }
-
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      const total = parseFloat(document.getElementById('total').value);
-      const members = Array.from(membersDiv.querySelectorAll('.member'));
-
-      let weights = [], names = [];
-
-      members.forEach(m => {
-        names.push(m.children[0].value);
-        weights.push(parseFloat(m.children[1].value));
-      });
-
-      const totalWeight = weights.reduce((a,b) => a + b, 0);
-      const results = names.map((name, i) => {
-        const amount = Math.round((weights[i] / totalWeight) * total);
-        return `${name}さん：${amount} 円`;
-      });
-
-      outputUl.innerHTML = '';
-      results.forEach(line => {
-        const li = document.createElement('li');
-        li.textContent = line;
-        outputUl.appendChild(li);
-      });
-
-      resultDiv.style.display = 'block';
-
-      const params = new URLSearchParams();
-      params.set('total', total);
-      names.forEach((n, i) => {
-        params.append('name[]', n);
-        params.append('weight[]', weights[i]);
-      });
-      history.replaceState(null, '', '?' + params.toString());
-
-      const user = auth.currentUser;
-      if (user) {
-        try {
-          const membersData = names.map((n, i) => ({ name: n, weight: weights[i] }));
-          await db.collection("users").doc(user.uid).collection("history").add({
-            total,
-            members: membersData,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        } catch (error) {
-          console.error("保存に失敗しました", error);
-        }
-      }
-    });
-
-    window.onload = () => {
-      const urlParams = new URLSearchParams(location.search);
-      const total = urlParams.get('total');
-      if (total) {
-        document.getElementById('total').value = total;
-        const names = urlParams.getAll('name[]');
-        const weights = urlParams.getAll('weight[]');
-        membersDiv.innerHTML = '';
-        names.forEach((n, i) => addMember(n, weights[i]));
-        form.dispatchEvent(new Event('submit'));
-      }
-    }
-  </script>
 </body>
 </html>
+
 
 
 
