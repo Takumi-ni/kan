@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <!-- ✅ Google Analytics (GA4) 設定 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EXN7VZYJFG');
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
@@ -18,10 +26,9 @@
     "logo": "https://kan-31g.pages.dev/images/kanziplus-icon.png"
   }
   </script>
-
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
+  
     body {
       font-family: 'Roboto', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
       background: #fffaf5;
@@ -30,50 +37,53 @@
       padding: 4rem 2rem;
       text-align: center;
     }
-
+  
     .main-image {
       max-width: 400px;
       width: 90%;
       height: auto;
-      margin: 1.5rem auto;
+      margin: 0.8rem auto 0.8rem;
       display: block;
     }
-
+  
     h1 {
       font-size: 1.8rem;
       color: #ff6f3c;
-      line-height: 1.6;
-      margin-bottom: 0.5rem;
+      line-height: 1.4;
+      margin-bottom: 0.2rem;
     }
-
+  
     .content {
       max-width: 720px;
       margin: 0 auto;
     }
-
+  
     .description {
       text-align: left;
-      line-height: 1.9;
-      font-size: 1.05rem;
-      margin: 2rem auto;
+      line-height: 1.65;
+      font-size: 1.08rem;
+      margin: 0.8rem auto 1.2rem;
     }
-
+  
     .start-btn {
       display: inline-block;
       background-color: #ff6f3c;
       color: white;
       padding: 0.8rem 2rem;
-      font-size: 1.1rem;
+      font-size: 1.08rem;
       border: none;
       border-radius: 8px;
       text-decoration: none;
       transition: background-color 0.3s;
     }
-
+  
     .start-btn:hover {
       background-color: #e55c28;
     }
   </style>
+  
+  
+  
 </head>
 <body>
   <div class="content">
