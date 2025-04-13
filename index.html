@@ -113,6 +113,20 @@
       color: #fff;
     }
 
+    .description p + p {
+      margin-top: 1em;
+    }
+
+    @media screen and (max-width: 768px) {
+      .hero h1 {
+        font-size: 1.6rem;
+      }
+      .description {
+        font-size: 1rem;
+        text-align: left;
+      }
+    }
+
     @keyframes slideInLeft {
       to {
         opacity: 1;
@@ -154,17 +168,6 @@
       color: #ddd;
       text-decoration: underline;
     }
-
-    @media screen and (max-width: 768px) {
-      .hero h1 {
-        font-size: 1.6rem;
-      }
-      .description {
-        font-size: 1rem;
-        text-align: left;
-        padding: 0 1rem;
-      }
-    }
   </style>
 </head>
 <body>
@@ -173,7 +176,9 @@
     <h1>幹事の「面倒くさい」をゼロに。<br>KanziPlus（カンジプラス）</h1>
     <div class="description">
       <p>KanziPlus（カンジプラス）は、これまで多数の幹事を経験してきた開発者による、幹事のためのサービスです。</p>
+
       <p>「傾斜割り勘」「履歴の保存」など、今まさに欲しかった機能を集約。飲み会、旅行、イベント…どんな場面でも使えて、これからも幹事を助ける機能をどんどん追加していきます。</p>
+
       <p>「誰も幹事をやりたがらず、会が開けなかった」。そんな経験から生まれたKanziPlusが、あなたの幹事ライフを支えます。</p>
     </div>
     <a href="toppage.html" class="start-btn">今すぐ始める</a>
@@ -184,6 +189,7 @@
   </footer>
 </body>
 </html>
+
 
 
 
