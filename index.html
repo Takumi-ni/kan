@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>幹事のためのアプリ｜KanziPlus（カンジプラス）</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <meta name="description" content="KanziPlus（カンジプラス）は、幹事に特化したアプリ。傾斜割り勘や履歴保存など便利な機能で幹事の負担を軽減します。">
+
   <!-- ✅ Google Analytics (GA4) 設定 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
   <script>
@@ -9,114 +15,159 @@
     gtag('js', new Date());
     gtag('config', 'G-EXN7VZYJFG');
   </script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
-  <link rel="icon" type="image/png" href="favicon.png" />
-  <title>幹事のためのアプリ｜KanziPlus（カンジプラス）</title>
-  <meta name="description" content="KanziPlus（カンジプラス）は、幹事に特化したアプリ。傾斜割り勘など、幹事が欲しい機能を集約。飲み会や旅行にも使え、今後も便利な機能を続々リリース予定。もう幹事をやりたくないとは言わせません。">
 
-  <!-- ✅ 構造化データでブランド情報を伝える -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "KanziPlus",
-    "url": "https://kan-31g.pages.dev",
-    "logo": "https://kan-31g.pages.dev/images/kanziplus-icon.png"
-  }
-  </script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-  
-    body {
-      font-family: 'Roboto', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
-      background: #fffaf5;
-      color: #333;
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 4rem 2rem;
-      text-align: center;
+      padding: 0;
     }
-  
-    .main-image {
-      max-width: 400px;
-      width: 90%;
-      height: auto;
-      margin: 0.8rem auto 0.8rem;
-      display: block;
+    html, body {
+      height: 100%;
     }
-  
-    h1 {
-      font-size: 1.8rem;
+    body {
+      min-height: 100vh;
+      font-family: 'Roboto', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+      background: url('images/party-bg.png') center bottom no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1rem 2rem;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+    header .logo {
+      font-size: 1.4rem;
+      font-weight: bold;
       color: #ff6f3c;
-      line-height: 1.4;
-      margin-bottom: 0.2rem;
     }
-  
-    .content {
-      max-width: 720px;
-      margin: 0 auto;
+    header nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      color: #fff;
+      font-size: 0.95rem;
     }
-  
+
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+    }
+
+    .hero h1 {
+      font-size: 2.4rem;
+      color: #ff6f3c;
+      margin-bottom: 1rem;
+      opacity: 0;
+      transform: translateX(-100%);
+      animation: slideInLeft 1s forwards ease-out;
+    }
+
     .description {
-      text-align: left;
-      line-height: 1.65;
-      font-size: 1.08rem;
-      margin: 0.8rem auto 1.2rem;
+      font-size: 1.25rem;
+      max-width: 800px;
+      line-height: 2;
+      margin-top: 1rem;
+      opacity: 0;
+      transform: translateX(100%);
+      animation: slideInRight 1s 0.5s forwards ease-out;
+      color: #fff;
     }
-  
-    .start-btn {
-      display: inline-block;
+
+    @keyframes slideInLeft {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .hero .start-btn {
+      margin-top: 2rem;
       background-color: #ff6f3c;
       color: white;
       padding: 0.8rem 2rem;
-      font-size: 1.08rem;
       border: none;
       border-radius: 8px;
+      font-size: 1rem;
       text-decoration: none;
-      transition: background-color 0.3s;
+      animation: fadeInUp 2s ease-out;
     }
-  
-    .start-btn:hover {
-      background-color: #e55c28;
+
+    @keyframes fadeInUp {
+      0% {opacity: 0; transform: translateY(20px);}
+      100% {opacity: 1; transform: translateY(0);}
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.85rem;
+      color: #ddd;
+    }
+    footer a {
+      color: #ddd;
+      text-decoration: underline;
+    }
+
+    @media screen and (max-width: 768px) {
+      .hero h1 {
+        font-size: 1.6rem;
+      }
     }
   </style>
-  
-  
-  
 </head>
 <body>
-  <div class="content">
+
+  <main class="hero">
     <h1>幹事の「面倒くさい」をゼロに。<br>KanziPlus（カンジプラス）</h1>
-    <img src="images/landing-transparent.png" alt="KanziPlus イメージ" class="main-image" />
-
     <div class="description">
-      <p>
-        KanziPlus（カンジプラス）は、これまで多数の幹事を経験してきた開発者による、幹事のためのサービスです。
-      </p>
-      <p>
-        「傾斜割り勘」「履歴の保存」など、今まさに欲しかった機能を集約。飲み会、旅行、イベント…どんな場面でも使えて、これからも幹事を助ける機能をどんどん追加していきます。
-      </p>
-      <p>
-        「誰も幹事をやりたがらず、会が開けなかった」。そんな経験から生まれたKanziPlusが、あなたの幹事ライフを支えます。
-      </p>
+      <p>KanziPlus（カンジプラス）は、これまで多数の幹事を経験してきた開発者による、幹事のためのサービスです。</p>
+      <p>「傾斜割り勘」「履歴の保存」など、今まさに欲しかった機能を集約。飲み会、旅行、イベント…どんな場面でも使えて、これからも幹事を助ける機能をどんどん追加していきます。</p>
+      <p>「誰も幹事をやりたがらず、会が開けなかった」。そんな経験から生まれたKanziPlusが、あなたの幹事ライフを支えます。</p>
     </div>
-
     <a href="toppage.html" class="start-btn">今すぐ始める</a>
-  </div>
+  </main>
+
+  <footer>
+    <a href="privacy.html">プライバシーポリシー</a>
+  </footer>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
