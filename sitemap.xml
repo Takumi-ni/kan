@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://kanziplus.jp/index.html</loc>
+    <loc>https://kanziplus.jp/</loc>
   </url>
   <url>
     <loc>https://kanziplus.jp/toppage.html</loc>
@@ -19,3 +19,4 @@
     <loc>https://kanziplus.jp/mypage.html</loc>
   </url>
 </urlset>
+
