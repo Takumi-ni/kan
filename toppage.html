@@ -2,17 +2,9 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>幹事のためのアプリ｜KanziPlus（カンジプラス）</title>
-  <meta name="description" content="KanziPlus（カンジプラス）は、幹事に特化したアプリ。傾斜割り勘や履歴保存など便利な機能で幹事の負担を軽減します。">
-  <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
-
-  <!-- ✅ favicon 各種対応 -->
-  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="shortcut icon" href="/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KanziPlus トップページ</title>
+  <meta name="description" content="KanziPlus（カンジプラス）は、幹事を助ける便利な割り勘・投票機能を提供するサービスです。">
 
   <!-- ✅ Google Analytics (GA4) 設定 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
@@ -25,240 +17,169 @@
 
   <!-- ✅ 構造化データ (JSON-LD) -->
   <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "KanziPlus",
-      "url": "https://kanziplus.jp",
-      "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
-    }
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "KanziPlus",
+    "url": "https://kanziplus.jp",
+    "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
+  }
   </script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    html, body {
-      height: 100%;
-    }
     body {
-      min-height: 100vh;
-      font-family: 'Roboto', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      background-color: #000;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('images/party-bg.png') no-repeat center center/cover;
-      z-index: -2;
+      font-family: sans-serif;
+      background: #fffaf5;
+      color: #333;
+      margin: 0;
+      padding: 2rem;
     }
 
     header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 1rem 2rem;
-      background: rgba(0,0,0,0.6);
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      z-index: 1000;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
     }
-    header .logo {
-      font-size: 1.4rem;
-      font-weight: bold;
+
+    h1 {
       color: #ff6f3c;
+      font-size: 2rem;
+      margin: 0;
     }
-    header nav a {
-      margin-left: 1.5rem;
+
+    .back-link {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
       text-decoration: none;
-      color: #fff;
+      font-size: 0.9rem;
+      margin-top: 0.6rem;
+      align-self: flex-start;
+      margin-left: 0.5rem;
+    }
+
+    .auth-link {
+      position: absolute;
+      right: 0.1rem;
+      top: 80%;
+      transform: translateY(-50%);
+    }
+
+    .auth-link a {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .card-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    .card h2 {
+      color: #ff6f3c;
+      font-size: 1.2rem;
+      margin-top: 0;
+    }
+
+    .card p {
+      margin: 0.5rem 0 1rem;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .card a {
+      display: inline-block;
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      text-decoration: none;
       font-size: 0.95rem;
     }
 
-    .hero {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 2rem;
-      position: relative;
-      z-index: 1;
-    }
-    .hero::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: -1;
+    .card a:hover {
+      background-color: #e55c28;
     }
 
-    .hero h1 {
-      font-size: 2.4rem;
-      color: #ff6f3c;
-      margin-bottom: 1rem;
-      opacity: 0;
-      transform: translateX(-100%);
-      animation: slideInLeft 1s forwards ease-out;
-    }
-
-    .description {
-      font-size: 1.25rem;
-      max-width: 800px;
-      line-height: 2;
-      margin-top: 1rem;
-      opacity: 0;
-      transform: translateX(100%);
-      animation: slideInRight 1s 0.5s forwards ease-out;
-      color: #fff;
-    }
-
-    .description p + p {
-      margin-top: 1em;
-    }
-
-    @media screen and (max-width: 768px) {
-      .hero h1 {
-        font-size: 1.6rem;
+    @media (max-width: 600px) {
+      .back-link {
+        margin-left: 0;
       }
-      .description {
-        font-size: 1rem;
-        text-align: left;
+      .auth-link {
+        position: absolute;
+        right: 1rem;
+        top: 80%;
+        transform: translateY(-50%);
       }
-    }
-
-    @keyframes slideInLeft {
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes slideInRight {
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    .hero .start-btn {
-      margin-top: 2rem;
-      background-color: #ff6f3c;
-      color: white;
-      padding: 0.8rem 2rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      text-decoration: none;
-      animation: fadeInUp 2s ease-out;
-    }
-
-    @keyframes fadeInUp {
-      0% {opacity: 0; transform: translateY(20px);}
-      100% {opacity: 1; transform: translateY(0);}
-    }
-
-    .feature-section {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      margin-top: 3rem;
-      padding: 0 1rem;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .feature-card {
-      background-color: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      color: #fff;
-      animation: fadeInUp 1s ease;
-    }
-
-    .feature-card h2 {
-      color: #ffb88a;
-      font-size: 1.3rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .feature-card p {
-      font-size: 1rem;
-      line-height: 1.7;
-    }
-
-    @media (max-width: 768px) {
-      .feature-card h2 {
-        font-size: 1.1rem;
-      }
-      .feature-card p {
-        font-size: 0.95rem;
-      }
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.85rem;
-      color: #ddd;
-    }
-    footer a {
-      color: #ddd;
-      text-decoration: underline;
     }
   </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 </head>
 <body>
-  <main class="hero">
-    <h1>幹事の「面倒くさい」をゼロに。<br>KanziPlus（カンジプラス）</h1>
-    <div class="description">
-      <p>KanziPlus（カンジプラス）は、これまで多数の幹事を経験してきた開発者による、幹事のためのサービスです。</p>
-      <p>「傾斜割り勘」「履歴の保存」など、今まさに欲しかった機能を集約。飲み会、旅行、イベント…どんな場面でも使えて、これからも幹事を助ける機能をどんどん追加していきます。</p>
-      <p>「誰も幹事をやりたがらず、会が開けなかった」。そんな経験から生まれたKanziPlusが、あなたの幹事ライフを支えます。</p>
-    </div>
-    <a href="toppage.html" class="start-btn">今すぐ始める</a>
+  <header>
+    <h1>機能一覧</h1>
+    <a class="back-link" href="index.html">← 戻る</a>
+    <div class="auth-link" id="authLinks"></div>
+  </header>
 
-    <div class="feature-section">
-      <div class="feature-card">
-        <h2>💡 傾斜割り勘</h2>
-        <p>
-          「年上だから多めに払う」「後輩は少なめで」そんな配慮も一瞬で。<br>
-          係数を入力するだけで、参加者ごとの支払い額を自動計算できます。
-        </p>
-      </div>
-      <div class="feature-card">
-        <h2>🗓️ 日程・場所の投票</h2>
-        <p>
-          候補を入力すれば、すぐにシェア可能な投票リンクを作成。<br>
-          集まった回答はリアルタイムで集計、もう日程調整で迷いません。
-        </p>
-      </div>
+  <div class="card-container">
+    <div class="card">
+      <h2>傾斜割り勘</h2>
+      <p>係数に応じて支払額を自動で計算。飲み会や旅行などに。</p>
+      <a href="keisha.html">この機能を使う</a>
     </div>
-  </main>
+    <div class="card">
+      <h2>日程・場所投票</h2>
+      <p>候補を入力するだけで、場所と日程の投票リンクを簡単に作成・共有できる機能。</p>
+      <a href="createvote.html">この機能を使う</a>
+    </div>
+  </div>
 
-  <footer>
-    <a href="privacy.html">プライバシーポリシー</a>
-  </footer>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
+      authDomain: "kanziplus.firebaseapp.com",
+      projectId: "kanziplus",
+      storageBucket: "kanziplus.appspot.com",
+      messagingSenderId: "643577108018",
+      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    const authLinks = document.getElementById('authLinks');
+    auth.onAuthStateChanged(user => {
+      authLinks.innerHTML = '';
+      const link = document.createElement('a');
+      link.href = user ? "mypage.html" : "login.html";
+      link.textContent = user ? "マイページ" : "ログイン/新規作成";
+      authLinks.appendChild(link);
+    });
+  </script>
 </body>
 </html>

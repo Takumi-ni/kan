@@ -6,14 +6,14 @@
   <title>幹事のためのアプリ｜KanziPlus（カンジプラス）</title>
   <meta name="description" content="KanziPlus（カンジプラス）は、幹事に特化したアプリ。傾斜割り勘や履歴保存など便利な機能で幹事の負担を軽減します。">
   <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
-  
+
   <!-- ✅ favicon 各種対応 -->
   <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-  
+
   <!-- ✅ Google Analytics (GA4) 設定 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
   <script>
@@ -22,7 +22,7 @@
     gtag('js', new Date());
     gtag('config', 'G-EXN7VZYJFG');
   </script>
-  
+
   <!-- ✅ 構造化データ (JSON-LD) -->
   <script type="application/ld+json">
     {
@@ -33,7 +33,7 @@
       "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
     }
   </script>
-  
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
@@ -176,6 +176,47 @@
       100% {opacity: 1; transform: translateY(0);}
     }
 
+    .feature-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-top: 3rem;
+      padding: 0 1rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .feature-card {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      color: #fff;
+      animation: fadeInUp 1s ease;
+    }
+
+    .feature-card h2 {
+      color: #ffb88a;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+      .feature-card h2 {
+        font-size: 1.1rem;
+      }
+      .feature-card p {
+        font-size: 0.95rem;
+      }
+    }
+
     footer {
       text-align: center;
       padding: 2rem;
@@ -189,17 +230,31 @@
   </style>
 </head>
 <body>
-
   <main class="hero">
     <h1>幹事の「面倒くさい」をゼロに。<br>KanziPlus（カンジプラス）</h1>
     <div class="description">
       <p>KanziPlus（カンジプラス）は、これまで多数の幹事を経験してきた開発者による、幹事のためのサービスです。</p>
-
       <p>「傾斜割り勘」「履歴の保存」など、今まさに欲しかった機能を集約。飲み会、旅行、イベント…どんな場面でも使えて、これからも幹事を助ける機能をどんどん追加していきます。</p>
-
       <p>「誰も幹事をやりたがらず、会が開けなかった」。そんな経験から生まれたKanziPlusが、あなたの幹事ライフを支えます。</p>
     </div>
     <a href="toppage.html" class="start-btn">今すぐ始める</a>
+
+    <div class="feature-section">
+      <div class="feature-card">
+        <h2>💡 傾斜割り勘</h2>
+        <p>
+          「年上だから多めに払う」「後輩は少なめで」そんな配慮も一瞬で。<br>
+          係数を入力するだけで、参加者ごとの支払い額を自動計算できます。
+        </p>
+      </div>
+      <div class="feature-card">
+        <h2>🗓️ 日程・場所の投票</h2>
+        <p>
+          候補を入力すれば、すぐにシェア可能な投票リンクを作成。<br>
+          集まった回答はリアルタイムで集計、もう日程調整で迷いません。
+        </p>
+      </div>
+    </div>
   </main>
 
   <footer>
