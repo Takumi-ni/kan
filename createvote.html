@@ -98,10 +98,19 @@
       margin: 0.5rem 0;
       width: 100%;
     }
-    input[type="text"], input[type="url"], input[type="date"] {
+    input[type="text"], input[type="url"] {
       padding: 0.5rem;
       border-radius: 6px;
       border: 1px solid #ccc;
+      width: 100%;
+    }
+    input[type="date"] {
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      min-width: 140px;
+      width: 100%;
     }
     .btn {
       background: #ff6f3c;
@@ -240,7 +249,7 @@
         }
 
         const link = `https://kanziplus.jp/vote.html?v=${voteId}`;
-        document.getElementById('linkBox').innerHTML = 
+        document.getElementById('linkBox').innerHTML =
          `✅ このリンクを共有してください：<br><a href="${link}" target="_blank" rel="noopener noreferrer">${link}</a><div class="note">※ ログインしてから「投票リンクを作成」を押下することで結果をマイページ上に保存できます。</div>`;
 
       } catch (err) {
