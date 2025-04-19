@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>投票機能｜KanziPlus</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #fffaf5;
+      margin: 0;
+      padding: 1.5rem;
+      color: #333;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 1.4rem;
+      color: #ff6f3c;
+      margin: 0;
+    }
+    .btn-back {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .section {
+      margin: 1.5rem 0;
+    }
+    .section h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    label {
+      display: block;
+      margin: 0.3rem 0;
+    }
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+    input[type="url"] {
+      margin-left: 0.5rem;
+      padding: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 60%;
+    }
+    .submit-btn {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.8rem 1.6rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .submit-btn:hover {
+      opacity: 0.9;
+    }
+    .results {
+      margin-top: 2rem;
+      font-size: 0.95rem;
+    }
+    .highlight {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
+      authDomain: "kanziplus.firebaseapp.com",
+      projectId: "kanziplus",
+      storageBucket: "kanziplus.appspot.com",
+      messagingSenderId: "643577108018",
+      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let voteId = null;
+    const voteData = { places: [], placeUrls: [], dates: [] };
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      voteId = urlParams.get("v");
+      if (!voteId) return;
+
+      const voteRef = doc(db, "votes", voteId);
+      const voteSnap = await getDoc(voteRef);
+      if (!voteSnap.exists()) return;
+
+      const data = voteSnap.data();
+      voteData.places = data.places || [];
+      voteData.placeUrls = data.placeUrls || [];
+      voteData.dates = data.dates || [];
+
+      const placesDiv = document.querySelector(".section:nth-of-type(2)");
+      placesDiv.innerHTML = `<h2>行きたい場所を選んでください：</h2>`;
+      voteData.places.forEach((place, i) => {
+        const url = voteData.placeUrls[i] || "";
+        const label = document.createElement('label');
+        label.innerHTML = `<input type="checkbox" name="locations" value="${place}">${place}${url ? ` <a href="${url}" target="_blank">(店舗URL)</a>` : ''}`;
+        placesDiv.appendChild(label);
+      });
+
+      const datesDiv = document.querySelector(".section:nth-of-type(3)");
+      datesDiv.innerHTML = `<h2>都合のいい日程を選んでください：</h2>`;
+      voteData.dates.forEach(date => {
+        const label = document.createElement('label');
+        label.innerHTML = `<input type="checkbox" name="dates" value="${date}">${date}`;
+        datesDiv.appendChild(label);
+      });
+
+      // リアルタイム集計
+      onSnapshot(collection(db, "votes", voteId, "responses"), snapshot => {
+        const locationCounts = {};
+        const dateCounts = {};
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          (data.locations || []).forEach(loc => locationCounts[loc] = (locationCounts[loc] || 0) + 1);
+          (data.dates || []).forEach(dt => dateCounts[dt] = (dateCounts[dt] || 0) + 1);
+        });
+
+        const maxLoc = Math.max(0, ...Object.values(locationCounts));
+        const maxDate = Math.max(0, ...Object.values(dateCounts));
+
+        const locHtml = Object.entries(locationCounts).map(([k, v]) => `<span class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</span>`).join('<br>');
+        const dateHtml = Object.entries(dateCounts).map(([k, v]) => `<span class="${v === maxDate ? 'highlight' : ''}">${k}（${v}票）</span>`).join('<br>');
+
+        document.getElementById("locationResults").innerHTML = locHtml;
+        document.getElementById("dateResults").innerHTML = dateHtml;
+      });
+    });
+
+    document.getElementById("voteForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const name = document.getElementById("username").value;
+      const locations = Array.from(document.querySelectorAll("input[name='locations']:checked")).map(i => i.value);
+      const dates = Array.from(document.querySelectorAll("input[name='dates']:checked")).map(i => i.value);
+      await addDoc(collection(db, "votes", voteId, "responses"), { name, locations, dates });
+      alert("投票を受け付けました！");
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <h1>日程と場所の投票</h1>
+  </header>
+
+  <form id="voteForm">
+    <div class="section">
+      <h2>あなたの名前</h2>
+      <input type="text" id="username" required placeholder="例：山田太郎" style="width:100%; padding:0.5rem; border-radius:6px; border:1px solid #ccc;">
+    </div>
+
+    <div class="section">
+      <h2>読み込み中...</h2>
+    </div>
+
+    <div class="section">
+      <h2>読み込み中...</h2>
+    </div>
+
+    <button type="submit" class="submit-btn">投票する</button>
+  </form>
+
+  <div class="results">
+    <h2>現在の投票状況（リアルタイム）</h2>
+    <p id="locationResults"></p>
+    <p id="dateResults"></p>
+  </div>
+</body>
+</html>

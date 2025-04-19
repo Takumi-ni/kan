@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KanziPlus 傾斜割り勘機能</title>
+  <meta name="description" content="KanziPlus（カンジプラス）の傾斜割り勘機能では、参加者の負担割合に応じた計算が簡単にできます。飲み会や旅行の精算もスムーズに！">
+  <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EXN7VZYJFG');
+  </script>
+
+  <style>
+    body {
+  font-family: sans-serif;
+  background: #fffaf5;
+  color: #333;
+  margin: 0;
+  padding: 2rem;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+h1 {
+  color: #ff6f3c;
+  font-size: 2rem;
+  margin: 0 0 0.8rem 0;
+  text-align: center;
+}
+
+/* ボタンを1行に配置するラッパー */
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 0.5rem;
+}
+
+.back-link {
+  background-color: #ff6f3c;
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.auth-link a {
+  background-color: #ff6f3c;
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  margin-top: 0.6rem;
+}
+
+form, .result {
+  max-width: 600px;
+  margin: auto;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.member {
+  margin-bottom: 1rem;
+}
+
+input[type="text"], input[type="number"] {
+  padding: 0.5rem;
+  margin: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 40%;
+}
+
+.btn {
+  background-color: #ff6f3c;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.flex {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.small {
+  font-size: 0.85rem;
+  color: gray;
+}
+
+.copy-btn {
+  float: right;
+  background: #ddd;
+  color: #333;
+  margin-top: 1rem;
+}
+
+/* スマホ対応 */
+@media (max-width: 600px) {
+  input[type="text"], input[type="number"] {
+    width: 100%;
+  }
+
+  .flex {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .button-row {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .auth-link {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .auth-link a {
+    margin-top: 0.1rem; /* ← これが今度は効きます ✅ */
+  }
+}
+  </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <header>
+        <h1>KanziPlus</h1>
+        <div class="button-row">
+          <a class="back-link" href="toppage.html">← 戻る</a>
+          <div class="auth-link" id="authLinks"></div>
+        </div>
+      </header>
+
+  <form id="form">
+    <label>総額（円）:<br>
+      <input type="number" id="total" required>
+    </label><br><br>
+    <div id="members">
+      <div class="member flex">
+        <input type="text" placeholder="名前" required>
+        <input type="number" placeholder="傾斜係数" step="0.1" value="1.0" required>
+      </div>
+    </div>
+    <button type="button" class="btn" onclick="addMember()">＋ 参加者追加</button><br>
+    <button type="submit" class="btn">計算する</button>
+  </form>
+
+  <div class="result" id="result" style="display:none;">
+    <h2>結果</h2>
+    <ul id="output"></ul>
+    <button class="btn copy-btn" onclick="copyResult()">コピー</button>
+    <div class="small">このページのURLを共有すれば結果を再表示できます。</div>
+  </div>
+
+  <footer style="text-align: center; margin-top: 4rem; font-size: 0.9rem;">
+    <a href="privacy.html" style="color: #888; text-decoration: underline;">プライバシーポリシー</a>
+  </footer>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
+      authDomain: "kanziplus.firebaseapp.com",
+      projectId: "kanziplus",
+      storageBucket: "kanziplus.appspot.com",
+      messagingSenderId: "643577108018",
+      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const authLinks = document.getElementById('authLinks');
+    auth.onAuthStateChanged(user => {
+      authLinks.innerHTML = '';
+      const link = document.createElement('a');
+      link.href = user ? "mypage.html" : "login.html";
+      link.textContent = user ? "マイページ" : "ログイン/新規作成";
+      authLinks.appendChild(link);
+    });
+
+    const membersDiv = document.getElementById('members');
+    const form = document.getElementById('form');
+    const resultDiv = document.getElementById('result');
+    const outputUl = document.getElementById('output');
+
+    function addMember(name = '', weight = 1.0) {
+      const div = document.createElement('div');
+      div.className = 'member flex';
+      div.innerHTML = `
+        <input type="text" placeholder="名前" value="${name}" required>
+        <input type="number" placeholder="傾斜係数" step="0.1" value="${weight}" required>
+      `;
+      membersDiv.appendChild(div);
+    }
+
+    function copyResult() {
+      const range = document.createRange();
+      range.selectNode(outputUl);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      document.execCommand("copy");
+      alert("結果をコピーしました！");
+    }
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const total = parseFloat(document.getElementById('total').value);
+      const members = Array.from(membersDiv.querySelectorAll('.member'));
+
+      let weights = [], names = [];
+
+      members.forEach(m => {
+        names.push(m.children[0].value);
+        weights.push(parseFloat(m.children[1].value));
+      });
+
+      const totalWeight = weights.reduce((a,b) => a + b, 0);
+      const results = names.map((name, i) => {
+        const amount = Math.round((weights[i] / totalWeight) * total);
+        return `${name}さん：${amount} 円`;
+      });
+
+      outputUl.innerHTML = '';
+      results.forEach(line => {
+        const li = document.createElement('li');
+        li.textContent = line;
+        outputUl.appendChild(li);
+      });
+
+      resultDiv.style.display = 'block';
+
+      const params = new URLSearchParams();
+      params.set('total', total);
+      names.forEach((n, i) => {
+        params.append('name[]', n);
+        params.append('weight[]', weights[i]);
+      });
+      history.replaceState(null, '', '?' + params.toString());
+
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          const membersData = names.map((n, i) => ({ name: n, weight: weights[i] }));
+          await db.collection("users").doc(user.uid).collection("history").add({
+            total,
+            members: membersData,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        } catch (error) {
+          console.error("保存に失敗しました", error);
+        }
+      }
+    });
+
+    window.onload = () => {
+      const urlParams = new URLSearchParams(location.search);
+      const total = urlParams.get('total');
+      if (total) {
+        document.getElementById('total').value = total;
+        const names = urlParams.getAll('name[]');
+        const weights = urlParams.getAll('weight[]');
+        membersDiv.innerHTML = '';
+        names.forEach((n, i) => addMember(n, weights[i]));
+        form.dispatchEvent(new Event('submit'));
+      }
+    };
+  </script>
+</body>
+</html>
