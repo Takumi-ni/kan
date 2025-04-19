@@ -4,6 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>KanziPlus トップページ</title>
+  <meta name="description" content="KanziPlus（カンジプラス）は、幹事を助ける便利な割り勘・投票機能を提供するサービスです。">
+
+  <!-- ✅ Google Analytics (GA4) 設定 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EXN7VZYJFG');
+  </script>
+
+  <!-- ✅ 構造化データ (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "KanziPlus",
+    "url": "https://kanziplus.jp",
+    "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
+  }
+  </script>
+
   <style>
     body {
       font-family: sans-serif;
@@ -43,21 +65,21 @@
     }
 
     .auth-link {
-  position: absolute;
-  right: 0.1rem;
-  top: 80%; /* ← 50% より上に設定することで「上に移動」 */
-  transform: translateY(-50%);
-}
+      position: absolute;
+      right: 0.1rem;
+      top: 80%;
+      transform: translateY(-50%);
+    }
 
-.auth-link a {
-  background-color: #ff6f3c;
-  color: white;
-  padding: 0.4rem 1rem; /* ← .back-linkと完全一致 */
-  border-radius: 6px;
-  text-decoration: none;
-  font-size: 0.9rem;     /* ← .back-linkと完全一致 */
-  white-space: nowrap;
-}
+    .auth-link a {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
 
     .card-container {
       display: flex;
@@ -102,17 +124,16 @@
     }
 
     @media (max-width: 600px) {
-  .back-link {
-    margin-left: 0;
-  }
-
-  .auth-link {
-    position: absolute;
-    right: 1rem;         /* モバイルは少し内側へ */
-    top: 80%;
-    transform: translateY(-50%);
-  }
-}
+      .back-link {
+        margin-left: 0;
+      }
+      .auth-link {
+        position: absolute;
+        right: 1rem;
+        top: 80%;
+        transform: translateY(-50%);
+      }
+    }
   </style>
 
   <!-- Firebase SDK -->

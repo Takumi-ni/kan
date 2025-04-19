@@ -4,6 +4,34 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>投票作成｜KanziPlus</title>
+  <meta name="description" content="KanziPlus（カンジプラス）の投票作成機能では、飲み会やイベントの候補日・場所を簡単に共有・集計できます。">
+  <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
+
+  <!-- ✅ Google Analytics (GA4) 設定 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EXN7VZYJFG');
+  </script>
+
+  <!-- ✅ 構造化データ (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "KanziPlus",
+    "url": "https://kanziplus.jp",
+    "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
+  }
+  </script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
@@ -112,10 +140,6 @@
       }
     }
   </style>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
   <header>
@@ -216,7 +240,9 @@
         }
 
         const link = `https://kanziplus.jp/vote.html?v=${voteId}`;
-        document.getElementById('linkBox').innerHTML = `✅ このリンクを共有してください：<br><a href="${link}">${link}</a><div class="note">※ ログインしてから「投票リンクを作成」を押下することで結果をマイページ上に保存できます。</div>`;
+        document.getElementById('linkBox').innerHTML = 
+         `✅ このリンクを共有してください：<br><a href="${link}" target="_blank" rel="noopener noreferrer">${link}</a><div class="note">※ ログインしてから「投票リンクを作成」を押下することで結果をマイページ上に保存できます。</div>`;
+
       } catch (err) {
         alert("Firestoreへの保存に失敗しました：" + err.message);
       }

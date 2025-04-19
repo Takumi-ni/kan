@@ -7,14 +7,7 @@
   <meta name="description" content="KanziPlus（カンジプラス）の傾斜割り勘機能では、参加者の負担割合に応じた計算が簡単にできます。飲み会や旅行の精算もスムーズに！">
   <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="shortcut icon" href="/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
-
-  <!-- Google Analytics -->
+  <!-- ✅ Google Analytics (GA4) 設定 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -23,139 +16,156 @@
     gtag('config', 'G-EXN7VZYJFG');
   </script>
 
+  <!-- ✅ 構造化データ (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "KanziPlus",
+    "url": "https://kanziplus.jp",
+    "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
+  }
+  </script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- CSS -->
   <style>
     body {
-  font-family: sans-serif;
-  background: #fffaf5;
-  color: #333;
-  margin: 0;
-  padding: 2rem;
-}
+      font-family: sans-serif;
+      background: #fffaf5;
+      color: #333;
+      margin: 0;
+      padding: 2rem;
+    }
 
-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-h1 {
-  color: #ff6f3c;
-  font-size: 2rem;
-  margin: 0 0 0.8rem 0;
-  text-align: center;
-}
+    h1 {
+      color: #ff6f3c;
+      font-size: 2rem;
+      margin: 0 0 0.8rem 0;
+      text-align: center;
+    }
 
-/* ボタンを1行に配置するラッパー */
-.button-row {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0 0.5rem;
-}
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 0.5rem;
+    }
 
-.back-link {
-  background-color: #ff6f3c;
-  color: white;
-  padding: 0.4rem 1rem;
-  border-radius: 6px;
-  text-decoration: none;
-  font-size: 0.9rem;
-}
+    .back-link {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
 
-.auth-link a {
-  background-color: #ff6f3c;
-  color: white;
-  padding: 0.4rem 1rem;
-  border-radius: 6px;
-  text-decoration: none;
-  font-size: 0.9rem;
-  white-space: nowrap;
-  margin-top: 0.6rem;
-}
+    .auth-link a {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      margin-top: 0.6rem;
+    }
 
-form, .result {
-  max-width: 600px;
-  margin: auto;
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+    form, .result {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
 
-.member {
-  margin-bottom: 1rem;
-}
+    .member {
+      margin-bottom: 1rem;
+    }
 
-input[type="text"], input[type="number"] {
-  padding: 0.5rem;
-  margin: 0.3rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  width: 40%;
-}
+    input[type="text"], input[type="number"] {
+      padding: 0.5rem;
+      margin: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 40%;
+    }
 
-.btn {
-  background-color: #ff6f3c;
-  color: white;
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 1rem;
-}
+    .btn {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
 
-.btn:hover {
-  opacity: 0.9;
-}
+    .btn:hover {
+      opacity: 0.9;
+    }
 
-.flex {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
+    .flex {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
 
-.small {
-  font-size: 0.85rem;
-  color: gray;
-}
+    .small {
+      font-size: 0.85rem;
+      color: gray;
+    }
 
-.copy-btn {
-  float: right;
-  background: #ddd;
-  color: #333;
-  margin-top: 1rem;
-}
+    .copy-btn {
+      float: right;
+      background: #ddd;
+      color: #333;
+      margin-top: 1rem;
+    }
 
-/* スマホ対応 */
-@media (max-width: 600px) {
-  input[type="text"], input[type="number"] {
-    width: 100%;
-  }
+    @media (max-width: 600px) {
+      input[type="text"], input[type="number"] {
+        width: 100%;
+      }
 
-  .flex {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+      .flex {
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
-  .button-row {
-    flex-direction: row;
-    justify-content: space-between;
-  }
+      .button-row {
+        flex-direction: row;
+        justify-content: space-between;
+      }
 
-  .auth-link {
-    display: flex;
-    align-items: flex-end;
-  }
+      .auth-link {
+        display: flex;
+        align-items: flex-end;
+      }
 
-  .auth-link a {
-    margin-top: 0.1rem; /* ← これが今度は効きます ✅ */
-  }
-}
+      .auth-link a {
+        margin-top: 0.1rem;
+      }
+    }
   </style>
 
   <!-- Firebase SDK -->
@@ -164,13 +174,13 @@ input[type="text"], input[type="number"] {
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <header>
-        <h1>KanziPlus</h1>
-        <div class="button-row">
-          <a class="back-link" href="toppage.html">← 戻る</a>
-          <div class="auth-link" id="authLinks"></div>
-        </div>
-      </header>
+  <header>
+    <h1>KanziPlus</h1>
+    <div class="button-row">
+      <a class="back-link" href="toppage.html">← 戻る</a>
+      <div class="auth-link" id="authLinks"></div>
+    </div>
+  </header>
 
   <form id="form">
     <label>総額（円）:<br>

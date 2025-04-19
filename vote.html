@@ -4,6 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>投票機能｜KanziPlus</title>
+  <meta name="description" content="KanziPlus（カンジプラス）の投票機能では、参加者が候補日・場所に対して投票でき、リアルタイムで集計表示されます。">
+  <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
+
+  <!-- ✅ Google Analytics (GA4) 設定 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EXN7VZYJFG');
+  </script>
+
+  <!-- ✅ 構造化データ (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "KanziPlus",
+    "url": "https://kanziplus.jp",
+    "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
+  }
+  </script>
+
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
@@ -73,6 +96,7 @@
       font-weight: bold;
     }
   </style>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
     import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
@@ -127,21 +151,31 @@
       onSnapshot(collection(db, "votes", voteId, "responses"), snapshot => {
         const locationCounts = {};
         const dateCounts = {};
+        const individualVotes = [];
 
         snapshot.forEach(doc => {
           const data = doc.data();
+          const name = data.name || "匿名";
+          const locs = (data.locations || []).join("、");
+          const dts = (data.dates || []).join("、");
+
           (data.locations || []).forEach(loc => locationCounts[loc] = (locationCounts[loc] || 0) + 1);
           (data.dates || []).forEach(dt => dateCounts[dt] = (dateCounts[dt] || 0) + 1);
+
+          individualVotes.push(`<strong>${name}</strong>：${locs} ／ ${dts}`);
         });
 
         const maxLoc = Math.max(0, ...Object.values(locationCounts));
         const maxDate = Math.max(0, ...Object.values(dateCounts));
 
-        const locHtml = Object.entries(locationCounts).map(([k, v]) => `<span class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</span>`).join('<br>');
-        const dateHtml = Object.entries(dateCounts).map(([k, v]) => `<span class="${v === maxDate ? 'highlight' : ''}">${k}（${v}票）</span>`).join('<br>');
+        const locHtml = Object.entries(locationCounts).map(([k, v]) =>
+          `<span class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</span>`).join('<br>');
+        const dateHtml = Object.entries(dateCounts).map(([k, v]) =>
+          `<span class="${v === maxDate ? 'highlight' : ''}">${k}（${v}票）</span>`).join('<br>');
 
         document.getElementById("locationResults").innerHTML = locHtml;
         document.getElementById("dateResults").innerHTML = dateHtml;
+        document.getElementById("individualVotes").innerHTML = individualVotes.join("<br>");
       });
     });
 
@@ -181,6 +215,11 @@
     <h2>現在の投票状況（リアルタイム）</h2>
     <p id="locationResults"></p>
     <p id="dateResults"></p>
+  </div>
+
+  <div class="results">
+    <h2>誰がどこに投票したか（一覧）</h2>
+    <div id="individualVotes"></div>
   </div>
 </body>
 </html>

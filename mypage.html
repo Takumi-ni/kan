@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>KanziPlus マイページ</title>
 <meta name="description" content="KanziPlus（カンジプラス）のマイページでは、過去の履歴を確認し、幹事としてのタスク管理を効率化できます。">
-<meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
 <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="shortcut icon" href="/favicon.ico" />
@@ -79,6 +78,12 @@
   ul {
     padding-left: 1.2rem;
   }
+  .sublist {
+    margin: 0.5rem 0 1rem;
+    padding-left: 1rem;
+    font-size: 0.95rem;
+    color: #555;
+  }
   @media (min-width: 601px) {
     .back-link {
       left: 20px;
@@ -88,6 +93,82 @@
     }
   }
 </style>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
+  authDomain: "kanziplus.firebaseapp.com",
+  projectId: "kanziplus",
+  storageBucket: "kanziplus.appspot.com",
+  messagingSenderId: "643577108018",
+  appId: "1:643577108018:web:02afbe37485478ccd40e2b"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const userInfo = document.getElementById('user-info');
+const historyList = document.getElementById('history-list');
+const params = new URLSearchParams(window.location.search);
+const from = params.get("from");
+const backLink = document.getElementById("backLink");
+switch (from) {
+  case "vote": backLink.href = "create_vote.html"; break;
+  case "keisha": backLink.href = "keisha.html"; break;
+  default: backLink.href = "toppage.html";
+}
+
+onAuthStateChanged(auth, async user => {
+  if (!user) return location.href = 'login.html';
+  userInfo.innerHTML = `<strong>ログイン中：</strong> ${user.email}`;
+
+  historyList.innerHTML = '';
+
+  // 割り勘履歴
+  const historyRef = collection(db, "users", user.uid, "history");
+  const q1 = query(historyRef, orderBy("timestamp", "desc"));
+  const snap1 = await getDocs(q1);
+  if (!snap1.empty) {
+    snap1.forEach(doc => {
+      const data = doc.data();
+      const date = new Date(data.timestamp.seconds * 1000).toLocaleString('ja-JP');
+      historyList.innerHTML += `<li>🧾 ${date} - 合計 ${data.total}円 - ${data.members.length}人</li>`;
+    });
+  }
+
+  // 投票履歴
+  const creationsRef = collection(db, "users", user.uid, "voteCreations");
+  const q2 = query(creationsRef, orderBy("createdAt", "desc"));
+  const snap2 = await getDocs(q2);
+  if (!snap2.empty) {
+    for (const doc of snap2.docs) {
+      const { voteId } = doc.data();
+      const voteDoc = await getDoc(doc(db, "votes", voteId));
+      if (!voteDoc.exists()) continue;
+
+      historyList.innerHTML += `<li>📮 投票ID: ${voteId}</li>`;
+
+      const responses = await getDocs(collection(db, "votes", voteId, "responses"));
+      responses.forEach(res => {
+        const d = res.data();
+        historyList.innerHTML += `<ul class="sublist"><li>${d.name}: ${d.locations?.join(' / ')} / ${d.dates?.join(' / ')}</li></ul>`;
+      });
+    }
+  }
+
+  if (historyList.innerHTML === '') {
+    historyList.innerHTML = '<li>履歴はまだありません</li>';
+  }
+});
+
+window.logout = () => {
+  signOut(auth).then(() => location.href = 'toppage.html');
+};
+</script>
 </head>
 <body>
   <header>
@@ -98,85 +179,12 @@
 
   <div class="card">
     <div id="user-info"></div>
-    <h2 style="color:#ff6f3c;">過去の割り勘履歴：</h2>
-    <ul id="history-list">
-      <li>読み込み中...</li>
-    </ul>
+    <h2 style="color:#ff6f3c;">過去の履歴：</h2>
+    <ul id="history-list"><li>読み込み中...</li></ul>
   </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
-      authDomain: "kanziplus.firebaseapp.com",
-      projectId: "kanziplus",
-      storageBucket: "kanziplus.appspot.com",
-      messagingSenderId: "643577108018",
-      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    const userInfo = document.getElementById('user-info');
-    const historyList = document.getElementById('history-list');
-
-    const params = new URLSearchParams(window.location.search);
-    const from = params.get("from");
-    const backLink = document.getElementById("backLink");
-    switch (from) {
-      case "vote":
-        backLink.href = "create_vote.html";
-        break;
-      case "keisha":
-        backLink.href = "keisha.html";
-        break;
-      case "toppage":
-      default:
-        backLink.href = "toppage.html";
-        break;
-    }
-
-    onAuthStateChanged(auth, async user => {
-      if (user) {
-        userInfo.innerHTML = `<strong>ログイン中：</strong> ${user.email}`;
-
-        const historyRef = collection(db, "users", user.uid, "history");
-        const q = query(historyRef, orderBy("timestamp", "desc"));
-        const snapshot = await getDocs(q);
-
-        historyList.innerHTML = '';
-        if (snapshot.empty) {
-          historyList.innerHTML = '<li>履歴はまだありません</li>';
-        } else {
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            const date = new Date(data.timestamp.seconds * 1000).toLocaleString('ja-JP');
-            const total = data.total;
-            const num = data.members.length;
-            historyList.innerHTML += `<li>${date} - 合計 ${total}円 - ${num}人</li>`;
-          });
-        }
-
-      } else {
-        window.location.href = 'login.html';
-      }
-    });
-
-    window.logout = () => {
-      signOut(auth).then(() => {
-        window.location.href = 'toppage.html';
-      });
-    }
-  </script>
 
   <footer style="text-align: center; margin-top: 4rem; font-size: 0.9rem;">
     <a href="privacy.html" style="color: #888; text-decoration: underline;">プライバシーポリシー</a>
   </footer>
 </body>
 </html>
-
