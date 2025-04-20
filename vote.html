@@ -25,6 +25,143 @@
   }
   </script>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
+      authDomain: "kanziplus.firebaseapp.com",
+      projectId: "kanziplus",
+      storageBucket: "kanziplus.appspot.com",
+      messagingSenderId: "643577108018",
+      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let voteId = null;
+    const voteData = { places: [], placeUrls: [], dates: [], deadline: null, type: "normal" };
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      voteId = urlParams.get("v");
+      if (!voteId) return;
+
+      const voteRef = doc(db, "votes", voteId);
+      const voteSnap = await getDoc(voteRef);
+      if (!voteSnap.exists()) return;
+
+      const data = voteSnap.data();
+      voteData.places = Array.isArray(data.places) ? data.places : [];
+      voteData.placeUrls = Array.isArray(data.placeUrls) ? data.placeUrls : [];
+      voteData.dates = Array.isArray(data.dates) ? data.dates : [];
+      voteData.deadline = data.deadline && data.deadline.seconds ? new Date(data.deadline.seconds * 1000) : null;
+      voteData.type = data.type || "normal";
+
+      const form = document.getElementById("voteForm");
+
+      if (voteData.deadline) {
+        const deadlineText = document.createElement("p");
+        deadlineText.className = "deadline-text";
+        deadlineText.textContent = `投票締切：${voteData.deadline.toLocaleString('ja-JP')}`;
+        form.insertBefore(deadlineText, form.children[1]);
+
+        if (new Date() > voteData.deadline) {
+          form.innerHTML = '<p style="color:red">この投票は締め切られました。</p>';
+          return;
+        }
+      }
+
+      if (voteData.type === "normal") {
+        const placeSection = document.getElementById("placeSection");
+        const dateSection = document.getElementById("dateSection");
+
+        if (voteData.places.length > 0) {
+          placeSection.innerHTML = `<h2>行きたい場所を選んでください：</h2>`;
+          voteData.places.forEach((place, i) => {
+            const url = voteData.placeUrls[i] || "";
+            const label = document.createElement('label');
+            label.innerHTML = `<input type="checkbox" name="locations" value="${place}">${place}${url ? ` <a href="${url}" target="_blank">(店舗URL)</a>` : ''}`;
+            placeSection.appendChild(label);
+          });
+        } else {
+          placeSection.remove();
+        }
+
+        if (voteData.dates.length > 0) {
+          const dateSection = document.getElementById("dateSection");
+          dateSection.innerHTML = `<h2>都合のいい日程を選んでください：</h2>`;
+          voteData.dates.forEach(date => {
+            const label = document.createElement('label');
+            label.innerHTML = `<input type="checkbox" name="dates" value="${date}">${date}`;
+            dateSection.appendChild(label);
+          });
+        } else {
+          dateSection.remove();
+        }
+      } else {
+        document.getElementById("placeSection").innerHTML = voteData.places.length ? `<h2>場所</h2><p>${voteData.places[0]}</p>` : "";
+        document.getElementById("dateSection").innerHTML = voteData.dates.length ? `<h2>日程</h2><p>${voteData.dates[0]}</p>` : "";
+        const availability = document.getElementById("availabilitySection");
+        availability.style.display = "block";
+      }
+
+      onSnapshot(collection(db, "votes", voteId, "responses"), snapshot => {
+        const locationCounts = {};
+        const dateCounts = {};
+        const individualVotes = [];
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const name = data.name || "匿名";
+          const locs = (data.locations || []).join("、");
+          const dts = (data.dates || []).join("、");
+          const available = typeof data.available === 'boolean' ? (data.available ? '〇' : '×') : '';
+
+          (data.locations || []).forEach(loc => locationCounts[loc] = (locationCounts[loc] || 0) + 1);
+          (data.dates || []).forEach(dt => dateCounts[dt] = (dateCounts[dt] || 0) + 1);
+
+          individualVotes.push(`<strong>${name}</strong>：${locs} ／ ${dts} ${available}`);
+        });
+
+        const maxLoc = Math.max(0, ...Object.values(locationCounts));
+        const maxDate = Math.max(0, ...Object.values(dateCounts));
+
+        document.getElementById("locationResults").innerHTML = `
+          <div class="card">
+            <div class="card-title" style="color: #ff6f3c;">場所</div>
+            ${Object.entries(locationCounts).map(([k, v]) =>
+              `<div class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
+          </div>`;
+
+        document.getElementById("dateResults").innerHTML = `
+          <div class="card">
+            <div class="card-title" style="color: #0066cc;">日程</div>
+            ${Object.entries(dateCounts).map(([k, v]) =>
+              `<div class="${v === maxDate ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
+          </div>`;
+
+        document.getElementById("individualVotes").innerHTML = individualVotes.join("<br>");
+      });
+    });
+
+    document.getElementById("voteForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const name = document.getElementById("username").value;
+      const available = document.querySelector('input[name="available"]:checked')?.value;
+      const locations = Array.from(document.querySelectorAll("input[name='locations']:checked")).map(i => i.value);
+      const dates = Array.from(document.querySelectorAll("input[name='dates']:checked")).map(i => i.value);
+      const payload = { name };
+      if (available !== undefined) payload.available = available === 'yes';
+      if (locations.length) payload.locations = locations;
+      if (dates.length) payload.dates = dates;
+      await addDoc(collection(db, "votes", voteId, "responses"), payload);
+      alert("投票を受け付けました！");
+    });
+  </script>
+
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
@@ -63,7 +200,7 @@
       display: block;
       margin: 0.3rem 0;
     }
-    input[type="checkbox"] {
+    input[type="checkbox"], input[type="radio"] {
       margin-right: 0.5rem;
     }
     .submit-btn {
@@ -104,127 +241,6 @@
       margin-bottom: 0.5rem;
     }
   </style>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
-      authDomain: "kanziplus.firebaseapp.com",
-      projectId: "kanziplus",
-      storageBucket: "kanziplus.appspot.com",
-      messagingSenderId: "643577108018",
-      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    let voteId = null;
-    const voteData = { places: [], placeUrls: [], dates: [], deadline: null };
-
-    window.addEventListener("DOMContentLoaded", async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      voteId = urlParams.get("v");
-      if (!voteId) return;
-
-      const voteRef = doc(db, "votes", voteId);
-      const voteSnap = await getDoc(voteRef);
-      if (!voteSnap.exists()) return;
-
-      const data = voteSnap.data();
-      voteData.places = Array.isArray(data.places) ? data.places : [];
-      voteData.placeUrls = Array.isArray(data.placeUrls) ? data.placeUrls : [];
-      voteData.dates = Array.isArray(data.dates) ? data.dates : [];
-      voteData.deadline = data.deadline && data.deadline.seconds ? new Date(data.deadline.seconds * 1000) : null;
-
-      const now = new Date();
-      if (voteData.deadline) {
-        const deadlineText = document.createElement("p");
-        deadlineText.className = "deadline-text";
-        deadlineText.textContent = `投票締切：${voteData.deadline.toLocaleString('ja-JP')}`;
-        document.getElementById("voteForm").insertBefore(deadlineText, document.getElementById("voteForm").children[1]);
-
-        if (now > voteData.deadline) {
-          document.getElementById("voteForm").innerHTML = '<p style="color:red">この投票は締め切られました。</p>';
-          return;
-        }
-      }
-
-      const placeSection = document.getElementById("placeSection");
-      const dateSection = document.getElementById("dateSection");
-
-      if (voteData.places.length > 0) {
-        placeSection.innerHTML = `<h2>行きたい場所を選んでください：</h2>`;
-        voteData.places.forEach((place, i) => {
-          const url = voteData.placeUrls[i] || "";
-          const label = document.createElement('label');
-          label.innerHTML = `<input type="checkbox" name="locations" value="${place}">${place}${url ? ` <a href="${url}" target="_blank">(店舗URL)</a>` : ''}`;
-          placeSection.appendChild(label);
-        });
-      } else {
-        placeSection.remove();
-      }
-
-      if (voteData.dates.length > 0) {
-        dateSection.innerHTML = `<h2>都合のいい日程を選んでください：</h2>`;
-        voteData.dates.forEach(date => {
-          const label = document.createElement('label');
-          label.innerHTML = `<input type="checkbox" name="dates" value="${date}">${date}`;
-          dateSection.appendChild(label);
-        });
-      } else {
-        dateSection.remove();
-      }
-
-      onSnapshot(collection(db, "votes", voteId, "responses"), snapshot => {
-        const locationCounts = {};
-        const dateCounts = {};
-        const individualVotes = [];
-
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const name = data.name || "匿名";
-          const locs = (data.locations || []).join("、");
-          const dts = (data.dates || []).join("、");
-
-          (data.locations || []).forEach(loc => locationCounts[loc] = (locationCounts[loc] || 0) + 1);
-          (data.dates || []).forEach(dt => dateCounts[dt] = (dateCounts[dt] || 0) + 1);
-
-          individualVotes.push(`<strong>${name}</strong>：${locs} ／ ${dts}`);
-        });
-
-        const maxLoc = Math.max(0, ...Object.values(locationCounts));
-        const maxDate = Math.max(0, ...Object.values(dateCounts));
-
-        document.getElementById("locationResults").innerHTML = `
-          <div class="card">
-            <div class="card-title" style="color: #ff6f3c;">場所</div>
-            ${Object.entries(locationCounts).map(([k, v]) =>
-              `<div class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
-          </div>`;
-
-        document.getElementById("dateResults").innerHTML = `
-          <div class="card">
-            <div class="card-title" style="color: #0066cc;">日程</div>
-            ${Object.entries(dateCounts).map(([k, v]) =>
-              `<div class="${v === maxDate ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
-          </div>`;
-
-        document.getElementById("individualVotes").innerHTML = individualVotes.join("<br>");
-      });
-    });
-
-    document.getElementById("voteForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const name = document.getElementById("username").value;
-      const locations = Array.from(document.querySelectorAll("input[name='locations']:checked")).map(i => i.value);
-      const dates = Array.from(document.querySelectorAll("input[name='dates']:checked")).map(i => i.value);
-      await addDoc(collection(db, "votes", voteId, "responses"), { name, locations, dates });
-      alert("投票を受け付けました！");
-    });
-  </script>
 </head>
 <body>
   <header>
@@ -238,6 +254,11 @@
     </div>
     <div class="section" id="placeSection"></div>
     <div class="section" id="dateSection"></div>
+    <div class="section" id="availabilitySection" style="display:none">
+      <h2>参加可否</h2>
+      <label><input type="radio" name="available" value="yes" required>参加できる（〇）</label>
+      <label><input type="radio" name="available" value="no">参加できない（×）</label>
+    </div>
     <button type="submit" class="submit-btn">投票する</button>
   </form>
 
@@ -253,6 +274,7 @@
   </div>
 </body>
 </html>
+
 
 
 
