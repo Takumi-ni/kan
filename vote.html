@@ -153,10 +153,13 @@
         form.insertBefore(deadlineText, form.children[1]);
 
         if (new Date() > voteData.deadline) {
-          form.innerHTML = '<p style="color:red">この投票は締め切られました。</p>';
+          const closedMsg = document.createElement("p");
+          closedMsg.textContent = "この投票は締め切られました。";
+          closedMsg.style.color = "red";
+          form.prepend(closedMsg);
+          form.querySelectorAll("input, button").forEach(el => el.disabled = true);
           return;
         }
-      }
 
       if (voteData.type === "normal") {
         const placeSection = document.getElementById("placeSection");
