@@ -27,7 +27,7 @@
   }
   </script>
 
-  <!-- ✅ スタイル -->
+  <!-- ✅ CSS -->
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
@@ -107,8 +107,39 @@
       margin-bottom: 0.5rem;
     }
   </style>
+</head>
+<body>
+  <header>
+    <h1>日程と場所の投票</h1>
+  </header>
 
-  <!-- ✅ Firebase & Logic -->
+  <form id="voteForm">
+    <div class="section">
+      <h2>あなたの名前</h2>
+      <input type="text" id="username" required placeholder="例：山田太郎" style="width:100%; padding:0.5rem; border-radius:6px; border:1px solid #ccc;">
+    </div>
+    <div class="section" id="placeSection"></div>
+    <div class="section" id="dateSection"></div>
+    <div class="section" id="availabilitySection" style="display:none">
+      <h2>参加可否</h2>
+      <label><input type="radio" name="available" value="yes" required>参加できる（〇）</label>
+      <label><input type="radio" name="available" value="no">参加できない（×）</label>
+    </div>
+    <button type="submit" class="submit-btn">投票する</button>
+  </form>
+
+  <div class="results">
+    <h2>現在の投票状況（リアルタイム）</h2>
+    <div id="locationResults"></div>
+    <div id="dateResults"></div>
+  </div>
+
+  <div class="results">
+    <h2>誰がどこに投票したか（一覧）</h2>
+    <div id="individualVotes"></div>
+  </div>
+
+  <!-- ✅ Firebase & Logic スクリプトを body の最後に移動 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
     import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
@@ -254,39 +285,9 @@
       });
     });
   </script>
-</head>
-<body>
-  <header>
-    <h1>日程と場所の投票</h1>
-  </header>
-
-  <form id="voteForm">
-    <div class="section">
-      <h2>あなたの名前</h2>
-      <input type="text" id="username" required placeholder="例：山田太郎" style="width:100%; padding:0.5rem; border-radius:6px; border:1px solid #ccc;">
-    </div>
-    <div class="section" id="placeSection"></div>
-    <div class="section" id="dateSection"></div>
-    <div class="section" id="availabilitySection" style="display:none">
-      <h2>参加可否</h2>
-      <label><input type="radio" name="available" value="yes" required>参加できる（〇）</label>
-      <label><input type="radio" name="available" value="no">参加できない（×）</label>
-    </div>
-    <button type="submit" class="submit-btn">投票する</button>
-  </form>
-
-  <div class="results">
-    <h2>現在の投票状況（リアルタイム）</h2>
-    <div id="locationResults"></div>
-    <div id="dateResults"></div>
-  </div>
-
-  <div class="results">
-    <h2>誰がどこに投票したか（一覧）</h2>
-    <div id="individualVotes"></div>
-  </div>
 </body>
 </html>
+
 
 
 
