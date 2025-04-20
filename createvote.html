@@ -161,6 +161,15 @@
       }
     }
 
+    function copyAvailabilityLink() {
+      const linkElement = document.getElementById('availabilityVoteLink');
+      if (linkElement) {
+        navigator.clipboard.writeText(linkElement.href).then(() => {
+          alert("リンクをコピーしました！");
+        });
+      }
+    }
+
     async function generateVote() {
       const places = Array.from(document.querySelectorAll('#places div'))
         .map(div => ({ name: div.children[0].value.trim(), url: div.children[1].value.trim() }))
@@ -245,7 +254,8 @@
         const link = `https://kanziplus.jp/vote.html?v=${voteId}`;
         document.getElementById('linkBoxAvailability').innerHTML =
          `✅ このリンクを共有してください：<br>
-         <a href="${link}" target="_blank" rel="noopener noreferrer">${link}</a><br>
+         <a href="${link}" target="_blank" rel="noopener noreferrer" id="availabilityVoteLink">${link}</a><br>
+         <button class="btn copy-btn" onclick="copyAvailabilityLink()">リンクをコピー</button>
          <div class="note">※ 〇×形式の投票フォームが表示されます。</div>`;
 
       } catch (err) {
@@ -255,3 +265,4 @@
   </script>
 </body>
 </html>
+

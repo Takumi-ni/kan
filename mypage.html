@@ -125,7 +125,6 @@ switch (from) {
 onAuthStateChanged(auth, async user => {
   if (!user) return location.href = 'login.html';
   userInfo.innerHTML = `<strong>ログイン中：</strong> ${user.email}`;
-
   historyList.innerHTML = '';
 
   // 割り勘履歴
@@ -145,17 +144,24 @@ onAuthStateChanged(auth, async user => {
   const q2 = query(creationsRef, orderBy("createdAt", "desc"));
   const snap2 = await getDocs(q2);
   if (!snap2.empty) {
-    for (const doc of snap2.docs) {
-      const { voteId } = doc.data();
-      const voteDoc = await getDoc(doc(db, "votes", voteId));
-      if (!voteDoc.exists()) continue;
+    for (const voteRecord of snap2.docs) {
+      const { voteId } = voteRecord.data();
+      const voteDocRef = doc(db, "votes", voteId);
+      const voteDocSnap = await getDoc(voteDocRef);
+      if (!voteDocSnap.exists()) continue;
 
-      historyList.innerHTML += `<li>📮 投票ID: ${voteId}</li>`;
+      const voteData = voteDocSnap.data();
+      const createdAt = voteData.createdAt?.seconds ? new Date(voteData.createdAt.seconds * 1000).toLocaleString('ja-JP') : '日時不明';
+      const deadline = voteData.deadline?.seconds ? new Date(voteData.deadline.seconds * 1000).toLocaleString('ja-JP') : '未設定';
+      const type = voteData.type === 'availability' ? '〇×投票' : '通常投票';
+
+      historyList.innerHTML += `<li>📮 [${type}] ${createdAt} - 締切: ${deadline}<br>
+        <a href="vote.html?v=${voteId}" target="_blank" rel="noopener noreferrer">投票リンクを見る</a></li>`;
 
       const responses = await getDocs(collection(db, "votes", voteId, "responses"));
       responses.forEach(res => {
         const d = res.data();
-        historyList.innerHTML += `<ul class="sublist"><li>${d.name}: ${d.locations?.join(' / ')} / ${d.dates?.join(' / ')}</li></ul>`;
+        historyList.innerHTML += `<ul class="sublist"><li>${d.name}: ${d.locations?.join(' / ') || ''} / ${d.dates?.join(' / ') || ''}</li></ul>`;
       });
     }
   }
