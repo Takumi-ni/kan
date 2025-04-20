@@ -122,7 +122,7 @@
     <div class="section" id="dateSection"></div>
     <div class="section" id="availabilitySection" style="display:none">
       <h2>参加可否</h2>
-      <label><input type="radio" name="available" value="yes" required>参加できる（〇）</label>
+      <label><input type="radio" name="available" value="yes">参加できる（〇）</label>
       <label><input type="radio" name="available" value="no">参加できない（×）</label>
     </div>
     <button type="submit" class="submit-btn">投票する</button>
@@ -139,7 +139,7 @@
     <div id="individualVotes"></div>
   </div>
 
-  <!-- ✅ Firebase & Logic スクリプトを body の最後に移動 -->
+  <!-- ✅ Firebase & Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
     import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
@@ -227,16 +227,23 @@
 
       form.addEventListener("submit", async function(e) {
         e.preventDefault();
+
         const name = document.getElementById("username").value;
-        const available = document.querySelector('input[name="available"]:checked')?.value;
+        const availableInput = document.querySelector('input[name="available"]:checked');
+        const available = availableInput?.value;
         const locations = Array.from(document.querySelectorAll("input[name='locations']:checked")).map(i => i.value);
         const dates = Array.from(document.querySelectorAll("input[name='dates']:checked")).map(i => i.value);
-        const payload = {
-          name,
-          locations: locations.length > 0 ? locations : [],
-          dates: dates.length > 0 ? dates : []
-        };
+
+        if (voteData.type === "availability" && !availableInput) {
+          alert("参加可否を選んでください。");
+          return;
+        }
+
+        const payload = { name };
         if (available !== undefined) payload.available = available === 'yes';
+        if (locations.length > 0) payload.locations = locations;
+        if (dates.length > 0) payload.dates = dates;
+
         await addDoc(collection(db, "votes", voteId, "responses"), payload);
         alert("投票を受け付けました！");
         location.reload();
@@ -287,6 +294,7 @@
   </script>
 </body>
 </html>
+
 
 
 
