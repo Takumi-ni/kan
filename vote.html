@@ -57,7 +57,7 @@
       voteData.places = Array.isArray(data.places) ? data.places : [];
       voteData.placeUrls = Array.isArray(data.placeUrls) ? data.placeUrls : [];
       voteData.dates = Array.isArray(data.dates) ? data.dates : [];
-      voteData.deadline = data.deadline && data.deadline.seconds ? new Date(data.deadline.seconds * 1000) : null;
+      voteData.deadline = data.deadline?.seconds ? new Date(data.deadline.seconds * 1000) : null;
       voteData.type = data.type || "normal";
 
       const form = document.getElementById("voteForm");
@@ -91,7 +91,6 @@
         }
 
         if (voteData.dates.length > 0) {
-          const dateSection = document.getElementById("dateSection");
           dateSection.innerHTML = `<h2>都合のいい日程を選んでください：</h2>`;
           voteData.dates.forEach(date => {
             const label = document.createElement('label');
@@ -107,6 +106,21 @@
         const availability = document.getElementById("availabilitySection");
         availability.style.display = "block";
       }
+
+      // 🛠 修正済み submit イベントハンドラ（ここに移動）
+      form.addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const name = document.getElementById("username").value;
+        const available = document.querySelector('input[name="available"]:checked')?.value;
+        const locations = Array.from(document.querySelectorAll("input[name='locations']:checked")).map(i => i.value);
+        const dates = Array.from(document.querySelectorAll("input[name='dates']:checked")).map(i => i.value);
+        const payload = { name };
+        if (available !== undefined) payload.available = available === 'yes';
+        if (locations.length) payload.locations = locations;
+        if (dates.length) payload.dates = dates;
+        await addDoc(collection(db, "votes", voteId, "responses"), payload);
+        alert("投票を受け付けました！");
+      });
 
       onSnapshot(collection(db, "votes", voteId, "responses"), snapshot => {
         const yesCount = { yes: 0, no: 0 };
@@ -160,20 +174,6 @@
 
         document.getElementById("individualVotes").innerHTML = individualVotes.join("<br>");
       });
-    });
-
-    document.getElementById("voteForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const name = document.getElementById("username").value;
-      const available = document.querySelector('input[name="available"]:checked')?.value;
-      const locations = Array.from(document.querySelectorAll("input[name='locations']:checked")).map(i => i.value);
-      const dates = Array.from(document.querySelectorAll("input[name='dates']:checked")).map(i => i.value);
-      const payload = { name };
-      if (available !== undefined) payload.available = available === 'yes';
-      if (locations.length) payload.locations = locations;
-      if (dates.length) payload.dates = dates;
-      await addDoc(collection(db, "votes", voteId, "responses"), payload);
-      alert("投票を受け付けました！");
     });
   </script>
 
@@ -289,6 +289,7 @@
   </div>
 </body>
 </html>
+
 
 
 
