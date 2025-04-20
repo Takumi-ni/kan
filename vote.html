@@ -7,6 +7,7 @@
   <meta name="description" content="KanziPlus（カンジプラス）の投票機能では、参加者が候補日・場所に対して投票でき、リアルタイムで集計表示されます。">
   <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
 
+  <!-- ✅ Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -15,6 +16,7 @@
     gtag('config', 'G-EXN7VZYJFG');
   </script>
 
+  <!-- ✅ JSON-LD 構造化データ -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -25,6 +27,88 @@
   }
   </script>
 
+  <!-- ✅ スタイル（すべて反映済） -->
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #fffaf5;
+      margin: 0;
+      padding: 1.5rem;
+      color: #333;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 1.4rem;
+      color: #ff6f3c;
+      margin: 0;
+    }
+    .btn-back {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .section {
+      margin: 1.5rem 0;
+    }
+    .section h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    label {
+      display: block;
+      margin: 0.3rem 0;
+    }
+    input[type="checkbox"], input[type="radio"] {
+      margin-right: 0.5rem;
+    }
+    .submit-btn {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.8rem 1.6rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .submit-btn:hover {
+      opacity: 0.9;
+    }
+    .results {
+      margin-top: 2rem;
+      font-size: 0.95rem;
+    }
+    .highlight {
+      color: red;
+      font-weight: bold;
+    }
+    .deadline-text {
+      font-size: 0.9rem;
+      color: gray;
+      margin-bottom: 1rem;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .card-title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+
+  <!-- ✅ Firebase ロジック -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
     import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
@@ -107,7 +191,6 @@
         availability.style.display = "block";
       }
 
-      // 🛠 修正済み submit イベントハンドラ（ここに移動）
       form.addEventListener("submit", async function(e) {
         e.preventDefault();
         const name = document.getElementById("username").value;
@@ -144,16 +227,14 @@
           individualVotes.push(`<strong>${name}</strong>：${locs} ／ ${dts} ${available}`);
         });
 
-        const resultsSection = document.getElementById("resultCards");
+        const maxLoc = Math.max(0, ...Object.values(locationCounts));
+        const maxDate = Math.max(0, ...Object.values(dateCounts));
         if (voteData.type === "normal") {
-          const maxLoc = Math.max(0, ...Object.values(locationCounts));
-          const maxDate = Math.max(0, ...Object.values(dateCounts));
           document.getElementById("locationResults").innerHTML = `
             <div class="card">
               <div class="card-title" style="color: #ff6f3c;">場所</div>
               ${Object.entries(locationCounts).map(([k, v]) => `<div class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
             </div>`;
-
           document.getElementById("dateResults").innerHTML = `
             <div class="card">
               <div class="card-title" style="color: #0066cc;">日程</div>
@@ -176,86 +257,6 @@
       });
     });
   </script>
-
-  <style>
-    body {
-      font-family: 'Helvetica Neue', sans-serif;
-      background-color: #fffaf5;
-      margin: 0;
-      padding: 1.5rem;
-      color: #333;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    h1 {
-      font-size: 1.4rem;
-      color: #ff6f3c;
-      margin: 0;
-    }
-    .btn-back {
-      background-color: #ff6f3c;
-      color: white;
-      padding: 0.4rem 1rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-    .section {
-      margin: 1.5rem 0;
-    }
-    .section h2 {
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-    }
-    label {
-      display: block;
-      margin: 0.3rem 0;
-    }
-    input[type="checkbox"], input[type="radio"] {
-      margin-right: 0.5rem;
-    }
-    .submit-btn {
-      background-color: #ff6f3c;
-      color: white;
-      padding: 0.8rem 1.6rem;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    .submit-btn:hover {
-      opacity: 0.9;
-    }
-    .results {
-      margin-top: 2rem;
-      font-size: 0.95rem;
-    }
-    .highlight {
-      color: red;
-      font-weight: bold;
-    }
-    .deadline-text {
-      font-size: 0.9rem;
-      color: gray;
-      margin-bottom: 1rem;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .card-title {
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
-  </style>
 </head>
 <body>
   <header>
