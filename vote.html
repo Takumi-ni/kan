@@ -7,7 +7,6 @@
   <meta name="description" content="KanziPlus（カンジプラス）の投票機能では、参加者が候補日・場所に対して投票でき、リアルタイムで集計表示されます。">
   <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
 
-  <!-- ✅ Google Analytics (GA4) 設定 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -16,7 +15,6 @@
     gtag('config', 'G-EXN7VZYJFG');
   </script>
 
-  <!-- ✅ 構造化データ (JSON-LD) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -68,13 +66,6 @@
     input[type="checkbox"] {
       margin-right: 0.5rem;
     }
-    input[type="url"] {
-      margin-left: 0.5rem;
-      padding: 0.3rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 60%;
-    }
     .submit-btn {
       background-color: #ff6f3c;
       color: white;
@@ -95,11 +86,16 @@
       color: red;
       font-weight: bold;
     }
+    .deadline-text {
+      font-size: 0.9rem;
+      color: gray;
+      margin-bottom: 1rem;
+    }
   </style>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot, Timestamp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
@@ -114,7 +110,7 @@
     const db = getFirestore(app);
 
     let voteId = null;
-    const voteData = { places: [], placeUrls: [], dates: [] };
+    const voteData = { places: [], placeUrls: [], dates: [], deadline: null };
 
     window.addEventListener("DOMContentLoaded", async () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -126,28 +122,50 @@
       if (!voteSnap.exists()) return;
 
       const data = voteSnap.data();
-      voteData.places = data.places || [];
-      voteData.placeUrls = data.placeUrls || [];
-      voteData.dates = data.dates || [];
+      voteData.places = Array.isArray(data.places) ? data.places : [];
+      voteData.placeUrls = Array.isArray(data.placeUrls) ? data.placeUrls : [];
+      voteData.dates = Array.isArray(data.dates) ? data.dates : [];
+      voteData.deadline = data.deadline && data.deadline.seconds ? new Date(data.deadline.seconds * 1000) : null;
 
-      const placesDiv = document.querySelector(".section:nth-of-type(2)");
-      placesDiv.innerHTML = `<h2>行きたい場所を選んでください：</h2>`;
-      voteData.places.forEach((place, i) => {
-        const url = voteData.placeUrls[i] || "";
-        const label = document.createElement('label');
-        label.innerHTML = `<input type="checkbox" name="locations" value="${place}">${place}${url ? ` <a href="${url}" target="_blank">(店舗URL)</a>` : ''}`;
-        placesDiv.appendChild(label);
-      });
+      const now = new Date();
+      if (voteData.deadline) {
+        const deadlineText = document.createElement("p");
+        deadlineText.className = "deadline-text";
+        deadlineText.textContent = `投票締切：${voteData.deadline.toLocaleString('ja-JP')}`;
+        document.getElementById("voteForm").insertBefore(deadlineText, document.getElementById("voteForm").children[1]);
 
-      const datesDiv = document.querySelector(".section:nth-of-type(3)");
-      datesDiv.innerHTML = `<h2>都合のいい日程を選んでください：</h2>`;
-      voteData.dates.forEach(date => {
-        const label = document.createElement('label');
-        label.innerHTML = `<input type="checkbox" name="dates" value="${date}">${date}`;
-        datesDiv.appendChild(label);
-      });
+        if (now > voteData.deadline) {
+          document.getElementById("voteForm").innerHTML = '<p style="color:red">この投票は締め切られました。</p>';
+          return;
+        }
+      }
 
-      // リアルタイム集計
+      const placeSection = document.getElementById("placeSection");
+      const dateSection = document.getElementById("dateSection");
+
+      if (voteData.places.length > 0) {
+        placeSection.innerHTML = `<h2>行きたい場所を選んでください：</h2>`;
+        voteData.places.forEach((place, i) => {
+          const url = voteData.placeUrls[i] || "";
+          const label = document.createElement('label');
+          label.innerHTML = `<input type="checkbox" name="locations" value="${place}">${place}${url ? ` <a href="${url}" target="_blank">(店舗URL)</a>` : ''}`;
+          placeSection.appendChild(label);
+        });
+      } else {
+        placeSection.remove();
+      }
+
+      if (voteData.dates.length > 0) {
+        dateSection.innerHTML = `<h2>都合のいい日程を選んでください：</h2>`;
+        voteData.dates.forEach(date => {
+          const label = document.createElement('label');
+          label.innerHTML = `<input type="checkbox" name="dates" value="${date}">${date}`;
+          dateSection.appendChild(label);
+        });
+      } else {
+        dateSection.remove();
+      }
+
       onSnapshot(collection(db, "votes", voteId, "responses"), snapshot => {
         const locationCounts = {};
         const dateCounts = {};
@@ -168,13 +186,10 @@
         const maxLoc = Math.max(0, ...Object.values(locationCounts));
         const maxDate = Math.max(0, ...Object.values(dateCounts));
 
-        const locHtml = Object.entries(locationCounts).map(([k, v]) =>
+        document.getElementById("locationResults").innerHTML = Object.entries(locationCounts).map(([k, v]) =>
           `<span class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</span>`).join('<br>');
-        const dateHtml = Object.entries(dateCounts).map(([k, v]) =>
+        document.getElementById("dateResults").innerHTML = Object.entries(dateCounts).map(([k, v]) =>
           `<span class="${v === maxDate ? 'highlight' : ''}">${k}（${v}票）</span>`).join('<br>');
-
-        document.getElementById("locationResults").innerHTML = locHtml;
-        document.getElementById("dateResults").innerHTML = dateHtml;
         document.getElementById("individualVotes").innerHTML = individualVotes.join("<br>");
       });
     });
@@ -199,15 +214,8 @@
       <h2>あなたの名前</h2>
       <input type="text" id="username" required placeholder="例：山田太郎" style="width:100%; padding:0.5rem; border-radius:6px; border:1px solid #ccc;">
     </div>
-
-    <div class="section">
-      <h2>読み込み中...</h2>
-    </div>
-
-    <div class="section">
-      <h2>読み込み中...</h2>
-    </div>
-
+    <div class="section" id="placeSection"></div>
+    <div class="section" id="dateSection"></div>
     <button type="submit" class="submit-btn">投票する</button>
   </form>
 
@@ -223,3 +231,6 @@
   </div>
 </body>
 </html>
+
+
+
