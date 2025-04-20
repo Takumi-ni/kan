@@ -162,11 +162,11 @@
         }
       }
 
-      if (voteData.type === "normal") {
-        const placeSection = document.getElementById("placeSection");
-        const dateSection = document.getElementById("dateSection");
+      const placeSection = document.getElementById("placeSection");
+      const dateSection = document.getElementById("dateSection");
 
-        if (voteData.places.length > 0) {
+      if (voteData.type === "normal") {
+        if (voteData.places.length) {
           placeSection.innerHTML = `<h2>行きたい場所を選んでください：</h2>`;
           voteData.places.forEach((place, i) => {
             const url = voteData.placeUrls[i] || "";
@@ -178,7 +178,7 @@
           placeSection.remove();
         }
 
-        if (voteData.dates.length > 0) {
+        if (voteData.dates.length) {
           dateSection.innerHTML = `<h2>都合のいい日程を選んでください：</h2>`;
           voteData.dates.forEach(date => {
             const label = document.createElement('label');
@@ -189,23 +189,23 @@
           dateSection.remove();
         }
       } else {
-        document.getElementById("placeSection").innerHTML = voteData.places.length ? `<h2>場所</h2><p>${voteData.places[0]}</p>` : "";
-        document.getElementById("dateSection").innerHTML = voteData.dates.length ? `<h2>日程</h2><p>${voteData.dates[0]}</p>` : "";
-        const availability = document.getElementById("availabilitySection");
-        availability.style.display = "block";
+        placeSection.innerHTML = voteData.places.length ? `<h2>場所</h2><p>${voteData.places[0]}</p>` : "";
+        dateSection.innerHTML = voteData.dates.length ? `<h2>日程</h2><p>${voteData.dates[0]}</p>` : "";
+        document.getElementById("availabilitySection").style.display = "block";
       }
 
-      // ✅ 修正済 submit 処理
       form.addEventListener("submit", async function(e) {
         e.preventDefault();
         const name = document.getElementById("username").value;
         const available = document.querySelector('input[name="available"]:checked')?.value;
         const locations = Array.from(document.querySelectorAll("input[name='locations']:checked")).map(i => i.value);
         const dates = Array.from(document.querySelectorAll("input[name='dates']:checked")).map(i => i.value);
-        const payload = { name };
+        const payload = {
+          name,
+          locations: locations.length > 0 ? locations : [],
+          dates: dates.length > 0 ? dates : []
+        };
         if (available !== undefined) payload.available = available === 'yes';
-        if (locations.length) payload.locations = locations;
-        if (dates.length) payload.dates = dates;
         await addDoc(collection(db, "votes", voteId, "responses"), payload);
         alert("投票を受け付けました！");
         location.reload();
@@ -220,8 +220,8 @@
         snapshot.forEach(doc => {
           const data = doc.data();
           const name = data.name || "匿名";
-          const locs = (data.locations || []).join("、");
-          const dts = (data.dates || []).join("、");
+          const locs = Array.isArray(data.locations) && data.locations.length ? data.locations.join("、") : "－";
+          const dts = Array.isArray(data.dates) && data.dates.length ? data.dates.join("、") : "－";
           const available = typeof data.available === 'boolean' ? (data.available ? '〇' : '×') : '';
 
           (data.locations || []).forEach(loc => locationCounts[loc] = (locationCounts[loc] || 0) + 1);
@@ -237,27 +237,17 @@
         const maxDate = Math.max(0, ...Object.values(dateCounts));
 
         if (voteData.type === "normal") {
-          document.getElementById("locationResults").innerHTML = `
-            <div class="card">
-              <div class="card-title" style="color: #ff6f3c;">場所</div>
-              ${Object.entries(locationCounts).map(([k, v]) => `<div class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
-            </div>`;
-          document.getElementById("dateResults").innerHTML = `
-            <div class="card">
-              <div class="card-title" style="color: #0066cc;">日程</div>
-              ${Object.entries(dateCounts).map(([k, v]) => `<div class="${v === maxDate ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
-            </div>`;
+          document.getElementById("locationResults").innerHTML = 
+            `<div class="card"><div class="card-title" style="color: #ff6f3c;">場所</div>
+            ${Object.entries(locationCounts).map(([k, v]) => `<div class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}</div>`;
+          document.getElementById("dateResults").innerHTML = 
+            `<div class="card"><div class="card-title" style="color: #0066cc;">日程</div>
+            ${Object.entries(dateCounts).map(([k, v]) => `<div class="${v === maxDate ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}</div>`;
         } else {
-          document.getElementById("locationResults").innerHTML = `
-            <div class="card">
-              <div class="card-title">参加できる</div>
-              <div>${yesCount.yes}人</div>
-            </div>`;
-          document.getElementById("dateResults").innerHTML = `
-            <div class="card">
-              <div class="card-title">参加できない</div>
-              <div>${yesCount.no}人</div>
-            </div>`;
+          document.getElementById("locationResults").innerHTML = 
+            `<div class="card"><div class="card-title">参加できる</div><div>${yesCount.yes}人</div></div>`;
+          document.getElementById("dateResults").innerHTML = 
+            `<div class="card"><div class="card-title">参加できない</div><div>${yesCount.no}人</div></div>`;
         }
 
         document.getElementById("individualVotes").innerHTML = individualVotes.join("<br>");
@@ -297,6 +287,7 @@
   </div>
 </body>
 </html>
+
 
 
 
