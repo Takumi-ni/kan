@@ -27,7 +27,7 @@
   }
   </script>
 
-  <!-- ✅ スタイル（すべて反映済） -->
+  <!-- ✅ スタイル -->
   <style>
     body {
       font-family: 'Helvetica Neue', sans-serif;
@@ -108,7 +108,7 @@
     }
   </style>
 
-  <!-- ✅ Firebase ロジック -->
+  <!-- ✅ Firebase & Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
     import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
@@ -153,13 +153,14 @@
         form.insertBefore(deadlineText, form.children[1]);
 
         if (new Date() > voteData.deadline) {
-          const closedMsg = document.createElement("p");
-          closedMsg.textContent = "この投票は締め切られました。";
-          closedMsg.style.color = "red";
-          form.prepend(closedMsg);
+          const msg = document.createElement('p');
+          msg.style.color = 'red';
+          msg.textContent = 'この投票は締め切られました。';
+          form.prepend(msg);
           form.querySelectorAll("input, button").forEach(el => el.disabled = true);
           return;
         }
+      }
 
       if (voteData.type === "normal") {
         const placeSection = document.getElementById("placeSection");
@@ -194,6 +195,7 @@
         availability.style.display = "block";
       }
 
+      // ✅ 修正済 submit 処理
       form.addEventListener("submit", async function(e) {
         e.preventDefault();
         const name = document.getElementById("username").value;
@@ -206,6 +208,7 @@
         if (dates.length) payload.dates = dates;
         await addDoc(collection(db, "votes", voteId, "responses"), payload);
         alert("投票を受け付けました！");
+        location.reload();
       });
 
       onSnapshot(collection(db, "votes", voteId, "responses"), snapshot => {
@@ -232,6 +235,7 @@
 
         const maxLoc = Math.max(0, ...Object.values(locationCounts));
         const maxDate = Math.max(0, ...Object.values(dateCounts));
+
         if (voteData.type === "normal") {
           document.getElementById("locationResults").innerHTML = `
             <div class="card">
