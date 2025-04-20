@@ -91,11 +91,23 @@
       color: gray;
       margin-bottom: 1rem;
     }
+    .card {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .card-title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
   </style>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot, Timestamp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
@@ -186,10 +198,20 @@
         const maxLoc = Math.max(0, ...Object.values(locationCounts));
         const maxDate = Math.max(0, ...Object.values(dateCounts));
 
-        document.getElementById("locationResults").innerHTML = Object.entries(locationCounts).map(([k, v]) =>
-          `<span class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</span>`).join('<br>');
-        document.getElementById("dateResults").innerHTML = Object.entries(dateCounts).map(([k, v]) =>
-          `<span class="${v === maxDate ? 'highlight' : ''}">${k}（${v}票）</span>`).join('<br>');
+        document.getElementById("locationResults").innerHTML = `
+          <div class="card">
+            <div class="card-title" style="color: #ff6f3c;">場所</div>
+            ${Object.entries(locationCounts).map(([k, v]) =>
+              `<div class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
+          </div>`;
+
+        document.getElementById("dateResults").innerHTML = `
+          <div class="card">
+            <div class="card-title" style="color: #0066cc;">日程</div>
+            ${Object.entries(dateCounts).map(([k, v]) =>
+              `<div class="${v === maxDate ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
+          </div>`;
+
         document.getElementById("individualVotes").innerHTML = individualVotes.join("<br>");
       });
     });
@@ -221,8 +243,8 @@
 
   <div class="results">
     <h2>現在の投票状況（リアルタイム）</h2>
-    <p id="locationResults"></p>
-    <p id="dateResults"></p>
+    <div id="locationResults"></div>
+    <div id="dateResults"></div>
   </div>
 
   <div class="results">
