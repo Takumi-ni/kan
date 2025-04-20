@@ -109,6 +109,7 @@
       }
 
       onSnapshot(collection(db, "votes", voteId, "responses"), snapshot => {
+        const yesCount = { yes: 0, no: 0 };
         const locationCounts = {};
         const dateCounts = {};
         const individualVotes = [];
@@ -123,25 +124,39 @@
           (data.locations || []).forEach(loc => locationCounts[loc] = (locationCounts[loc] || 0) + 1);
           (data.dates || []).forEach(dt => dateCounts[dt] = (dateCounts[dt] || 0) + 1);
 
+          if (data.available === true) yesCount.yes++;
+          if (data.available === false) yesCount.no++;
+
           individualVotes.push(`<strong>${name}</strong>：${locs} ／ ${dts} ${available}`);
         });
 
-        const maxLoc = Math.max(0, ...Object.values(locationCounts));
-        const maxDate = Math.max(0, ...Object.values(dateCounts));
+        const resultsSection = document.getElementById("resultCards");
+        if (voteData.type === "normal") {
+          const maxLoc = Math.max(0, ...Object.values(locationCounts));
+          const maxDate = Math.max(0, ...Object.values(dateCounts));
+          document.getElementById("locationResults").innerHTML = `
+            <div class="card">
+              <div class="card-title" style="color: #ff6f3c;">場所</div>
+              ${Object.entries(locationCounts).map(([k, v]) => `<div class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
+            </div>`;
 
-        document.getElementById("locationResults").innerHTML = `
-          <div class="card">
-            <div class="card-title" style="color: #ff6f3c;">場所</div>
-            ${Object.entries(locationCounts).map(([k, v]) =>
-              `<div class="${v === maxLoc ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
-          </div>`;
-
-        document.getElementById("dateResults").innerHTML = `
-          <div class="card">
-            <div class="card-title" style="color: #0066cc;">日程</div>
-            ${Object.entries(dateCounts).map(([k, v]) =>
-              `<div class="${v === maxDate ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
-          </div>`;
+          document.getElementById("dateResults").innerHTML = `
+            <div class="card">
+              <div class="card-title" style="color: #0066cc;">日程</div>
+              ${Object.entries(dateCounts).map(([k, v]) => `<div class="${v === maxDate ? 'highlight' : ''}">${k}（${v}票）</div>`).join('')}
+            </div>`;
+        } else {
+          document.getElementById("locationResults").innerHTML = `
+            <div class="card">
+              <div class="card-title">参加できる</div>
+              <div>${yesCount.yes}人</div>
+            </div>`;
+          document.getElementById("dateResults").innerHTML = `
+            <div class="card">
+              <div class="card-title">参加できない</div>
+              <div>${yesCount.no}人</div>
+            </div>`;
+        }
 
         document.getElementById("individualVotes").innerHTML = individualVotes.join("<br>");
       });
@@ -274,6 +289,7 @@
   </div>
 </body>
 </html>
+
 
 
 
