@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KanziPlus 傾斜割り勘機能</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KanziPlus 割り勘機能</title>
   <meta name="description" content="KanziPlus（カンジプラス）の傾斜割り勘機能では、参加者の負担割合に応じた計算が簡単にできます。飲み会や旅行の精算もスムーズに！">
   <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
 
@@ -34,60 +34,17 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
 
-  <!-- CSS -->
   <style>
     body {
       font-family: sans-serif;
       background: #fffaf5;
       color: #333;
-      margin: 0;
       padding: 2rem;
     }
-
-    header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 2rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
     h1 {
       color: #ff6f3c;
-      font-size: 2rem;
-      margin: 0 0 0.8rem 0;
       text-align: center;
     }
-
-    .button-row {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      padding: 0 0.5rem;
-    }
-
-    .back-link {
-      background-color: #ff6f3c;
-      color: white;
-      padding: 0.4rem 1rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-
-    .auth-link a {
-      background-color: #ff6f3c;
-      color: white;
-      padding: 0.4rem 1rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 0.9rem;
-      white-space: nowrap;
-      margin-top: 0.6rem;
-    }
-
     form, .result {
       max-width: 600px;
       margin: auto;
@@ -96,19 +53,17 @@
       padding: 2rem;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-
     .member {
-      margin-bottom: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
     }
-
-    input[type="text"], input[type="number"] {
-      padding: 0.5rem;
-      margin: 0.3rem;
+    input, select {
+      padding: 0.4rem;
       border: 1px solid #ccc;
       border-radius: 6px;
-      width: 40%;
+      flex: 1;
     }
-
     .btn {
       background-color: #ff6f3c;
       color: white;
@@ -119,94 +74,315 @@
       font-size: 1rem;
       margin-top: 1rem;
     }
-
     .btn:hover {
       opacity: 0.9;
     }
-
-    .flex {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
+    ul {
+      padding-left: 1.2rem;
     }
-
-    .small {
-      font-size: 0.85rem;
-      color: gray;
+    .remove-btn {
+      background: #ccc;
+      border: none;
+      padding: 0.4rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
     }
-
     .copy-btn {
-      float: right;
       background: #ddd;
       color: #333;
       margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
     }
-
-    @media (max-width: 600px) {
-      input[type="text"], input[type="number"] {
-        width: 100%;
-      }
-
-      .flex {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+    .tab {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      background: white;
+      margin-right: 4px;
+      border-radius: 6px 6px 0 0;
+    }
+    .tab.active {
+      background: #ff6f3c;
+      color: white;
+      font-weight: bold;
+    }
+    .form-section {
+      max-width: 700px;
+      margin: 1rem auto;
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: none;
+    }
       .button-row {
-        flex-direction: row;
-        justify-content: space-between;
-      }
-
-      .auth-link {
-        display: flex;
-        align-items: flex-end;
-      }
-
-      .auth-link a {
-        margin-top: 0.1rem;
-      }
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 0.5rem;
+      max-width: 700px;
+      margin: 0 auto 0.5rem;
     }
-  </style>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    .back-link {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .auth-link a {
+      background-color: #ff6f3c;
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      margin-top: 0.6rem;
+    }
+</style>
 </head>
 <body>
   <header>
-    <h1>KanziPlus</h1>
+    <h1>割り勘機能</h1>
     <div class="button-row">
       <a class="back-link" href="toppage.html">← 戻る</a>
       <div class="auth-link" id="authLinks"></div>
     </div>
+    
+    <div class="tabs">
+      <div class="tab active" id="tab-keisha" onclick="switchTab('keisha')">傾斜割り勘</div>
+      <div class="tab" id="tab-group" onclick="switchTab('group')">グループ別割り勘</div>
+    </div>
   </header>
 
-  <form id="form">
-    <label>総額（円）:<br>
-      <input type="number" id="total" required>
-    </label><br><br>
-    <div id="members">
-      <div class="member flex">
-        <input type="text" placeholder="名前" required>
-        <input type="number" placeholder="傾斜係数" step="0.1" value="1.0" required>
-      </div>
+  <div class="form-section" id="keishaForm" style="display: block;">
+    <form id="keishaFormInner">
+      <label>総額（円）：<input type="number" id="totalAmount" required></label><br><br>
+      <div id="keishaMembers"></div>
+      <button type="button" class="btn" onclick="addKeishaMember()">＋ 参加者追加</button><br>
+      <button type="submit" class="btn">計算する</button>
+    </form>
+    <div class="result" id="keishaResult" style="display:none;">
+      <h3>結果</h3>
+      <ul id="keishaOutput"></ul>
+      <button class="copy-btn" onclick="copyKeishaResult()">コピー</button>
     </div>
-    <button type="button" class="btn" onclick="addMember()">＋ 参加者追加</button><br>
-    <button type="submit" class="btn">計算する</button>
-  </form>
-
-  <div class="result" id="result" style="display:none;">
-    <h2>結果</h2>
-    <ul id="output"></ul>
-    <button class="btn copy-btn" onclick="copyResult()">コピー</button>
-    <div class="small">このページのURLを共有すれば結果を再表示できます。</div>
   </div>
 
-  <footer style="text-align: center; margin-top: 4rem; font-size: 0.9rem;">
-    <a href="privacy.html" style="color: #888; text-decoration: underline;">プライバシーポリシー</a>
-  </footer>
+  <div class="form-section" id="groupForm">
+    <form id="groupFormInner">
+      <label>総額（円）：<input type="number" id="total" required></label><br><br>
+      <label>グループ数（1〜9）：
+        <select id="groupCount" onchange="generateGroups()">
+          <option value="1">1 グループ</option>
+          <option value="2">2 グループ</option>
+          <option value="3">3 グループ</option>
+          <option value="4">4 グループ</option>
+          <option value="5">5 グループ</option>
+          <option value="6">6 グループ</option>
+          <option value="7">7 グループ</option>
+          <option value="8">8 グループ</option>
+          <option value="9">9 グループ</option>
+        </select>
+      </label><br><br>
+      <label>差額パターン：<select id="pattern"></select></label><br><br>
+      <div id="members"></div>
+      <button type="button" class="btn" onclick="addMember()">＋ 参加者追加</button><br>
+      <button type="submit" class="btn">計算する</button>
+    </form>
+    <div class="result" id="result" style="display:none;">
+      <h3>結果</h3>
+      <ul id="output"></ul>
+      <button class="copy-btn" onclick="copyResult()">コピー</button>
+    </div>
+  </div>
 
+  <script>
+    function switchTab(mode) {
+      document.getElementById('tab-keisha').classList.remove('active');
+      document.getElementById('tab-group').classList.remove('active');
+      document.getElementById('keishaForm').style.display = 'none';
+      document.getElementById('groupForm').style.display = 'none';
+      if (mode === 'keisha') {
+        document.getElementById('tab-keisha').classList.add('active');
+        document.getElementById('keishaForm').style.display = 'block';
+      } else {
+        document.getElementById('tab-group').classList.add('active');
+        document.getElementById('groupForm').style.display = 'block';
+      }
+    }
+
+    // 傾斜割り勘
+    const keishaMembersDiv = document.getElementById('keishaMembers');
+    function addKeishaMember(name = '', weight = 1.0) {
+      const div = document.createElement('div');
+      div.className = 'member';
+      div.innerHTML = `
+        <input type="text" placeholder="名前" value="${name}" required>
+        <input type="number" placeholder="傾斜係数" step="0.1" value="${weight}" required>
+        <button type="button" class="remove-btn" onclick="this.parentNode.remove()">×</button>
+      `;
+      keishaMembersDiv.appendChild(div);
+    }
+    document.getElementById('keishaFormInner').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const total = parseFloat(document.getElementById('totalAmount').value);
+      const members = Array.from(keishaMembersDiv.querySelectorAll('.member'));
+      const names = [], weights = [];
+      members.forEach(m => {
+        names.push(m.children[0].value);
+        weights.push(parseFloat(m.children[1].value));
+      });
+      const totalWeight = weights.reduce((a,b) => a + b, 0);
+      const results = names.map((name, i) => {
+        const amount = Math.round((weights[i] / totalWeight) * total);
+        return `${name}さん：${amount} 円`;
+      });
+      const outputUl = document.getElementById('keishaOutput');
+      outputUl.innerHTML = '';
+      results.forEach(line => {
+        const li = document.createElement('li');
+        li.textContent = line;
+        outputUl.appendChild(li);
+      });
+      document.getElementById('keishaResult').style.display = 'block';
+    });
+    function copyKeishaResult() {
+      const range = document.createRange();
+      range.selectNode(document.getElementById('keishaOutput'));
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      document.execCommand("copy");
+      alert("結果をコピーしました！");
+    }
+
+    // グループ別割り勘
+    const membersDiv = document.getElementById('members');
+    const patternSelect = document.getElementById('pattern');
+    const groupCountSelect = document.getElementById('groupCount');
+
+    function addMember() {
+      const groupCount = parseInt(groupCountSelect.value);
+      const groupNames = [...Array(groupCount)].map((_, i) => String.fromCharCode(65 + i));
+      const div = document.createElement('div');
+      div.className = 'member';
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.placeholder = '名前';
+      nameInput.required = true;
+      const groupSelect = document.createElement('select');
+      groupSelect.className = 'group-select';
+      groupNames.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g;
+        opt.textContent = g;
+        groupSelect.appendChild(opt);
+      });
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'remove-btn';
+      removeBtn.textContent = '×';
+      removeBtn.onclick = function () { removeMember(removeBtn); };
+      div.appendChild(nameInput);
+      div.appendChild(groupSelect);
+      div.appendChild(removeBtn);
+      membersDiv.appendChild(div);
+    }
+    function removeMember(button) {
+      const member = button.parentNode;
+      membersDiv.removeChild(member);
+    }
+    function copyResult() {
+      const output = document.getElementById("output");
+      const range = document.createRange();
+      range.selectNode(output);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand("copy");
+      alert("結果をコピーしました！");
+    }
+    function generateGroups() {
+      const groupCount = parseInt(groupCountSelect.value);
+      const groupNames = [...Array(groupCount)].map((_, i) => String.fromCharCode(65 + i));
+      const presets = {
+        large: groupNames.map((_, i) => (groupCount - i)),
+        medium: groupNames.map((_, i) => 1 + (groupCount - i - 1) * 0.3),
+        small: groupNames.map((_, i) => 1 + (groupCount - i - 1) * 0.1)
+      };
+      patternSelect.innerHTML = '';
+      Object.entries(presets).forEach(([label, values]) => {
+        const option = document.createElement('option');
+        option.value = groupNames.map((g, i) => `${g}:${values[i].toFixed(2)}`).join(',');
+        option.textContent = `${label === 'large' ? '大' : label === 'medium' ? '中' : '小'}（` +
+          groupNames.map((g, i) => `${g}:${values[i].toFixed(2)}`).join(' ') + '）';
+        patternSelect.appendChild(option);
+      });
+    }
+    document.getElementById('groupFormInner').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const total = parseFloat(document.getElementById('total').value);
+      const patternPairs = patternSelect.value.split(',');
+      const groupRates = {};
+      patternPairs.forEach(pair => {
+        const [g, rate] = pair.split(':');
+        groupRates[g] = parseFloat(rate);
+      });
+      const memberEls = membersDiv.querySelectorAll('.member');
+      const members = [];
+      memberEls.forEach(el => {
+        const name = el.querySelectorAll('input')[0].value.trim();
+        const group = el.querySelector('select').value;
+        if (name && groupRates[group]) {
+          members.push({ name, group });
+        }
+      });
+      if (members.length === 0 || isNaN(total)) {
+        alert('名前・グループ・総額を正しく入力してください。');
+        return;
+      }
+      const groupCounts = {};
+      members.forEach(m => {
+        if (!groupCounts[m.group]) groupCounts[m.group] = 0;
+        groupCounts[m.group]++;
+      });
+      const totalWeight = Object.entries(groupCounts)
+        .reduce((sum, [g, cnt]) => sum + cnt * groupRates[g], 0);
+      if (totalWeight === 0) {
+        alert('有効な参加者がいません。');
+        return;
+      }
+      const unit = total / totalWeight;
+      const result = members.map(m => {
+        const amount = Math.round(unit * groupRates[m.group]);
+        return `${m.name}さん：${amount}円`;
+      });
+      const output = document.getElementById('output');
+      output.innerHTML = '';
+      result.forEach(r => {
+        const li = document.createElement('li');
+        li.textContent = r;
+        output.appendChild(li);
+      });
+      document.getElementById('result').style.display = 'block';
+    });
+    generateGroups();
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
@@ -216,7 +392,6 @@
       messagingSenderId: "643577108018",
       appId: "1:643577108018:web:02afbe37485478ccd40e2b"
     };
-
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
@@ -229,95 +404,6 @@
       link.textContent = user ? "マイページ" : "ログイン/新規作成";
       authLinks.appendChild(link);
     });
-
-    const membersDiv = document.getElementById('members');
-    const form = document.getElementById('form');
-    const resultDiv = document.getElementById('result');
-    const outputUl = document.getElementById('output');
-
-    function addMember(name = '', weight = 1.0) {
-      const div = document.createElement('div');
-      div.className = 'member flex';
-      div.innerHTML = `
-        <input type="text" placeholder="名前" value="${name}" required>
-        <input type="number" placeholder="傾斜係数" step="0.1" value="${weight}" required>
-      `;
-      membersDiv.appendChild(div);
-    }
-
-    function copyResult() {
-      const range = document.createRange();
-      range.selectNode(outputUl);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-      document.execCommand("copy");
-      alert("結果をコピーしました！");
-    }
-
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      const total = parseFloat(document.getElementById('total').value);
-      const members = Array.from(membersDiv.querySelectorAll('.member'));
-
-      let weights = [], names = [];
-
-      members.forEach(m => {
-        names.push(m.children[0].value);
-        weights.push(parseFloat(m.children[1].value));
-      });
-
-      const totalWeight = weights.reduce((a,b) => a + b, 0);
-      const results = names.map((name, i) => {
-        const amount = Math.round((weights[i] / totalWeight) * total);
-        return `${name}さん：${amount} 円`;
-      });
-
-      outputUl.innerHTML = '';
-      results.forEach(line => {
-        const li = document.createElement('li');
-        li.textContent = line;
-        outputUl.appendChild(li);
-      });
-
-      resultDiv.style.display = 'block';
-
-      const params = new URLSearchParams();
-      params.set('total', total);
-      names.forEach((n, i) => {
-        params.append('name[]', n);
-        params.append('weight[]', weights[i]);
-      });
-      history.replaceState(null, '', '?' + params.toString());
-
-      const user = auth.currentUser;
-      if (user) {
-        try {
-          const membersData = names.map((n, i) => ({ name: n, weight: weights[i] }));
-          await db.collection("users").doc(user.uid).collection("history").add({
-            total,
-            members: membersData,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        } catch (error) {
-          console.error("保存に失敗しました", error);
-        }
-      }
-    });
-
-    window.onload = () => {
-      const urlParams = new URLSearchParams(location.search);
-      const total = urlParams.get('total');
-      if (total) {
-        document.getElementById('total').value = total;
-        const names = urlParams.getAll('name[]');
-        const weights = urlParams.getAll('weight[]');
-        membersDiv.innerHTML = '';
-        names.forEach((n, i) => addMember(n, weights[i]));
-        form.dispatchEvent(new Event('submit'));
-      }
-    };
   </script>
 </body>
 </html>
