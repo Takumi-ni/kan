@@ -1,181 +1,141 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KanziPlus マイページ</title>
-<meta name="description" content="KanziPlus（カンジプラス）のマイページでは、過去の履歴を確認し、幹事としてのタスク管理を効率化できます。">
-<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="shortcut icon" href="/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<link rel="manifest" href="/site.webmanifest" />
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-EXN7VZYJFG');
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "KanziPlus",
-  "url": "https://kanziplus.jp",
-  "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
-}
-</script>
-<style>
-  body {
-    font-family: sans-serif;
-    background: #fffaf5;
-    color: #333;
-    margin: 0;
-    padding: 2rem;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KanziPlus マイページ</title>
+  <meta name="description" content="KanziPlus（カンジプラス）のマイページでは、過去の履歴を確認し、幹事としてのタスク管理を効率化できます。">
+  <link rel="icon" href="/favicon.ico">
+
+  <!-- ✅ Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EXN7VZYJFG');
+  </script>
+
+  <!-- ✅ JSON-LD構造化データ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "KanziPlus",
+    "url": "https://kanziplus.jp",
+    "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
   }
-  header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 600px;
-    margin: auto;
-    margin-bottom: 1rem;
-    position: relative;
-  }
-  h1 {
-    color: #ff6f3c;
-    margin: 0.5rem 0;
-    font-size: 2rem;
-  }
-  .back-link,
-  .logout-btn {
-    background-color: #ff6f3c;
-    color: white;
-    padding: 0.4rem 1rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    position: absolute;
-    bottom: -2rem;
-  }
-  .back-link {
-    left: 0;
-  }
-  .logout-btn {
-    right: 0;
-  }
-  .card {
-    max-width: 600px;
-    margin: 4rem auto 2rem;
-    background: white;
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  ul {
-    padding-left: 1.2rem;
-  }
-  .sublist {
-    margin: 0.5rem 0 1rem;
-    padding-left: 1rem;
-    font-size: 0.95rem;
-    color: #555;
-  }
-  @media (min-width: 601px) {
-    .back-link {
-      left: 20px;
+  </script>
+
+  <!-- ✅ Firebase SDK（compat版） -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    /* CSS（今まで通り） */
+    body {font-family: sans-serif; background: #fffaf5; color: #333; margin: 0; padding: 2rem;}
+    header {display: flex; flex-direction: column; align-items: center; max-width: 600px; margin: auto; margin-bottom: 1rem; position: relative;}
+    h1 {color: #ff6f3c; margin: 0.5rem 0; font-size: 2rem;}
+    .back-link, .logout-btn {background: #ff6f3c; color: white; padding: 0.4rem 1rem; border-radius: 6px; font-size: 0.9rem; text-decoration: none; border: none; cursor: pointer; position: absolute; bottom: -2rem;}
+    .back-link {left: 0;}
+    .logout-btn {right: 0;}
+    .card {max-width: 600px; margin: 4rem auto 2rem; background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);}
+    ul {padding-left: 1.2rem;}
+    .sublist {margin: 0.5rem 0 1rem; padding-left: 1rem; font-size: 0.95rem; color: #555;}
+    @media (min-width: 601px) {
+      .back-link {left: 20px;}
+      .logout-btn {right: 20px;}
     }
-    .logout-btn {
-      right: 20px;
-    }
-  }
-</style>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
+  </style>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
-  authDomain: "kanziplus.firebaseapp.com",
-  projectId: "kanziplus",
-  storageBucket: "kanziplus.appspot.com",
-  messagingSenderId: "643577108018",
-  appId: "1:643577108018:web:02afbe37485478ccd40e2b"
-};
+  <script>
+    // --- Firebase初期化 ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
+      authDomain: "kanziplus.firebaseapp.com",
+      projectId: "kanziplus",
+      storageBucket: "kanziplus.appspot.com",
+      messagingSenderId: "643577108018",
+      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+    window.addEventListener('DOMContentLoaded', () => {
+      const userInfo = document.getElementById('user-info');
+      const historyList = document.getElementById('history-list');
+      const params = new URLSearchParams(window.location.search);
+      const from = params.get("from");
+      const backLink = document.getElementById("backLink");
+      switch (from) {
+        case "vote": backLink.href = "create_vote.html"; break;
+        case "keisha": backLink.href = "keisha.html"; break;
+        default: backLink.href = "toppage.html";
+      }
 
-const userInfo = document.getElementById('user-info');
-const historyList = document.getElementById('history-list');
-const params = new URLSearchParams(window.location.search);
-const from = params.get("from");
-const backLink = document.getElementById("backLink");
-switch (from) {
-  case "vote": backLink.href = "create_vote.html"; break;
-  case "keisha": backLink.href = "keisha.html"; break;
-  default: backLink.href = "toppage.html";
-}
-
-onAuthStateChanged(auth, async user => {
+      firebase.auth().onAuthStateChanged(async user => {
   if (!user) return location.href = 'login.html';
   userInfo.innerHTML = `<strong>ログイン中：</strong> ${user.email}`;
   historyList.innerHTML = '';
 
-  // 割り勘履歴
-  const historyRef = collection(db, "users", user.uid, "history");
-  const q1 = query(historyRef, orderBy("timestamp", "desc"));
-  const snap1 = await getDocs(q1);
+  // --- 割り勘履歴取得 ---
+  const historyRef = db.collection("users").doc(user.uid).collection("history").orderBy("timestamp", "desc");
+  const snap1 = await historyRef.get();
   if (!snap1.empty) {
     snap1.forEach(doc => {
       const data = doc.data();
-      const date = new Date(data.timestamp.seconds * 1000).toLocaleString('ja-JP');
-      historyList.innerHTML += `<li>🧾 ${date} - 合計 ${data.total}円 - ${data.members.length}人</li>`;
+      const date = data.timestamp?.seconds ? new Date(data.timestamp.seconds * 1000).toLocaleString('ja-JP') : '日時不明';
+      const typeLabel = data.type === "group" ? "【グループ別割り勘】" : "【傾斜割り勘】";
+
+      historyList.innerHTML += `
+        <li>
+          🧾 ${date}<br>
+          ${typeLabel}<br>
+          合計 ${data.total}円 / ${data.members.length}人
+        </li>
+      `;
     });
   }
 
-  // 投票履歴
-  const creationsRef = collection(db, "users", user.uid, "voteCreations");
-  const q2 = query(creationsRef, orderBy("createdAt", "desc"));
-  const snap2 = await getDocs(q2);
+  // --- 投票履歴取得 ---
+  const creationsRef = db.collection("users").doc(user.uid).collection("voteCreations").orderBy("createdAt", "desc");
+  const snap2 = await creationsRef.get();
   if (!snap2.empty) {
     for (const voteRecord of snap2.docs) {
       const { voteId } = voteRecord.data();
-      const voteDocRef = doc(db, "votes", voteId);
-      const voteDocSnap = await getDoc(voteDocRef);
-      if (!voteDocSnap.exists()) continue;
+      const voteDoc = await db.collection("votes").doc(voteId).get();
+      if (!voteDoc.exists) continue;
 
-      const voteData = voteDocSnap.data();
+      const voteData = voteDoc.data();
       const createdAt = voteData.createdAt?.seconds ? new Date(voteData.createdAt.seconds * 1000).toLocaleString('ja-JP') : '日時不明';
       const deadline = voteData.deadline?.seconds ? new Date(voteData.deadline.seconds * 1000).toLocaleString('ja-JP') : '未設定';
       const type = voteData.type === 'availability' ? '〇×投票' : '通常投票';
 
-      historyList.innerHTML += `<li>📮 [${type}] ${createdAt} - 締切: ${deadline}<br>
-        <a href="vote.html?v=${voteId}" target="_blank" rel="noopener noreferrer">投票リンクを見る</a></li>`;
+      historyList.innerHTML += `<li>📮 [${type}] ${createdAt} - 締切: ${deadline}<br><a href="vote.html?v=${voteId}" target="_blank" rel="noopener noreferrer">投票リンクを見る</a></li>`;
 
-      const responses = await getDocs(collection(db, "votes", voteId, "responses"));
-      responses.forEach(res => {
+      const responsesSnap = await db.collection("votes").doc(voteId).collection("responses").get();
+      responsesSnap.forEach(res => {
         const d = res.data();
         historyList.innerHTML += `<ul class="sublist"><li>${d.name}: ${d.locations?.join(' / ') || ''} / ${d.dates?.join(' / ') || ''}</li></ul>`;
       });
     }
   }
 
-  if (historyList.innerHTML === '') {
+  if (historyList.innerHTML.trim() === '') {
     historyList.innerHTML = '<li>履歴はまだありません</li>';
   }
 });
 
-window.logout = () => {
-  signOut(auth).then(() => location.href = 'toppage.html');
-};
-</script>
+});
+
+    function logout() {
+      auth.signOut().then(() => location.href = 'toppage.html');
+    }
+  </script>
 </head>
+
 <body>
   <header>
     <a id="backLink" class="back-link" href="#">← 戻る</a>
