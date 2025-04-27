@@ -1,336 +1,257 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KanziPlus 割り勘機能</title>
-  <meta name="description" content="KanziPlus（カンジプラス）の傾斜割り勘機能では、参加者の負担割合に応じた計算が簡単にできます。飲み会や旅行の精算もスムーズに！">
+  <meta name="description" content="KanziPlusの割り勘機能では、参加者の負担割合やグループ別に応じた割り勘が簡単にできます。飲み会や旅行の精算もスムーズに！">
   <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
+  <link rel="icon" href="/favicon.ico">
 
-  <!-- ✅ Google Analytics (GA4) 設定 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-EXN7VZYJFG');
-  </script>
-
-  <!-- ✅ 構造化データ (JSON-LD) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "KanziPlus",
-    "url": "https://kanziplus.jp",
-    "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
-  }
-  </script>
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="shortcut icon" href="/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
+   <!-- ✅ Google Analytics (GA4) 設定 -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
+   <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'G-EXN7VZYJFG');
+   </script>
+ 
+   <!-- ✅ 構造化データ (JSON-LD) -->
+   <script type="application/ld+json">
+   {
+     "@context": "https://schema.org",
+     "@type": "Organization",
+     "name": "KanziPlus",
+     "url": "https://kanziplus.jp",
+     "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
+   }
+   </script>
+ 
+   <!-- Favicon -->
+   <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+   <link rel="shortcut icon" href="/favicon.ico" />
+   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+   <link rel="manifest" href="/site.webmanifest" />
 
   <style>
-    body {
-      font-family: sans-serif;
-      background: #fffaf5;
-      color: #333;
-      padding: 2rem;
-    }
-    h1 {
-      color: #ff6f3c;
-      text-align: center;
-    }
-    form, .result {
-      max-width: 600px;
-      margin: auto;
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    .member {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 0.8rem;
-    }
-    input, select {
-      padding: 0.4rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      flex: 1;
-    }
-    .btn {
-      background-color: #ff6f3c;
-      color: white;
-      padding: 0.6rem 1.2rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1rem;
-      margin-top: 1rem;
-    }
-    .btn:hover {
-      opacity: 0.9;
-    }
-    ul {
-      padding-left: 1.2rem;
-    }
-    .remove-btn {
-      background: #ccc;
-      border: none;
-      padding: 0.4rem 0.6rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .copy-btn {
-      background: #ddd;
-      color: #333;
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-    }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      margin: 1rem 0;
-    }
-    .tab {
-      padding: 0.5rem 1rem;
-      border: 1px solid #ccc;
-      cursor: pointer;
-      background: white;
-      margin-right: 4px;
-      border-radius: 6px 6px 0 0;
-    }
-    .tab.active {
-      background: #ff6f3c;
-      color: white;
-      font-weight: bold;
-    }
-    .form-section {
-      max-width: 700px;
-      margin: 1rem auto;
-      background: white;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      display: none;
-    }
-      .button-row {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      padding: 0 0.5rem;
-      max-width: 700px;
-      margin: 0 auto 0.5rem;
-    }
-    .back-link {
-      background-color: #ff6f3c;
-      color: white;
-      padding: 0.4rem 1rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-    .auth-link a {
-      background-color: #ff6f3c;
-      color: white;
-      padding: 0.4rem 1rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 0.9rem;
-      white-space: nowrap;
-      margin-top: 0.6rem;
-    }
-</style>
+    body {font-family: sans-serif; background: #fffaf5; color: #333; padding: 2rem;}
+    h1 {color: #ff6f3c; text-align: center;}
+    .tabs {display: flex; justify-content: center; margin: 1rem 0;}
+    .tab {padding: 0.5rem 1rem; border: 1px solid #ccc; cursor: pointer; background: white; margin-right: 4px; border-radius: 6px 6px 0 0;}
+    .tab.active {background: #ff6f3c; color: white; font-weight: bold;}
+    .button-row {display: flex; justify-content: space-between; max-width: 700px; margin: 0 auto 0.5rem;}
+    .back-link, .auth-link a {background: #ff6f3c; color: white; padding: 0.4rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem;}
+    .form-section {display: none;}
+    .form-section.active {display: block;}
+    table {width: 100%; max-width: 800px; margin: 2rem auto; border-collapse: collapse;}
+    th, td {border: 1px solid #ccc; padding: 8px; text-align: center;}
+    th {background: #ffe1d3;}
+    input[type="number"], input[type="text"], select {width: 100%; padding: 4px;}
+    .btn {background: #ff6f3c; color: white; border: none; padding: 0.6rem 1.2rem; font-size: 1rem; border-radius: 6px; cursor: pointer; margin: 1rem auto; display: block;}
+    .remove-btn {background: #ccc; border: none; padding: 0.4rem 0.6rem; border-radius: 4px; cursor: pointer;}
+    .copy-btn {background: #ddd; color: #333; padding: 0.5rem 1rem; border-radius: 6px; border: none; cursor: pointer; margin-top: 1rem;}
+    .result {max-width: 800px; margin: 2rem auto; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+    .note {font-size: 0.85rem; color: gray; text-align: center; margin-top: -0.5rem;}
+    .member {display: flex; gap: 0.5rem; margin-bottom: 0.8rem;}
+  </style>
 </head>
+
 <body>
-  <header>
-    <h1>割り勘機能</h1>
-    <div class="button-row">
-      <a class="back-link" href="toppage.html">← 戻る</a>
-      <div class="auth-link" id="authLinks"></div>
-    </div>
-    
-    <div class="tabs">
-      <div class="tab active" id="tab-keisha" onclick="switchTab('keisha')">傾斜割り勘</div>
-      <div class="tab" id="tab-group" onclick="switchTab('group')">グループ別割り勘</div>
-    </div>
-  </header>
-
-  <div class="form-section" id="keishaForm" style="display: block;">
-    <form id="keishaFormInner">
-      <label>総額（円）：<input type="number" id="totalAmount" required></label><br><br>
-      <div id="keishaMembers"></div>
-      <button type="button" class="btn" onclick="addKeishaMember()">＋ 参加者追加</button><br>
-      <button type="submit" class="btn">計算する</button>
-    </form>
-    <div class="result" id="keishaResult" style="display:none;">
-      <h3>結果</h3>
-      <ul id="keishaOutput"></ul>
-      <button class="copy-btn" onclick="copyKeishaResult()">コピー</button>
-    </div>
+<header>
+  <h1>KanziPlus 割り勘機能</h1>
+  <div class="button-row">
+    <a class="back-link" href="toppage.html">← 戻る</a>
+    <div class="auth-link" id="authLinks"></div>
   </div>
-
-  <div class="form-section" id="groupForm">
-    <form id="groupFormInner">
-      <label>総額（円）：<input type="number" id="total" required></label><br><br>
-      <label>グループ数（1〜9）：
-        <select id="groupCount" onchange="generateGroups()">
-          <option value="1">1 グループ</option>
-          <option value="2">2 グループ</option>
-          <option value="3">3 グループ</option>
-          <option value="4">4 グループ</option>
-          <option value="5">5 グループ</option>
-          <option value="6">6 グループ</option>
-          <option value="7">7 グループ</option>
-          <option value="8">8 グループ</option>
-          <option value="9">9 グループ</option>
-        </select>
-      </label><br><br>
-      <label>差額パターン：<select id="pattern"></select></label><br><br>
-      <div id="members"></div>
-      <button type="button" class="btn" onclick="addMember()">＋ 参加者追加</button><br>
-      <button type="submit" class="btn">計算する</button>
-    </form>
-    <div class="result" id="result" style="display:none;">
-      <h3>結果</h3>
-      <ul id="output"></ul>
-      <button class="copy-btn" onclick="copyResult()">コピー</button>
-    </div>
+  <div class="tabs">
+    <div class="tab active" id="tab-keisha" onclick="switchTab('keisha')">傾斜割り勘</div>
+    <div class="tab" id="tab-group" onclick="switchTab('group')">グループ別割り勘</div>
   </div>
+</header>
 
-  <script>
-    function switchTab(mode) {
-      document.getElementById('tab-keisha').classList.remove('active');
-      document.getElementById('tab-group').classList.remove('active');
-      document.getElementById('keishaForm').style.display = 'none';
-      document.getElementById('groupForm').style.display = 'none';
-      if (mode === 'keisha') {
-        document.getElementById('tab-keisha').classList.add('active');
-        document.getElementById('keishaForm').style.display = 'block';
-      } else {
-        document.getElementById('tab-group').classList.add('active');
-        document.getElementById('groupForm').style.display = 'block';
-      }
-    }
+<!-- 傾斜割り勘フォーム -->
+<div class="form-section active" id="keishaForm">
+  <div id="totals"></div>
+  <button class="btn" onclick="addMeeting()">＋ 会・項目を追加</button>
+  <div class="note">参加した項目にだけチェックを付けてください。</div>
+  <table id="memberTable">
+    <thead><tr id="headerRow"><th>名前</th></tr></thead>
+    <tbody id="memberBody">
+      <tr><td><input type="text"><button class="remove-btn" onclick="removeRow(this)">×</button></td></tr>
+    </tbody>
+  </table>
+  <button class="btn" onclick="addRow()">＋ 参加者追加</button>
+  <button class="btn" onclick="calculate()">計算する</button>
+  <div class="result" id="result" style="display:none;">
+    <h2>結果</h2>
+    <ul id="output"></ul>
+    <button class="copy-btn" onclick="copyResult()">コピー</button>
+  </div>
+</div>
 
-    // 傾斜割り勘
-    const keishaMembersDiv = document.getElementById('keishaMembers');
-    function addKeishaMember(name = '', weight = 1.0) {
-      const div = document.createElement('div');
-      div.className = 'member';
-      div.innerHTML = `
-        <input type="text" placeholder="名前" value="${name}" required>
-        <input type="number" placeholder="傾斜係数" step="0.1" value="${weight}" required>
-        <button type="button" class="remove-btn" onclick="this.parentNode.remove()">×</button>
-      `;
-      keishaMembersDiv.appendChild(div);
-    }
-    document.getElementById('keishaFormInner').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const total = parseFloat(document.getElementById('totalAmount').value);
-      const members = Array.from(keishaMembersDiv.querySelectorAll('.member'));
-      const names = [], weights = [];
-      members.forEach(m => {
-        names.push(m.children[0].value);
-        weights.push(parseFloat(m.children[1].value));
-      });
-      const totalWeight = weights.reduce((a,b) => a + b, 0);
-      const results = names.map((name, i) => {
-        const amount = Math.round((weights[i] / totalWeight) * total);
-        return `${name}さん：${amount} 円`;
-      });
-      const outputUl = document.getElementById('keishaOutput');
-      outputUl.innerHTML = '';
-      results.forEach(line => {
-        const li = document.createElement('li');
-        li.textContent = line;
-        outputUl.appendChild(li);
-      });
-      document.getElementById('keishaResult').style.display = 'block';
-    });
-    function copyKeishaResult() {
-      const range = document.createRange();
-      range.selectNode(document.getElementById('keishaOutput'));
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-      document.execCommand("copy");
-      alert("結果をコピーしました！");
-    }
+<!-- グループ別割り勘フォーム -->
+<div class="form-section" id="groupForm">
+  <form id="groupFormInner">
+    <label>総額（円）：<input type="number" id="total" required></label><br><br>
+    <label>参加者をいくつのグループに分けますか（例：3グループ→A・B・C）：
+      <select id="groupCount" onchange="generateGroups()"></select>
+    </label><br><br>
+    <label>グループ間の負担差を選びます（大＝差が大きい、小＝均等に近い）：
+      <select id="pattern"></select>
+    </label><br><br>
+    <div id="members"></div>
+    <button type="button" class="btn" onclick="addMember()">＋ 参加者追加</button><br>
+    <button type="submit" class="btn">計算する</button>
+  </form>
+  <div class="result" id="groupResult" style="display:none;">
+    <h2>結果</h2>
+    <ul id="groupOutput"></ul>
+    <button class="copy-btn" onclick="copyGroupResult()">コピー</button>
+  </div>
+</div>
 
-    // グループ別割り勘
+<script>
+// タブ切り替え
+function switchTab(mode) {
+  document.getElementById('tab-keisha').classList.remove('active');
+  document.getElementById('tab-group').classList.remove('active');
+  document.getElementById('keishaForm').classList.remove('active');
+  document.getElementById('groupForm').classList.remove('active');
+  if (mode === 'keisha') {
+    document.getElementById('tab-keisha').classList.add('active');
+    document.getElementById('keishaForm').classList.add('active');
+  } else {
+    document.getElementById('tab-group').classList.add('active');
+    document.getElementById('groupForm').classList.add('active');
+  }
+}
+
+// 傾斜割り勘ロジック
+let meetingCount = 0;
+function addMeeting() {
+  meetingCount++;
+  const totalsDiv = document.getElementById('totals');
+  const label = document.createElement('label');
+  label.innerHTML = `会・項目${meetingCount}の合計金額: <input type="number" id="total${meetingCount}" required> 円 <button class="remove-btn" onclick="removeMeeting(${meetingCount}, this)">×</button><br><br>`;
+  totalsDiv.appendChild(label);
+
+  const headerRow = document.getElementById('headerRow');
+  const th1 = document.createElement('th'); th1.textContent = `項目${meetingCount}参加`; th1.id = `th-p${meetingCount}`;
+  const th2 = document.createElement('th'); th2.textContent = `項目${meetingCount}傾斜`; th2.id = `th-w${meetingCount}`;
+  headerRow.appendChild(th1); headerRow.appendChild(th2);
+
+  const rows = document.querySelectorAll('#memberBody tr');
+  rows.forEach(row => {
+    const td1 = document.createElement('td'); td1.innerHTML = `<input type="checkbox" class="p${meetingCount}">`;
+    const td2 = document.createElement('td'); td2.innerHTML = `<input type="number" class="w${meetingCount}" step="0.1" value="1.0">`;
+    row.appendChild(td1); row.appendChild(td2);
+  });
+}
+function removeMeeting(index, btn) {
+  document.getElementById(`total${index}`).parentElement.remove();
+  document.getElementById(`th-p${index}`).remove();
+  document.getElementById(`th-w${index}`).remove();
+  document.querySelectorAll(`#memberBody tr`).forEach(row => {
+    row.querySelector(`.p${index}`)?.parentElement.remove();
+    row.querySelector(`.w${index}`)?.parentElement.remove();
+  });
+}
+function addRow() {
+  const row = document.createElement('tr');
+  const tdName = document.createElement('td');
+  tdName.innerHTML = `<input type="text"><button class="remove-btn" onclick="removeRow(this)">×</button>`;
+  row.appendChild(tdName);
+  for (let i = 1; i <= meetingCount; i++) {
+    const td1 = document.createElement('td'); td1.innerHTML = `<input type="checkbox" class="p${i}">`;
+    const td2 = document.createElement('td'); td2.innerHTML = `<input type="number" class="w${i}" step="0.1" value="1.0">`;
+    row.appendChild(td1); row.appendChild(td2);
+  }
+  document.getElementById('memberBody').appendChild(row);
+}
+function removeRow(button) { button.closest('tr').remove(); }
+function calculate() {
+  const names = [], weights = [], participation = [];
+  for (let i = 0; i < meetingCount; i++) {
+    weights[i] = []; participation[i] = [];
+  }
+  document.querySelectorAll('#memberBody tr').forEach(row => {
+    names.push(row.cells[0].querySelector('input').value);
+    for (let i = 0; i < meetingCount; i++) {
+      const join = row.querySelector(`.p${i+1}`)?.checked;
+      const weight = parseFloat(row.querySelector(`.w${i+1}`)?.value || 1);
+      participation[i].push(join ? weight : 0);
+      weights[i].push(weight);
+    }
+  });
+  const resultList = names.map((name, i) => {
+    let total = 0, detail = [];
+    for (let j = 0; j < meetingCount; j++) {
+      const totalAmount = parseFloat(document.getElementById(`total${j+1}`)?.value || 0);
+      const totalWeight = participation[j].reduce((a,b) => a + b, 0);
+      const share = totalWeight > 0 ? Math.round((participation[j][i]/totalWeight) * totalAmount) : 0;
+      total += share; detail.push(`項目${j+1} ${share}円`);
+    }
+    return `${name}さん：${detail.join(' ＋ ')} → 合計 ${total}円`;
+  });
+  const output = document.getElementById('output');
+  output.innerHTML = '';
+  resultList.forEach(line => {
+    const li = document.createElement('li');
+    li.textContent = line;
+    output.appendChild(li);
+  });
+  document.getElementById('result').style.display = 'block';
+}
+function copyResult() {
+  const range = document.createRange();
+  range.selectNode(document.getElementById('output'));
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  document.execCommand('copy');
+  alert('結果をコピーしました！');
+}
+</script>
+
+<!-- （続く：グループ別割り勘とFirebase認証設定） -->
+<script>
+    // グループ別割り勘ロジック
     const membersDiv = document.getElementById('members');
     const patternSelect = document.getElementById('pattern');
     const groupCountSelect = document.getElementById('groupCount');
-
+    
     function addMember() {
       const groupCount = parseInt(groupCountSelect.value);
       const groupNames = [...Array(groupCount)].map((_, i) => String.fromCharCode(65 + i));
       const div = document.createElement('div');
       div.className = 'member';
-      const nameInput = document.createElement('input');
-      nameInput.type = 'text';
-      nameInput.placeholder = '名前';
-      nameInput.required = true;
-      const groupSelect = document.createElement('select');
-      groupSelect.className = 'group-select';
-      groupNames.forEach(g => {
-        const opt = document.createElement('option');
-        opt.value = g;
-        opt.textContent = g;
-        groupSelect.appendChild(opt);
-      });
-      const removeBtn = document.createElement('button');
-      removeBtn.type = 'button';
-      removeBtn.className = 'remove-btn';
-      removeBtn.textContent = '×';
-      removeBtn.onclick = function () { removeMember(removeBtn); };
-      div.appendChild(nameInput);
-      div.appendChild(groupSelect);
-      div.appendChild(removeBtn);
+      div.innerHTML = `
+        <input type="text" placeholder="名前" required>
+        <select>${groupNames.map(g => `<option value="${g}">${g}</option>`).join('')}</select>
+        <button type="button" class="remove-btn" onclick="this.parentNode.remove()">×</button>
+      `;
       membersDiv.appendChild(div);
     }
-    function removeMember(button) {
-      const member = button.parentNode;
-      membersDiv.removeChild(member);
-    }
-    function copyResult() {
-      const output = document.getElementById("output");
-      const range = document.createRange();
-      range.selectNode(output);
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-      document.execCommand("copy");
-      alert("結果をコピーしました！");
-    }
+    
     function generateGroups() {
       const groupCount = parseInt(groupCountSelect.value);
       const groupNames = [...Array(groupCount)].map((_, i) => String.fromCharCode(65 + i));
       const presets = {
         large: groupNames.map((_, i) => (groupCount - i)),
-        medium: groupNames.map((_, i) => 1 + (groupCount - i - 1) * 0.3),
-        small: groupNames.map((_, i) => 1 + (groupCount - i - 1) * 0.1)
+        medium: groupNames.map((_, i) => 1 + (groupCount-i-1)*0.3),
+        small: groupNames.map((_, i) => 1 + (groupCount-i-1)*0.1)
       };
       patternSelect.innerHTML = '';
       Object.entries(presets).forEach(([label, values]) => {
         const option = document.createElement('option');
         option.value = groupNames.map((g, i) => `${g}:${values[i].toFixed(2)}`).join(',');
-        option.textContent = `${label === 'large' ? '大' : label === 'medium' ? '中' : '小'}（` +
-          groupNames.map((g, i) => `${g}:${values[i].toFixed(2)}`).join(' ') + '）';
+        option.textContent = `${label==='large'?'大':label==='medium'?'中':'小'}（${groupNames.map((g,i)=>`${g}:${values[i].toFixed(2)}`).join(' ')}）`;
         patternSelect.appendChild(option);
       });
     }
+    
     document.getElementById('groupFormInner').addEventListener('submit', function(e) {
       e.preventDefault();
       const total = parseFloat(document.getElementById('total').value);
@@ -340,70 +261,75 @@
         const [g, rate] = pair.split(':');
         groupRates[g] = parseFloat(rate);
       });
-      const memberEls = membersDiv.querySelectorAll('.member');
-      const members = [];
-      memberEls.forEach(el => {
-        const name = el.querySelectorAll('input')[0].value.trim();
-        const group = el.querySelector('select').value;
-        if (name && groupRates[group]) {
-          members.push({ name, group });
-        }
-      });
-      if (members.length === 0 || isNaN(total)) {
-        alert('名前・グループ・総額を正しく入力してください。');
-        return;
-      }
+      const members = Array.from(membersDiv.querySelectorAll('.member')).map(m => ({
+        name: m.querySelector('input').value.trim(),
+        group: m.querySelector('select').value
+      }));
       const groupCounts = {};
-      members.forEach(m => {
-        if (!groupCounts[m.group]) groupCounts[m.group] = 0;
-        groupCounts[m.group]++;
-      });
-      const totalWeight = Object.entries(groupCounts)
-        .reduce((sum, [g, cnt]) => sum + cnt * groupRates[g], 0);
-      if (totalWeight === 0) {
-        alert('有効な参加者がいません。');
-        return;
-      }
+      members.forEach(m => groupCounts[m.group] = (groupCounts[m.group] || 0) + 1);
+      const totalWeight = Object.entries(groupCounts).reduce((sum, [g, cnt]) => sum + cnt*groupRates[g], 0);
       const unit = total / totalWeight;
-      const result = members.map(m => {
-        const amount = Math.round(unit * groupRates[m.group]);
-        return `${m.name}さん：${amount}円`;
-      });
-      const output = document.getElementById('output');
-      output.innerHTML = '';
-      result.forEach(r => {
+      const results = members.map(m => `${m.name}さん：${Math.round(unit * groupRates[m.group])} 円`);
+      const outputUl = document.getElementById('groupOutput');
+      outputUl.innerHTML = '';
+      results.forEach(line => {
         const li = document.createElement('li');
-        li.textContent = r;
-        output.appendChild(li);
+        li.textContent = line;
+        outputUl.appendChild(li);
       });
-      document.getElementById('result').style.display = 'block';
+      document.getElementById('groupResult').style.display = 'block';
     });
-    generateGroups();
-  </script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
-      authDomain: "kanziplus.firebaseapp.com",
-      projectId: "kanziplus",
-      storageBucket: "kanziplus.appspot.com",
-      messagingSenderId: "643577108018",
-      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    
+    function copyGroupResult() {
+      const range = document.createRange();
+      range.selectNode(document.getElementById('groupOutput'));
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      document.execCommand('copy');
+      alert('結果をコピーしました！');
+    }
 
-    const authLinks = document.getElementById('authLinks');
-    auth.onAuthStateChanged(user => {
-      authLinks.innerHTML = '';
-      const link = document.createElement('a');
-      link.href = user ? "mypage.html" : "login.html";
-      link.textContent = user ? "マイページ" : "ログイン/新規作成";
-      authLinks.appendChild(link);
+    // 傾斜割り勘フォーム 初期セットアップ
+    window.addEventListener('DOMContentLoaded', () => {
+      addMeeting(); // デフォルトで1項目表示
     });
-  </script>
-</body>
-</html>
+    
+    // 初期グループ設定
+    for (let i = 1; i <= 9; i++) {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = `${i} グループ`;
+      groupCountSelect.appendChild(opt);
+    }
+    groupCountSelect.value = '3';
+    generateGroups();
+    </script>
+    
+    <!-- ✅ Firebase認証設定 -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
+        authDomain: "kanziplus.firebaseapp.com",
+        projectId: "kanziplus",
+        storageBucket: "kanziplus.appspot.com",
+        messagingSenderId: "643577108018",
+        appId: "1:643577108018:web:02afbe37485478ccd40e2b"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      auth.onAuthStateChanged(user => {
+        const authLinks = document.getElementById('authLinks');
+        authLinks.innerHTML = '';
+        const link = document.createElement('a');
+        link.href = user ? 'mypage.html' : 'login.html';
+        link.textContent = user ? 'マイページ' : 'ログイン/新規作成';
+        authLinks.appendChild(link);
+      });
+    </script>
+    
+    </body>
+    </html>
