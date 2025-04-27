@@ -242,7 +242,7 @@
   
     const membersData = names.map((name, i) => ({ name, weight: weights.map(w => w[i]) }));
   
-    await saveHistory(totalAmount, membersData);
+    await saveHistory(totalAmount, membersData,  "keisha");
   }
   
 // --- 共通：割り勘結果をFirestoreに保存する ---
@@ -327,7 +327,7 @@ document.getElementById('groupFormInner').addEventListener('submit', async funct
 
   // --- Firestoreに保存 ---
   const membersData = members.map(m => ({ name: m.name, group: m.group, rate: groupRates[m.group] }));
-  await saveHistory(Math.round(total), membersData);
+  await saveHistory(Math.round(total), membersData, "group");
 });
 
 function copyGroupResult() {
@@ -339,6 +339,19 @@ function copyGroupResult() {
   document.execCommand('copy');
   alert('結果をコピーしました！');
 }
+
+function copyResult() {
+  const range = document.createRange();
+  range.selectNode(document.getElementById('output'));
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  document.execCommand('copy');
+  alert('結果をコピーしました！');
+}
+
+
+
 
 // --- 初期化 ---
 window.addEventListener('DOMContentLoaded', () => {
