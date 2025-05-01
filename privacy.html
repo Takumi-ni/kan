@@ -28,11 +28,16 @@
       border-top: 1px solid #ccc;
       margin: 2rem 0;
     }
-    footer {
-      text-align: center;
-      margin-top: 4rem;
-      font-size: 0.5rem;
-    }
+    footer a {
+  white-space: nowrap;
+  margin: 0 0.8rem;
+}
+footer div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
   </style>
 </head>
 <body>
@@ -85,18 +90,16 @@
   <footer>
     <a href="index.html">トップページへ戻る</a>
   </footer>
-  <footer style="text-align: center; font-size: 0.75rem; color: #aaa; margin-top: 0.5rem; padding: 0.5rem 0;">
-
-    <div style="margin-bottom: 0.5rem;">
-      <a href="question.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">よくある質問</a>
-      <a href="form.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">お問い合わせ</a>
-      <a href="privacy.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">プライバシーポリシー</a>
-    </div>
-    <div style="margin-bottom: 0.5rem;">
-      <a href="kiyaku.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">利用規約</a>
-      <a href="about.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">運営者情報</a>
+  <footer style="text-align: center; font-size: 0.75rem; color: #aaa; padding: 1rem 0;">
+    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; max-width: 400px; margin: 0 auto;">
+      <a href="question.html" style="white-space: nowrap;">よくある質問</a>
+      <a href="form.html" style="white-space: nowrap;">お問い合わせ</a>
+      <a href="privacy.html" style="white-space: nowrap;">プライバシーポリシー</a>
+      <a href="kiyaku.html" style="white-space: nowrap;">利用規約</a>
+      <a href="about.html" style="white-space: nowrap;">運営者情報</a>
     </div>
     <div style="margin-top: 1rem;">© 2025 KanziPlus. All rights reserved.</div>
   </footer>
+  
 </body>
 </html>
