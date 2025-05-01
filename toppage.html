@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>KanziPlus トップページ</title>
   <meta name="description" content="KanziPlus（カンジプラス）は、幹事を助ける便利な割り勘・投票機能を提供するサービスです。">
+  <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
+
+  <link rel="canonical" href="https://kanziplus.jp/toppage.html" />
 
   <!-- ✅ Google Analytics (GA4) 設定 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
@@ -134,6 +137,9 @@
         transform: translateY(-50%);
       }
     }
+
+    
+
   </style>
 
   <!-- Firebase SDK -->
@@ -148,15 +154,16 @@
   </header>
 
   <div class="card-container">
-    <div class="card">
-      <h2>傾斜割り勘</h2>
-      <p>係数に応じて支払額を自動で計算。飲み会や旅行などに。</p>
-      <a href="keisha.html">この機能を使う</a>
-    </div>
+    
     <div class="card">
       <h2>日程・場所投票</h2>
       <p>候補を入力するだけで、場所と日程の投票リンクを簡単に作成・共有できる機能。</p>
       <a href="createvote.html">この機能を使う</a>
+    </div>
+    <div class="card">
+      <h2>傾斜割り勘</h2>
+      <p>係数に応じて支払額を自動で計算。飲み会や旅行などに。</p>
+      <a href="keisha.html">この機能を使う</a>
     </div>
   </div>
 
@@ -181,5 +188,20 @@
       authLinks.appendChild(link);
     });
   </script>
+
+<footer style="position: fixed;bottom: 0;left: 0;width: 100%;text-align: center;font-size: 0.75rem;color: #aaa; background-color: #fffaf5;padding: 0.5rem 0; z-index: 999;">
+
+    <div style="margin-bottom: 0.5rem;">
+      <a href="question.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">よくある質問</a>
+      <a href="form.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">お問い合わせ</a>
+      <a href="privacy.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">プライバシーポリシー</a>
+    </div>
+    <div style="margin-bottom: 0.5rem;">
+      <a href="kiyaku.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">利用規約</a>
+      <a href="about.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">運営者情報</a>
+    </div>
+    <div style="margin-top: 1rem;">© 2025 KanziPlus. All rights reserved.</div>
+  </footer>
 </body>
+
 </html>
