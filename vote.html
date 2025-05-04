@@ -150,7 +150,7 @@
     <div id="individualVotes"></div>
   </div>
 
-  <button id="toKeishaBtn">傾斜割り勘ページへ</button>
+  <button type="button" id="toKeishaBtn" class="submit-btn">傾斜割り勘ページへ</button>
 
   <!-- ✅ Firebase & Logic -->
   <script type="module">
@@ -331,7 +331,7 @@
 
     // URLクエリに名前を追加して傾斜割り勘ページへ遷移
     const query = names.map(n => `name=${encodeURIComponent(n)}`).join("&");
-    window.location.href = `keisha.html?${query}`;
+    window.open(`keisha.html?${query}`, '_blank');
   });
   </script>
 <footer style="text-align: center; font-size: 0.75rem; color: #aaa; margin-top: 0.5rem; padding: 0.5rem 0;">
