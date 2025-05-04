@@ -199,10 +199,6 @@ footer .copyright {
         const weightInputs = document.querySelectorAll(`.w${i}`);
         const input = weightInputs[index];
 
-        checkbox.checked = true;
-        input.disabled = false;
-        input.value = '1.0';
-        input.style.backgroundColor = '';
 
         const syncDisabledState = () => {
           if (!checkbox.checked) {
@@ -217,6 +213,15 @@ footer .copyright {
         };
 
         checkbox.addEventListener('change', syncDisabledState);
+
+        if (checkbox.dataset.initialized !== 'true') {
+        checkbox.checked = true;
+        input.value = '1.0';
+        checkbox.dataset.initialized = 'true';
+      }
+
+
+
         syncDisabledState();
       });
     }
