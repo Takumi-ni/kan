@@ -150,6 +150,8 @@
     <div id="individualVotes"></div>
   </div>
 
+  <button id="toKeishaBtn">傾斜割り勘ページへ</button>
+
   <!-- ✅ Firebase & Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
@@ -302,6 +304,35 @@
         document.getElementById("individualVotes").innerHTML = individualVotes.join("<br>");
       });
     });
+
+    document.getElementById("toKeishaBtn").addEventListener("click", async () => {
+    const names = [];
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const voteId = urlParams.get("v");
+    if (!voteId) {
+      alert("投票IDが見つかりません");
+      return;
+    }
+
+    const { getFirestore, collection, getDocs } = await import("https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js");
+    const db = getFirestore();
+
+    const snapshot = await getDocs(collection(db, "votes", voteId, "responses"));
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.name) names.push(data.name);
+    });
+
+    if (names.length === 0) {
+      alert("投票者が見つかりませんでした");
+      return;
+    }
+
+    // URLクエリに名前を追加して傾斜割り勘ページへ遷移
+    const query = names.map(n => `name=${encodeURIComponent(n)}`).join("&");
+    window.location.href = `keisha.html?${query}`;
+  });
   </script>
 <footer style="text-align: center; font-size: 0.75rem; color: #aaa; margin-top: 0.5rem; padding: 0.5rem 0;">
 
