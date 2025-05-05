@@ -92,27 +92,30 @@
   userInfo.innerHTML = `<strong>ログイン中：</strong> ${user.email}`;
   historyList.innerHTML = '';
 
+  const mergedHistory = [];
+
   // --- 割り勘履歴取得 ---
-  const historyRef = db.collection("users").doc(user.uid).collection("history").orderBy("timestamp", "desc");
+  const historyRef = db.collection("users").doc(user.uid).collection("history");
   const snap1 = await historyRef.get();
   if (!snap1.empty) {
     snap1.forEach(doc => {
       const data = doc.data();
-      const date = data.timestamp?.seconds ? new Date(data.timestamp.seconds * 1000).toLocaleString('ja-JP') : '日時不明';
-      const typeLabel = data.type === "group" ? "【グループ別割り勘】" : "【傾斜割り勘】";
-
-      historyList.innerHTML += `
-        <li>
-          🧾 ${date}<br>
-          ${typeLabel}<br>
-          合計 ${data.total}円 / ${data.members.length}人
-        </li>
-      `;
+      mergedHistory.push({
+        type: "warikan",
+        timestamp: data.timestamp?.seconds || 0,
+        html: `
+          <li>
+            🧾 ${new Date(data.timestamp.seconds * 1000).toLocaleString('ja-JP')}<br>
+            ${data.type === "group" ? "【グループ別割り勘】" : "【傾斜割り勘】"}<br>
+            合計 ${data.total}円 / ${data.members.length}人
+          </li>
+        `
+      });
     });
   }
 
   // --- 投票履歴取得 ---
-  const creationsRef = db.collection("users").doc(user.uid).collection("voteCreations").orderBy("createdAt", "desc");
+  const creationsRef = db.collection("users").doc(user.uid).collection("voteCreations");
   const snap2 = await creationsRef.get();
   if (!snap2.empty) {
     for (const voteRecord of snap2.docs) {
@@ -121,24 +124,38 @@
       if (!voteDoc.exists) continue;
 
       const voteData = voteDoc.data();
-      const createdAt = voteData.createdAt?.seconds ? new Date(voteData.createdAt.seconds * 1000).toLocaleString('ja-JP') : '日時不明';
+      const createdAtSec = voteData.createdAt?.seconds || 0;
+      const createdAt = createdAtSec ? new Date(createdAtSec * 1000).toLocaleString('ja-JP') : '日時不明';
       const deadline = voteData.deadline?.seconds ? new Date(voteData.deadline.seconds * 1000).toLocaleString('ja-JP') : '未設定';
       const type = voteData.type === 'availability' ? '〇×投票' : '通常投票';
 
-      historyList.innerHTML += `<li>📮 [${type}] ${createdAt} - 締切: ${deadline}<br><a href="vote.html?v=${voteId}" target="_blank" rel="noopener noreferrer">投票リンクを見る</a></li>`;
+      let html = `<li>📮 [${type}] ${createdAt} - 締切: ${deadline}<br><a href="vote.html?v=${voteId}" target="_blank" rel="noopener noreferrer">投票リンクを見る</a></li>`;
 
       const responsesSnap = await db.collection("votes").doc(voteId).collection("responses").get();
       responsesSnap.forEach(res => {
         const d = res.data();
-        historyList.innerHTML += `<ul class="sublist"><li>${d.name}: ${d.locations?.join(' / ') || ''} / ${d.dates?.join(' / ') || ''}</li></ul>`;
+        html += `<ul class="sublist"><li>${d.name}: ${d.locations?.join(' / ') || ''} / ${d.dates?.join(' / ') || ''}</li></ul>`;
+      });
+
+      mergedHistory.push({
+        type: "vote",
+        timestamp: createdAtSec,
+        html: html
       });
     }
   }
 
-  if (historyList.innerHTML.trim() === '') {
+  // --- 統合履歴を時系列で降順ソートして表示 ---
+  mergedHistory
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .forEach(entry => {
+      historyList.innerHTML += entry.html;
+    });
+
+  if (mergedHistory.length === 0) {
     historyList.innerHTML = '<li>履歴はまだありません</li>';
   }
-});
+});  
 
 });
 
