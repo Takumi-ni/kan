@@ -288,8 +288,12 @@
           if (data.available === true) yesCount.yes++;
           if (data.available === false) yesCount.no++;
 
-          individualVotes.push(`<strong>${name}</strong>：${locs} ／ ${dts} ${available}`);
-        });
+          if (voteData.type === "availability") {
+                individualVotes.push(`<strong>${name}</strong>：${available}`);
+           } else {
+                individualVotes.push(`<strong>${name}</strong>：${locs} ／ ${dts} ${available}`);
+           }
+         });
 
         const maxLoc = Math.max(0, ...Object.values(locationCounts));
         const maxDate = Math.max(0, ...Object.values(dateCounts));
