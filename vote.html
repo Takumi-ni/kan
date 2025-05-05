@@ -146,16 +146,18 @@
     <div id="dateResults"></div>
   </div>
 
-  <div class="results" style="margin-bottom: 8rem;">
+  <div class="results">
     <h2>誰がどこに投票したか（一覧）</h2>
-    <div id="individualVotes"></div>
+    <div id="individualVotes" style="margin-bottom: 1.5rem;"></div>
+  
+    <button
+      type="button"
+      id="toKeishaBtn"
+      class="submit-btn"
+      style="margin-left: 0;">
+      傾斜割り勘ページへ
+    </button>
   </div>
-  
-  <!-- 空のdiv不要なので削除 -->
-  
-  <button type="button" id="toKeishaBtn" class="submit-btn" style="display: block; margin: 0 auto 3rem auto;">
-    傾斜割り勘ページへ
-  </button>
 
   <!-- ✅ Firebase & Logic -->
   <script type="module">
