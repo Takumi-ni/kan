@@ -1,32 +1,17 @@
-# --- 表示したいページ: /keisha をそのまま表示（URLは変えずに中身だけ keisha.html を出す）---
-/keisha         /keisha.html   200
-/keisha.html    /keisha.html   200
+/keisha        /keisha.html   200
+/keisha.html   /keisha.html   200
 
-# --- 非表示にしたい旧ページは / へ 301（恒久）---
-/createvote        /   301
-/createvote.html   /   301
-/createvote/*      /   301
+/login         /              301
+/login.html    /              301
+/mypage        /              301
+/mypage.html   /              301
+/register      /              301
+/register.html /              301
+/toppage       /              301
+/toppage.html  /              301
+/vote          /              301
+/vote.html     /              301
 
-/login             /   301
-/login.html        /   301
-/login/*           /   301
+/*             /index.html    200
 
-/mypage            /   301
-/mypage.html       /   301
-/mypage/*          /   301
-
-/register          /   301
-/register.html     /   301
-/register/*        /   301
-
-/toppage           /   301
-/toppage.html      /   301
-/toppage/*         /   301
-
-/vote              /   301
-/vote.html         /   301
-/vote/*            /   301
-
-# ---（必要な場合のみ）SPA フォールバックは“最後”に---
-# /*              /index.html   200
 
