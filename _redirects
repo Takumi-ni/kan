@@ -1,1 +1,23 @@
-/index.html / 200
+/createvote        /   301
+/createvote.html   /   301
+/createvote/*      /   301
+
+/login             /   301
+/login.html        /   301
+/login/*           /   301
+
+/mypage            /   301
+/mypage.html       /   301
+/mypage/*          /   301
+
+/register          /   301
+/register.html     /   301
+/register/*        /   301
+
+/toppage           /   301
+/toppage.html      /   301
+/toppage/*         /   301
+
+/vote              /   301
+/vote.html         /   301
+/vote/*            /   301
