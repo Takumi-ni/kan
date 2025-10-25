@@ -1,8 +1,8 @@
-# ← keisha は表示したいので、明示的に通す（/keisha もきれいURLでOKに）
-/keisha            /keisha.html   200
-/keisha.html       /keisha.html   200
+# --- 表示したいページ: /keisha をそのまま表示（URLは変えずに中身だけ keisha.html を出す）---
+/keisha         /keisha.html   200
+/keisha.html    /keisha.html   200
 
-# 非表示にしたいページは恒久リダイレクトで / へ
+# --- 非表示にしたい旧ページは / へ 301（恒久）---
 /createvote        /   301
 /createvote.html   /   301
 /createvote/*      /   301
@@ -27,5 +27,6 @@
 /vote.html         /   301
 /vote/*            /   301
 
-# ← SPA用のフォールバックが必要な場合は“最後”に置く
-/*                 /index.html    200
+# ---（必要な場合のみ）SPA フォールバックは“最後”に---
+# /*              /index.html   200
+
