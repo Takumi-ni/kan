@@ -1,3 +1,8 @@
+# ← keisha は表示したいので、明示的に通す（/keisha もきれいURLでOKに）
+/keisha            /keisha.html   200
+/keisha.html       /keisha.html   200
+
+# 非表示にしたいページは恒久リダイレクトで / へ
 /createvote        /   301
 /createvote.html   /   301
 /createvote/*      /   301
@@ -21,3 +26,6 @@
 /vote              /   301
 /vote.html         /   301
 /vote/*            /   301
+
+# ← SPA用のフォールバックが必要な場合は“最後”に置く
+/*                 /index.html    200
