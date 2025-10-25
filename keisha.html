@@ -1,477 +1,788 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7292628789812881"
-     crossorigin="anonymous"></script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KanziPlus 割り勘機能</title>
-  <meta name="description" content="KanziPlusの割り勘機能では、参加者の負担割合やグループ別に応じた割り勘が簡単にできます。飲み会や旅行の精算もスムーズに！">
-  <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
-  <link rel="canonical" href="https://kanziplus.jp/" />
-  <!-- ✅ Favicon -->
-  <link rel="icon" href="/favicon.ico">
-
-  <!-- ✅ Firebaseライブラリ読み込み -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
-  <!-- ✅ Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-EXN7VZYJFG');
-  </script>
-
-  <!-- ✅ JSON-LD構造化データ -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "KanziPlus",
-    "url": "https://kanziplus.jp",
-    "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KanziPlus</title>
+<style>
+  :root{
+    --bg:#151a22;--card:#1b2029;--ink:#e9eaee;--muted:#b2b6bf;--accent:#f8d27a;--accent-2:#ffb455;--ok:#22c55e;--bad:#ef4444;--line:#2f3542;--pink-soft:#1f1a12;
+    --radius:18px;--shadow:0 18px 40px rgba(0,0,0,.30);
   }
-  </script>
-
-  <style>
-    /* CSS（今まで通り） */
-    body {font-family: sans-serif; background: #fffaf5; color: #333; padding: 2rem;}
-    h1 {color: #ff6f3c; text-align: center;}
-    .tabs {display: flex; justify-content: center; margin: 1rem 0;}
-    .tab {padding: 0.5rem 1rem; border: 1px solid #ccc; cursor: pointer; background: white; margin-right: 4px; border-radius: 6px 6px 0 0;}
-    .tab.active {background: #ff6f3c; color: white; font-weight: bold;}
-    .button-row {display: flex; justify-content: space-between; max-width: 700px; margin: 0 auto 0.5rem;}
-    .back-link, .auth-link a {background: #ff6f3c; color: white; padding: 0.4rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem;}
-    .form-section {display: none;}
-    .form-section.active {display: block;}
-    table {width: 100%; max-width: 800px; margin: 2rem auto; border-collapse: collapse;}
-    th, td {border: 1px solid #ccc; padding: 8px; text-align: center;}
-    th {background: #ffe1d3;}
-    input[type="number"], input[type="text"], select {width: 100%; padding: 4px;}
-    .btn {background: #ff6f3c; color: white; border: none; padding: 0.6rem 1.2rem; font-size: 1rem; border-radius: 6px; cursor: pointer; margin: 1rem auto; display: block;}
-    .remove-btn {background: #ccc; border: none; padding: 0.4rem 0.6rem; border-radius: 4px; cursor: pointer;}
-    .copy-btn {background: #ddd; color: #333; padding: 0.5rem 1rem; border-radius: 6px; border: none; cursor: pointer; margin-top: 1rem;}
-    .result {max-width: 800px; margin: 2rem auto; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
-    .note {font-size: 0.85rem; color: gray; text-align: center; margin-top: -0.5rem;}
-    .member {display: flex; gap: 0.5rem; margin-bottom: 0.8rem;}
-    footer {
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.85rem;
-      color: #ddd;
-    }
-    footer a {
-      color: #888;
-      text-decoration: underline;
-    }
-    footer div {
-  display: flex;
-  justify-content: center;
-  flex-wrap: nowrap; /* wrapではなくnowrapに変更 */
-  flex-direction: row; /* 横並びに固定 */
-  align-items: center;
-  margin-bottom: 0.8rem;
-  font-size: 0.75rem;
-  color: #aaa;
-}
-
-footer div a {
-  margin: 0 0.4rem; /* 間隔を少し狭めて折り返し防止 */
-  color: #aaa;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-footer .top-link {
-  margin-bottom: 3rem; /* 任意で調整してください */
-  display: inline-block;
-  width: 100%;
-}
-
-footer .copyright {
-      margin-top: 1rem;
-      font-size: 0.75rem;
-      color: #aaa;
-    }
-  </style>
-
-  <!-- ✅ Firebase初期化 -->
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBo01DRvEfnBCJfcgDvISSfhIw8z7RcAHM",
-      authDomain: "kanziplus.firebaseapp.com",
-      projectId: "kanziplus",
-      storageBucket: "kanziplus.appspot.com",
-      messagingSenderId: "643577108018",
-      appId: "1:643577108018:web:02afbe37485478ccd40e2b"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    auth.onAuthStateChanged(user => {
-      const authLinks = document.getElementById('authLinks');
-      authLinks.innerHTML = '';
-      const link = document.createElement('a');
-      link.href = user ? 'mypage.html' : 'login.html';
-      link.textContent = user ? 'マイページ' : 'ログイン/新規作成';
-      authLinks.appendChild(link);
-    });
-  </script>
+  *{box-sizing:border-box}
+  html, body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic UI",sans-serif;background:radial-gradient(1200px 600px at 20% -10%, #1b2029 0%, rgba(27,32,41,0) 60%),linear-gradient(180deg,#151a22 0%, #0f131a 100%);color:var(--ink);font-size:17px;line-height:1.6}
+  header{position:sticky;top:0;z-index:20;background:rgba(21,26,34,.55);backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #232938}
+  .wrap{max-width:420px;margin:0 auto;padding:16px}
+  .brand{font-weight:900;letter-spacing:.8px;color:#ffe8a3;font-size:26px;text-align:center;text-shadow:0 2px 8px rgba(248,210,122,.25)}
+  .tabs{display:flex;gap:18px;margin-top:10px;justify-content:center}
+  .tab{appearance:none;border:none;background:transparent;padding:12px 18px;font-weight:700;color:var(--muted);cursor:pointer;position:relative;font-size:16px}
+  .tab.active{color:var(--ink)}
+  .tab.active:after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:3px}
+  .grid{display:grid;gap:16px}
+  .two{grid-template-columns:1fr}
+  .card{background:var(--card);box-shadow:var(--shadow);border-radius:var(--radius);padding:16px;border:1px solid #262c39}
+  .card-pink{background:linear-gradient(180deg, rgba(255,220,140,.06), rgba(255,220,140,.04));border:1px solid rgba(255,220,140,.18)}
+  .card h3{margin:0 0 10px 0;font-size:18px}
+  label{font-size:14px;color:var(--muted)}
+  input[type="text"],input[type="number"],select{width:100%;padding:12px 12px;border:1px solid #343a48;border-radius:12px;background:#12161e;color:var(--ink);font-size:16px}
+  input[type="number"]{text-align:right}
+  .row{display:flex;gap:10px;align-items:center}
+  .row > *{flex:1}
+  .btn{appearance:none;border:none;border-radius:12px;padding:10px 14px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#271b05;font-weight:800;cursor:pointer;box-shadow:0 10px 26px rgba(255,180,85,.22)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+  .btn.small{padding:8px 10px;border-radius:10px;font-size:13px}
+  .btn.bad{background:var(--bad)}
+  .btn.ok{background:var(--ok)}
+  .btn.accent{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#2a1b04}
+  .btn.outline-pink{background:transparent;color:var(--accent);border:1.75px solid var(--accent);box-shadow:none}
+  .btn.light-pink{background:#F0FFF7;color:#0b604a;border:1px solid #CFEFE3;box-shadow:none}
+  .btn.lock-on{background:#e5e7eb;color:#374151;border:1px solid #d1d5db}
+  .btn.lock-off{background:#fde68a;color:#7a5d00;border:1px solid #fcd34d}
+  .toolbar{display:flex;gap:10px;flex-wrap:nowrap}
+  .pill{padding:10px 18px;border:1px solid #343a48;border-radius:999px;background:#12161e;cursor:pointer;color:var(--muted);font-weight:700;flex:1;text-align:center}
+  .pill.active{border-color:var(--accent);color:#ffe8a3;background:rgba(248,210,122,.10)}
+  .muted{color:var(--muted)}
+  .group-row{display:grid;grid-template-columns:1.6fr .7fr auto;gap:10px;align-items:center;margin-top:10px}
+  .group-row .del{width:40px}
+  .mini{font-size:13px;color:var(--muted)}
+  hr.sep{border:none;border-top:1px dashed var(--line);margin:12px 0}
+  .bars{display:flex;gap:8px;align-items:flex-end;justify-content:center;height:140px;padding:4px 2px;margin-top:14px}
+  .bar{width:12px;border-radius:10px;box-shadow:inset 0 -4px 8px rgba(0,0,0,.08)}
+  .hint{font-size:12px;color:var(--muted)}
+  .money{font-variant-numeric:tabular-nums}
+  .stack{display:flex;flex-direction:column;gap:8px}
+  .controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  .sumline{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:12px;background:#181e28;border:1px solid #343a48}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:#111827;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
+  .toast.show{opacity:1}
+  .result-card{background:#1e1a12;border:1px solid rgba(255,220,140,.18)}
+  .k-table{width:100%;border-collapse:collapse}
+  .k-table td{padding:6px 0;border-bottom:1px solid #343a48}
+  /* Night beer garden extras */
+  header .wrap{position:relative}
+  .brand-icon{font-size:28px; margin:0 8px; filter:drop-shadow(0 2px 6px rgba(248,210,122,.35))}
+  .sky{position:absolute; inset:0; pointer-events:none}
+  .star{position:absolute; width:3px; height:3px; background:#ffe8a3; border-radius:50%; opacity:.85; animation:twinkle 3s ease-in-out infinite}
+  @keyframes twinkle{ 0%,100%{opacity:.4; transform:scale(.9)} 50%{opacity:1; transform:scale(1)} }
+  /* Hide number input spinners (direct input only) */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+  input[type="number"]{ -moz-appearance:textfield; }
+  /* Bigger amount number inside shortage line */
+  .big-num{ font-size:24px; }
+</style>
 </head>
-
 <body>
-
-<header>
-  <h1>KanziPlus 割り勘機能</h1>
-  <div class="button-row">
-    <a class="back-link" href="toppage.html">← 戻る</a>
-    <div class="auth-link" id="authLinks"></div>
-  </div>
-  <div class="tabs">
-    <div class="tab active" id="tab-keisha" onclick="switchTab('keisha')">傾斜割り勘</div>
-    <div class="tab" id="tab-group" onclick="switchTab('group')">グループ別割り勘</div>
-  </div>
-</header>
-
-<!-- --- （フォームとJavaScript続く） --- -->
-<!-- 傾斜割り勘フォーム -->
-<div class="form-section active" id="keishaForm">
-    <div id="totals"></div>
-    <button class="btn" onclick="addMeeting()">＋ 会・項目を追加</button>
-    <div class="note">参加した項目にだけチェックを付けてください。</div>
-    <table id="memberTable">
-      <thead><tr id="headerRow"><th>名前</th></tr></thead>
-      <tbody id="memberBody">
-        <tr><td><input type="text"><button class="remove-btn" onclick="removeRow(this)">×</button></td></tr>
-      </tbody>
-    </table>
-    <button class="btn" onclick="addRow()">＋ 参加者追加</button>
-    <button class="btn" onclick="calculate()">計算する</button>
-    <div class="result" id="result" style="display:none;">
-      <h2>結果</h2>
-      <ul id="output"></ul>
-      <button class="copy-btn" onclick="copyResult()">コピー</button>
+  <header>
+    <div class="wrap">
+      <div class="brand"><span class="brand-icon" aria-hidden="true">🍺</span>KanziPlus<span class="brand-icon" aria-hidden="true">✨</span></div>
+      <div class="sky" aria-hidden="true">
+        <span class="star" style="top:6px;left:6%;width:4px;height:4px"></span>
+        <span class="star" style="top:18px;left:20%;width:3px;height:3px"></span>
+        <span class="star" style="top:10px;left:64%;width:5px;height:5px"></span>
+        <span class="star" style="top:26px;left:82%;width:3px;height:3px"></span>
+        <span class="star" style="top:30px;left:38%;width:4px;height:4px"></span>
+        <span class="star" style="top:14px;left:50%;width:6px;height:6px"></span>
+        <span class="star" style="top:4px;left:90%;width:5px;height:5px"></span>
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-tab="input">情報入力</button>
+        <button class="tab" data-tab="assign">割り振り</button>
+        <button class="tab" data-tab="result">結果出力</button>
+      </div>
     </div>
-  </div>
-  
-  <!-- グループ別割り勘フォーム -->
-  <div class="form-section" id="groupForm">
-    <form id="groupFormInner">
-      <label>総額（円）：<input type="number" id="total" required></label><br><br>
-      <label>参加者をいくつのグループに分けますか（例：3グループ→A・B・C）：
-        <select id="groupCount" onchange="generateGroups()"></select>
-      </label><br><br>
-      <label>グループ間の負担差を選びます（大＝差が大きい、小＝均等に近い）：
-        <select id="pattern"></select>
-      </label><br><br>
-      <div id="members"></div>
-      <button type="button" class="btn" onclick="addMember()">＋ 参加者追加</button><br>
-      <button type="submit" class="btn">計算する</button>
-    </form>
-    <div class="result" id="groupResult" style="display:none;">
-      <h2>結果</h2>
-      <ul id="groupOutput"></ul>
-      <button class="copy-btn" onclick="copyGroupResult()">コピー</button>
-    </div>
-  </div>
-  
-  <script>
-  // タブ切り替え
-  function switchTab(mode) {
-    document.getElementById('tab-keisha').classList.remove('active');
-    document.getElementById('tab-group').classList.remove('active');
-    document.getElementById('keishaForm').classList.remove('active');
-    document.getElementById('groupForm').classList.remove('active');
-    if (mode === 'keisha') {
-      document.getElementById('tab-keisha').classList.add('active');
-      document.getElementById('keishaForm').classList.add('active');
-    } else {
-      document.getElementById('tab-group').classList.add('active');
-      document.getElementById('groupForm').classList.add('active');
-    }
-  }
+  </header>
 
-  function setupCheckboxListeners() {
-    for (let i = 1; i <= meetingCount; i++) {
-      document.querySelectorAll(`.p${i}`).forEach((checkbox, index) => {
-        const weightInputs = document.querySelectorAll(`.w${i}`);
-        const input = weightInputs[index];
+  <main class="wrap" style="padding-top:14px;padding-bottom:120px;">
+    <!-- 情報入力 TAB -->
+    <section id="tab-input" class="grid two">
+      <div class="card">
+        <h3>お会計の総額を入力</h3>
+        <div class="row">
+          <input id="totalInput" type="number" min="0" step="1" value="10000"/>
+          <div class="mini">円</div>
+        </div>
+      </div>
 
+      <div class="card" style="grid-column:1 / -1;">
+        <h3>お支払いグループ名を入力</h3>
+        <div id="groupsArea"></div>
+        <div class="mini" style="margin-top:10px;margin-bottom:6px;">上のグループから多く払います</div>
+        <div class="row" style="margin-top:0">
+          <button id="addGroup" class="btn outline-pink" style="width:100%">＋ グループを追加</button>
+        </div>
+      </div>
 
-        const syncDisabledState = () => {
-          if (!checkbox.checked) {
-            input.disabled = true;
-            input.value = '';
-            input.style.backgroundColor = '#eee';
-          } else {
-            input.disabled = false;
-            input.value = '1.0';
-            input.style.backgroundColor = '';
-          }
-        };
+      <!-- 割り勘バランスカード -->
+      <div class="card" style="grid-column:1 / -1;">
+        <h3>グループごとの割り勘バランス</h3>
+        <div class="toolbar" id="balanceBtns">
+          <button class="pill" data-balance="large">大きい</button>
+          <button class="pill active" data-balance="medium">普通</button>
+          <button class="pill" data-balance="small">小さい</button>
+        </div>
+        <div class="bars" id="bars"></div>
+      </div>
 
-        checkbox.addEventListener('change', syncDisabledState);
+      <!-- 端数の扱いカード -->
+      <div class="card" style="grid-column:1 / -1;">
+        <h3>端数の扱いをどうする？</h3>
+        <div class="toolbar" id="modeBtns">
+          <button class="pill active" data-mode="payMore">誰かが多く払う</button>
+          <button class="pill" data-mode="payLess">誰かを安くする</button>
+        </div>
+      </div>
 
-        if (checkbox.dataset.initialized !== 'true') {
-        checkbox.checked = true;
-        input.value = '1.0';
-        checkbox.dataset.initialized = 'true';
-      }
+      <!-- 次へ進む（分離） -->
+      <div style="grid-column:1 / -1;" class="row">
+        <button class="btn accent" onclick="goTab('assign')" style="width:100%">つぎへ進む</button>
+      </div>
+    </section>
 
+    <!-- 割り振り TAB -->
+    <section id="tab-assign" style="display:none" class="grid">
+      <div class="card">
+        <h3 style="margin-bottom:4px">支払いの金額を調整する</h3>
+        <div class="mini">（1人あたりの金額を100円単位で調整する）</div>
+        <div id="adjustArea" class="stack"></div>
+        <div class="plain-sum" style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+          <div>合計（端数を除いた合計）</div>
+          <div><b id="sumRounded" class="money"></b> 円</div>
+        </div>
+      </div>
 
+      <div class="card">
+        <h3>端数の割り振り</h3>
+        <div id="shortageLine" class="money" style="margin-bottom:8px"></div>
+        <div id="manualList" class="stack"></div>
+        <div class="row" style="margin-top:6px">
+          <button id="addPerson" class="btn outline-pink" style="width:100%">＋ 人を追加</button>
+        </div>
+      </div>
 
-        syncDisabledState();
-      });
-    }
-  }
+      <!-- 次へ進む（分離） -->
+      <div style="grid-column:1 / -1;" class="row">
+        <button class="btn accent" onclick="goTab('result')" style="width:100%">つぎへ進む</button>
+      </div>
+    </section>
 
-  
-  // --- 傾斜割り勘ロジック ---
-  let meetingCount = 0;
-  function addMeeting() {
-    meetingCount++;
-    const totalsDiv = document.getElementById('totals');
-    const label = document.createElement('label');
-    label.innerHTML = `会・項目${meetingCount}の合計金額: <input type="number" id="total${meetingCount}" required> 円 <button class="remove-btn" onclick="removeMeeting(${meetingCount}, this)">×</button><br><br>`;
-    totalsDiv.appendChild(label);
-  
-    const headerRow = document.getElementById('headerRow');
-    const th1 = document.createElement('th'); th1.textContent = `項目${meetingCount}参加`; th1.id = `th-p${meetingCount}`;
-    const th2 = document.createElement('th'); th2.textContent = `項目${meetingCount}傾斜`; th2.id = `th-w${meetingCount}`;
-    headerRow.appendChild(th1); headerRow.appendChild(th2);
-  
-    const rows = document.querySelectorAll('#memberBody tr');
-    rows.forEach(row => {
-      const td1 = document.createElement('td'); td1.innerHTML = `<input type="checkbox" class="p${meetingCount}">`;
-      const td2 = document.createElement('td'); td2.innerHTML = `<input type="number" class="w${meetingCount}" step="0.1" value="1.0">`;
-      row.appendChild(td1); row.appendChild(td2);
-    });
+    <!-- 結果出力 TAB -->
+    <section id="tab-result" style="display:none" class="grid">
+      <div class="card result-card">
+        <h3>結果</h3>
+        <div id="resultView" class="stack"></div>
+        <div class="sumline" style="margin-top:10px">
+          <div class="muted">お会計の総額より</div>
+          <div id="deltaLine" class="money"></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn outline-pink" id="copyBtn" style="width:100%">結果をコピー</button>
+        </div>
+      </div>
 
-    setupCheckboxListeners();
-  }
-  function removeMeeting(index, btn) {
-    document.getElementById(`total${index}`).parentElement.remove();
-    document.getElementById(`th-p${index}`).remove();
-    document.getElementById(`th-w${index}`).remove();
-    document.querySelectorAll(`#memberBody tr`).forEach(row => {
-      row.querySelector(`.p${index}`)?.parentElement.remove();
-      row.querySelector(`.w${index}`)?.parentElement.remove();
-    });
-  }
-  function addRow() {
-    const row = document.createElement('tr');
-    const tdName = document.createElement('td');
-    tdName.innerHTML = `<input type="text"><button class="remove-btn" onclick="removeRow(this)">×</button>`;
-    row.appendChild(tdName);
-    for (let i = 1; i <= meetingCount; i++) {
-      const td1 = document.createElement('td'); td1.innerHTML = `<input type="checkbox" class="p${i}">`;
-      const td2 = document.createElement('td'); td2.innerHTML = `<input type="number" class="w${i}" step="0.1" value="1.0">`;
-      row.appendChild(td1); row.appendChild(td2);
-    }
-    document.getElementById('memberBody').appendChild(row);
-    setupCheckboxListeners();
-  }
-  function removeRow(button) { button.closest('tr').remove(); }
-  async function calculate() {
-    const names = [], weights = [], participation = [];
-    for (let i = 0; i < meetingCount; i++) {
-      weights[i] = []; participation[i] = [];
-    }
-    document.querySelectorAll('#memberBody tr').forEach(row => {
-      names.push(row.cells[0].querySelector('input').value);
-      for (let i = 0; i < meetingCount; i++) {
-        const join = row.querySelector(`.p${i+1}`)?.checked;
-        const weight = parseFloat(row.querySelector(`.w${i+1}`)?.value || 1);
-        participation[i].push(join ? weight : 0);
-        weights[i].push(weight);
-      }
-    });
-    const resultList = names.map((name, i) => {
-      let total = 0, detail = [];
-      for (let j = 0; j < meetingCount; j++) {
-        const totalAmount = parseFloat(document.getElementById(`total${j+1}`)?.value || 0);
-        const totalWeight = participation[j].reduce((a,b) => a + b, 0);
-        const share = totalWeight > 0 ? Math.round((participation[j][i]/totalWeight) * totalAmount) : 0;
-        total += share; detail.push(`項目${j+1} ${share}円`);
-      }
-      return `${name}さん：${detail.join(' ＋ ')} → 合計 ${total}円`;
-    });
-    const output = document.getElementById('output');
-    output.innerHTML = '';
-    resultList.forEach(line => {
-      const li = document.createElement('li');
-      li.textContent = line;
-      output.appendChild(li);
-    });
-    document.getElementById('result').style.display = 'block';
-  
-    // --- Firestoreに保存 ---
-    const totalAmount = names.map((_, i) => {
-      let total = 0;
-      for (let j = 0; j < meetingCount; j++) {
-        const totalAmount = parseFloat(document.getElementById(`total${j+1}`)?.value || 0);
-        const totalWeight = participation[j].reduce((a,b) => a + b, 0);
-        total += totalWeight > 0 ? (participation[j][i]/totalWeight) * totalAmount : 0;
-      }
-      return Math.round(total);
-    }).reduce((a, b) => a + b, 0);
-  
-    const membersData = names.map((name, i) => ({ name, weight: weights.map(w => w[i]) }));
-  
-    await saveHistory(totalAmount, membersData,  "keisha");
-  }
-  
-// --- 共通：割り勘結果をFirestoreに保存する ---
-// --- 割り勘結果をFirestoreに保存する ---
-async function saveHistory(totalAmount, members, type) {
-  const user = firebase.auth().currentUser;
-  if (!user) return; // ログインしてなければ保存しない
+      <div class="card">
+        <h3>計算詳細</h3>
+        <div id="detailView" class="stack"></div>
+      </div>
+    </section>
+  </main>
 
-  const db = firebase.firestore();
-  await db.collection('users').doc(user.uid).collection('history').add({
-    total: totalAmount,
-    members: members,
-    type: type,  // ✅ 保存時に "keisha" か "group" を追加！
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  });
+  <div id="toast" class="toast"></div>
+
+<script>
+// ======= STATE =======
+const state = {
+  total: 10000,
+  mode: 'payMore', // payMore: floor to 100; payLess: ceil to 100
+  balance: 'medium',
+  groups: [
+    {id: uid(), name: '部長グループ', people: 1, perPerson: 0, fixed:false},
+    {id: uid(), name: '課長グループ', people: 2, perPerson: 0, fixed:false},
+    {id: uid(), name: '一般社員グループ', people: 3, perPerson: 0, fixed:false},
+  ],
+  manual: [], // {id, groupId, name, amount}
+  manualDraft: [], // UI用の下書き（つぎへ進むで確定）
+  shortage: 0 // +不足, -超過
 }
 
+// ======= UTIL =======
+function uid(){ return Math.random().toString(36).slice(2,9) }
+function yen(n){ return (Math.round(n)).toLocaleString('ja-JP') }
+function round100(x, dir){ const m = Math.floor(x/100)*100; if(dir==='down') return m; if(dir==='up') return (x%100===0)? x : m+100; return Math.round(x/100)*100 }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1600) }
 
-// --- グループ別割り勘ロジック ---
-const membersDiv = document.getElementById('members');
-const patternSelect = document.getElementById('pattern');
-const groupCountSelect = document.getElementById('groupCount');
-
-function addMember() {
-  const groupCount = parseInt(groupCountSelect.value);
-  const groupNames = [...Array(groupCount)].map((_, i) => String.fromCharCode(65 + i));
-  const div = document.createElement('div');
-  div.className = 'member';
-  div.innerHTML = `
-    <input type="text" placeholder="名前" required>
-    <select>${groupNames.map(g => `<option value="${g}">${g}</option>`).join('')}</select>
-    <button type="button" class="remove-btn" onclick="this.parentNode.remove()">×</button>
-  `;
-  membersDiv.appendChild(div);
+// ======= TABS =======
+const tabBtns = document.querySelectorAll('.tab');
+for(const b of tabBtns){ b.addEventListener('click',()=>goTab(b.dataset.tab)) }
+function commitManualAndRebalance(){
+  // 下書きを本採用し、最新の端数を基準に手動割り振りを反映→自動再配分
+  state.manual = JSON.parse(JSON.stringify(state.manualDraft||[]));
+  // 念のため、現在の端数（端数を除いた合計ベース）を再計算してから実行
+  state.shortage = state.total - groupsRoundedSum();
+  tryRebalanceManual(-1); // 手動割り振りを考慮してモード維持で±100/人ラウンド配分
 }
 
-function generateGroups() {
-  const groupCount = parseInt(groupCountSelect.value);
-  const groupNames = [...Array(groupCount)].map((_, i) => String.fromCharCode(65 + i));
-  const presets = {
-    large: groupNames.map((_, i) => (groupCount - i)),
-    medium: groupNames.map((_, i) => 1 + (groupCount-i-1)*0.3),
-    small: groupNames.map((_, i) => 1 + (groupCount-i-1)*0.1)
-  };
-  patternSelect.innerHTML = '';
-  Object.entries(presets).forEach(([label, values]) => {
-    const option = document.createElement('option');
-    option.value = groupNames.map((g, i) => `${g}:${values[i].toFixed(2)}`).join(',');
-    option.textContent = `${label==='large'?'大':label==='medium'?'中':'小'}（${groupNames.map((g,i)=>`${g}:${values[i].toFixed(2)}`).join(' ')}）`;
-    patternSelect.appendChild(option);
-  });
+function goTab(key){
+  if(key==='result'){
+    commitManualAndRebalance();
+  }
+  document.querySelectorAll('section[id^=tab-]').forEach(s=>s.style.display='none');
+  const sec = document.getElementById('tab-'+key);
+  if(sec) sec.style.display='grid';
+  tabBtns.forEach(b=>b.classList.toggle('active', b.dataset.tab===key));
+  renderAll();
 }
 
-// --- グループ別割り勘フォーム submit ---
-document.getElementById('groupFormInner').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const total = parseFloat(document.getElementById('total').value);
-  const patternPairs = patternSelect.value.split(',');
-  const groupRates = {};
-  patternPairs.forEach(pair => {
-    const [g, rate] = pair.split(':');
-    groupRates[g] = parseFloat(rate);
-  });
-  const members = Array.from(membersDiv.querySelectorAll('.member')).map(m => ({
-    name: m.querySelector('input').value.trim(),
-    group: m.querySelector('select').value
-  }));
-  const groupCounts = {};
-  members.forEach(m => groupCounts[m.group] = (groupCounts[m.group] || 0) + 1);
-  const totalWeight = Object.entries(groupCounts).reduce((sum, [g, cnt]) => sum + cnt*groupRates[g], 0);
-  const unit = total / totalWeight;
-
-  const results = members.map(m => `${m.name}さん：${Math.round(unit * groupRates[m.group])} 円`);
-  const outputUl = document.getElementById('groupOutput');
-  outputUl.innerHTML = '';
-  results.forEach(line => {
-    const li = document.createElement('li');
-    li.textContent = line;
-    outputUl.appendChild(li);
-  });
-  document.getElementById('groupResult').style.display = 'block';
-
-  // --- Firestoreに保存 ---
-  const membersData = members.map(m => ({ name: m.name, group: m.group, rate: groupRates[m.group] }));
-  await saveHistory(Math.round(total), membersData, "group");
+// ======= INPUT: GROUPS UI =======
+const groupsArea = document.getElementById('groupsArea');
+const addGroupBtn = document.getElementById('addGroup');
+addGroupBtn.addEventListener('click',()=>{
+  state.groups.push({id:uid(), name:`グループ${state.groups.length+1}`, people:1, perPerson:0, fixed:false});
+  recompute(); renderAll();
 });
 
-function copyGroupResult() {
-  const range = document.createRange();
-  range.selectNode(document.getElementById('groupOutput'));
-  const sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(range);
-  document.execCommand('copy');
-  alert('結果をコピーしました！');
-}
-
-function copyResult() {
-  const range = document.createRange();
-  range.selectNode(document.getElementById('output'));
-  const sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(range);
-  document.execCommand('copy');
-  alert('結果をコピーしました！');
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  addMeeting(); // 初期1項目
-  const params = new URLSearchParams(window.location.search);
-  const names = params.getAll('name');
-
-  names.forEach((name, index) => {
-    if (index === 0) {
-      document.querySelector('#memberBody tr input[type="text"]').value = name;
-    } else {
-      addRow();
-      const rows = document.querySelectorAll('#memberBody tr');
-      rows[rows.length - 1].querySelector('input[type="text"]').value = name;
-    }
+function renderGroupsEditor(){
+  groupsArea.innerHTML = '';
+  state.groups.forEach((g,idx)=>{
+    const row = document.createElement('div');
+    row.className='group-row';
+    row.innerHTML = `
+      <input type="text" value="${g.name}" data-k="name" placeholder="グループ名"/>
+      <select data-k="people">${Array.from({length:99},(_,i)=>`<option ${g.people===(i+1)?'selected':''} value="${i+1}">${i+1}人</option>`).join('')}</select>
+      <button class="btn small ghost del">×</button>`;
+    row.querySelector('[data-k=name]').addEventListener('input',e=>{ g.name=e.target.value; });
+    row.querySelector('[data-k=name]').addEventListener('blur',()=>{ renderAll(); });
+    row.querySelector('[data-k=people]').addEventListener('change',e=>{ g.people=parseInt(e.target.value); recompute(); renderAll() });
+    row.querySelector('.del').addEventListener('click',()=>{ if(state.groups.length<=1){ toast('グループは最低1つ必要です'); return } state.groups.splice(idx,1); recompute(); renderAll(); });
+    groupsArea.appendChild(row);
   });
+}
 
-  for (let i = 1; i <= 9; i++) {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = `${i} グループ`;
-    groupCountSelect.appendChild(opt);
-  }
-  groupCountSelect.value = '3';
-  generateGroups();
+// ======= INPUT: TOTAL & MODE & BALANCE =======
+const totalInput = document.getElementById('totalInput');
+const balanceBtns = document.getElementById('balanceBtns');
+const modeBtns = document.getElementById('modeBtns');
+
+totalInput.addEventListener('input',()=>{ state.total= Number(totalInput.value||0); recompute(); renderAll(); });
+;['large','medium','small'].forEach(x=>{
+  const p = balanceBtns.querySelector(`[data-balance=${x}]`);
+  p.addEventListener('click',()=>{ balanceBtns.querySelectorAll('.pill').forEach(x=>x.classList.remove('active')); p.classList.add('active'); state.balance=x; recompute(); renderAll(); })
+});
+;['payMore','payLess'].forEach(m=>{
+  const b = modeBtns.querySelector(`[data-mode=${m}]`);
+  b.addEventListener('click',()=>{ modeBtns.querySelectorAll('.pill').forEach(x=>x.classList.remove('active')); b.classList.add('active'); state.mode=m; recompute(); renderAll(); })
 });
 
+// ======= BALANCE BARS =======
+function weightsByBalance(n){
+  if(state.balance==='large'){ return Array.from({length:n},(_,i)=> (n-i)); } 
+  else if(state.balance==='small'){ const base=1; const step=0.1; return Array.from({length:n},(_,i)=> base + step*(n-1-i)); } 
+  else { const base=1; const step=0.3; return Array.from({length:n},(_,i)=> base + step*(n-1-i)); }
+}
+function renderBars(ws){
+  const bars = document.getElementById('bars');
+  const max = Math.max(...ws,1);
+  bars.innerHTML = ws.map((w,i)=>{
+    const h = 30 + (w/max)*88; // 30..118 vertical (縦長/全体は小さめ)
+    const colors = ['#D4AF37','#C0C0C0','#CD7F32'];
+    const color = i<3 ? colors[i] : '#d1d5db';
+    return `<div class=\"bar\" title=\"重み ${w.toFixed(2)}\" style=\"height:${h}px;background:${color}\"></div>`
+  }).join('');
+}
+
+// ======= CORE CALC =======
+function recompute(){
+  const ws = weightsByBalance(state.groups.length);
+  const denom = state.groups.reduce((acc,g,idx)=> acc + g.people*ws[idx], 0);
+  const X = denom>0 ? state.total/denom : 0;
+  state.groups.forEach((g,idx)=>{
+    const raw = ws[idx]*X; g.raw = raw;
+    g.perPerson = (state.mode==='payMore') ? round100(raw,'down') : round100(raw,'up');
+  });
+  state.shortage = state.total - groupsRoundedSum(); // +不足 / -超過
+}
+function groupsRoundedSum(){ return state.groups.reduce((s,g)=> s + g.perPerson * g.people, 0); }
+
+function clickAdjust(idx, step){
+  if(step===0) return; const unit=100; const times=Math.abs(step)/unit; const sign=Math.sign(step);
+  for(let t=0;t<times;t++){
+    const g = state.groups[idx];
+    const deltaSum = sign*unit*g.people; // このグループの合計変化
+    // まず反映（クリックは常に通す）
+    g.perPerson += sign*unit;
+    state.shortage -= deltaSum; // 不足(+)／超過(-)
+
+    if(state.mode==='payMore'){
+      if(!autoDistribute(idx, -unit)){
+        g.perPerson -= sign*unit; state.shortage += deltaSum; toast('割り振り先がありません（固定の解除をご確認ください）'); break;
+      }
+    }else{ // payLess
+      if(!autoDistribute(idx, +unit)){
+        g.perPerson -= sign*unit; state.shortage += deltaSum; toast('割り振り先がありません（固定の解除をご確認ください）'); break;
+      }
+    }
+  }
+  renderAll();
+}
+
+// eachDelta: 受け取り側グループの 1人あたりに加える差分（payMore時は -100、payLess時は +100）
+function autoDistribute(excludeIdx, eachDelta, useManual=false){
+  const unit=100; let safety=2000; // 念のための無限ループ対策
+  const needsAdjustPayMore = () => (useManual ? (state.shortage - manualEffect()) < 0 : state.shortage < 0);
+  const needsAdjustPayLess = () => (useManual ? (state.shortage - manualEffect()) > 0 : state.shortage > 0);
+  while( (state.mode==='payMore' && needsAdjustPayMore()) || (state.mode==='payLess' && needsAdjustPayLess()) ){
+    let recipientIdx = []; let personCount = 0;
+    for(let i=0;i<state.groups.length;i++){
+      const g = state.groups[i];
+      if(g.fixed) continue; // 固定は対象外
+      if(eachDelta<0 && g.perPerson<=0) continue; // 0円未満NG
+      recipientIdx.push(i); personCount += g.people; // 操作グループも固定でなければ含む
+    }
+    if(personCount===0) return false; // 分配不能
+
+    // 1ラウンド: 非固定メンバー全員に eachDelta（±100/人）
+    recipientIdx.forEach(i=>{ const gg=state.groups[i]; if(!(eachDelta<0 && gg.perPerson<=0)) gg.perPerson += eachDelta; });
+    const deltaSum = eachDelta * personCount; // sum 変化量 → shortage は -deltaSum
+    state.shortage -= deltaSum;
+
+    if(--safety<=0) break;
+  }
+  return true;
+}
+
+// manual rebalance helper (for individual assignments)
+function groupIdxById(id){ return state.groups.findIndex(g=>g.id===id); }
+function tryRebalanceManual(excludeIdx){
+  let safety=2000;
+  while( ((state.mode==='payMore') && (state.shortage - manualEffect()) < 0) || ((state.mode==='payLess') && (state.shortage - manualEffect()) > 0) ){
+    const ok = autoDistribute(excludeIdx, state.mode==='payMore' ? -100 : +100, true);
+    if(!ok) return false;
+    if(--safety<=0) break;
+  }
+  return true;
+}
+
+// ======= ASSIGN TAB RENDER =======
+// 事前プレビュー：manualDraft を反映し、モード維持のために±100/人のラウンド配分を仮適用
+function computePreview(opts={includeFixedInPreview:true}){
+  const draft = state.manualDraft || [];
+  const draftSum = draft.reduce((acc,m)=> acc + (Number(m.amount)||0), 0);
+  // 現在の perPerson をコピー
+  const per = state.groups.map(g=> g.perPerson);
+  // 手動適用後の残量（+不足 / -超過）
+  let remain = state.shortage - (state.mode==='payMore' ? draftSum : -draftSum);
+  let safety = 2000;
+  // 端数サイン維持のため、±100/人 ラウンドを仮適用
+  while( (state.mode==='payMore' && remain < 0) || (state.mode==='payLess' && remain > 0) ){
+    let idx = []; let cnt = 0;
+    for(let i=0;i<state.groups.length;i++){
+      const g = state.groups[i];
+      // プレビューでは includeFixedInPreview=true のとき固定も対象にする
+      if(!opts.includeFixedInPreview && g.fixed) continue;
+      if(state.mode==='payMore' && per[i]<=0) continue; // 0円未満防止
+      idx.push(i); cnt += g.people;
+    }
+    if(cnt===0) break; // これ以上調整できない
+    const eachDelta = (state.mode==='payMore')? -100 : +100;
+    idx.forEach(i=>{ per[i] += eachDelta; });
+    // shortage は合計変化 eachDelta*cnt を反映（total - sum）
+    remain -= eachDelta * cnt;
+    if(--safety<=0) break;
+  }
+  const sumPreview = per.reduce((s,p,i)=> s + p*state.groups[i].people, 0); // 端数を除いた合計（手動金額は含めない）
+  return { per, remain, sumPreview, draftSum };
+}
+
+const adjustArea = document.getElementById('adjustArea');
+const sumRoundedEl = document.getElementById('sumRounded');
+const shortageLine = document.getElementById('shortageLine');
+
+function renderAssign(){
+  adjustArea.innerHTML='';
+  // プレビュー値（manualDraftに基づく仮適用）※入力仕様は維持するため、入力中はupdateShortagePreview()で再描画しない
+  const hasDraft = (state.manualDraft||[]).length>0 && (state.manualDraft||[]).some(m=>Number(m.amount)>0);
+  const preview = computePreview();
+
+  state.groups.forEach((g,idx)=>{
+    const row = document.createElement('div');
+    row.className='card card-pink';
+    const lockCls = g.fixed ? 'btn small lock-on' : 'btn small lock-off';
+    const displayPer = hasDraft ? preview.per[idx] : g.perPerson;
+    row.innerHTML = `
+      <div class="row" style="justify-content:space-between;align-items:flex-end">
+        <div>
+          <div style=\"font-weight:800\">${g.name}<\/div>
+          <div class=\"mini muted\">${g.people}人<\/div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:22px;font-weight:800" class=\"money\">${yen(displayPer)}円<span class=\"mini\">/1人<\/span><\/div>
+          <button class="${lockCls}" style="margin-top:6px">${g.fixed?'🔒 固定中':'🔓 固定なし'}</button>
+        </div>
+      </div>
+      <div class="controls-grid">
+        <button class="btn small outline-pink" data-d="+100">＋100</button>
+        <button class="btn small outline-pink" data-d="-100">−100</button>
+        <button class="btn small outline-pink" data-d="+1000">＋1000</button>
+        <button class="btn small outline-pink" data-d="-1000">−1000</button>
+      </div>`;
+    row.querySelectorAll('button[data-d]').forEach(b=> b.addEventListener('click',()=>{ clickAdjust(idx, parseInt(b.dataset.d,10)); }));
+    row.querySelector('.'+(g.fixed?'lock-on':'lock-off')).addEventListener('click',()=>{ g.fixed=!g.fixed; renderAll(); });
+    adjustArea.appendChild(row);
+  });
+
+  // 合計（端数を除いた合計）はプレビューの per を反映（手動の金額は含めない）
+  const sumForView = hasDraft ? preview.sumPreview : groupsRoundedSum();
+  sumRoundedEl.textContent = yen(sumForView);
+
+  // 残り表示：モードの文言は固定しつつ、プレビュー残量を採用（※入力中の再描画は行わない）
+  const remain = hasDraft ? preview.remain : state.shortage;
+  const absRemain = Math.abs(remain);
+  const suffix = hasDraft && ((state.mode==='payMore' && remain<0) || (state.mode==='payLess' && remain>0)) ? '<span class="mini muted">（固定の解除が必要）</span>' : '';
+  shortageLine.innerHTML = absRemain===0
+    ? '<b>ピッタリです</b>'
+    : (state.mode==='payMore'
+        ? `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain)}</b> 円 足りない ${suffix}`
+        : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain)}</b> 円 多い ${suffix}`);
+
+  renderManualList();
+}
+
+function updateShortagePreview(){
+  // 入力中でも、入力欄を壊さずに数値だけプレビュー更新
+  const hasDraft = (state.manualDraft||[]).some(m=>Number(m.amount)>0);
+  if(!hasDraft){
+    sumRoundedEl.textContent = yen(groupsRoundedSum());
+    const absRemain0 = Math.abs(state.shortage);
+    shortageLine.innerHTML = absRemain0===0
+      ? '<b>ピッタリです</b>'
+      : (state.mode==='payMore'
+          ? `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain0)}</b> 円 足りない`
+          : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain0)}</b> 円 多い`);
+    return;
+  }
+  // 直前の“良かった仕様”に合わせ、プレビューでは固定も含めてラウンド（=総人数ベース）
+  const preview = computePreview({includeFixedInPreview:true});
+  // 調整後 per をカードの表示だけ差し替え（入力欄は再描画しない）
+  const cards = adjustArea.querySelectorAll('.card.card-pink');
+  cards.forEach((card, i)=>{
+    const moneyEl = card.querySelector('.money');
+    if(moneyEl && preview.per[i] != null){ moneyEl.innerHTML = yen(preview.per[i]) + '円<span class=\"mini\">/1人<\/span>'; }
+  });
+  // 合計（端数を除いた合計）
+  sumRoundedEl.textContent = yen(preview.sumPreview);
+  // 残り表示（文言は固定）
+  const absRemain = Math.abs(preview.remain);
+  const suffix = ((state.mode==='payMore' && preview.remain<0) || (state.mode==='payLess' && preview.remain>0)) ? '<span class="mini muted">（固定の解除が必要）</span>' : '';
+  shortageLine.innerHTML = absRemain===0
+    ? '<b>ピッタリです</b>'
+    : (state.mode==='payMore'
+        ? `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain)}</b> 円 足りない ${suffix}`
+        : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain)}</b> 円 多い ${suffix}`);
+}
+
+// ======= MANUAL ASSIGN =======
+const manualList = document.getElementById('manualList');
+const addPersonBtn = document.getElementById('addPerson');
+addPersonBtn.addEventListener('click',()=>{
+  if(state.groups.length===0) return;
+  state.manualDraft.push({id:uid(), groupId:state.groups[0].id, name:'', amount:0});
+  renderManualList();
+  updateShortagePreview();
+});
+
+function renderManualList(){
+  manualList.innerHTML='';
+  const tail = state.mode==='payMore' ? '円 多く払う' : '円 安くする';
+  (state.manualDraft||[]).forEach((m,i)=>{
+    const box = document.createElement('div');
+    box.className='card card-pink';
+    const options = state.groups.map(g=>`<option value="${g.id}" ${g.id===m.groupId?'selected':''}>${g.name}</option>`).join('');
+    box.innerHTML = `
+      <div class="row" style="gap:8px">
+        <select class="gsel">${options}</select>
+        <input class="name" type="text" placeholder="お名前" value="${m.name}"/>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <input class="amt" type="number" min="0" step="1" inputmode="numeric" value="${m.amount}"/>
+        <div class="mini" style="flex:none">${tail}</div>
+        <button class="btn small ghost" style="flex:none">×</button>
+      </div>`;
+
+    // 下書きだけを編集（残り金額は変えない）
+    box.querySelector('.gsel').addEventListener('change',e=>{ m.groupId = e.target.value; updateShortagePreview(); renderManualList(); });
+    box.querySelector('.name').addEventListener('input',e=>{ m.name = e.target.value; updateShortagePreview(); });
+    box.querySelector('.amt').addEventListener('input',e=>{ m.amount = Number(e.target.value||0); updateShortagePreview(); });
+
+    box.querySelector('button').addEventListener('click',()=>{ state.manualDraft.splice(i,1); renderManualList(); updateShortagePreview(); });
+
+    manualList.appendChild(box);
+  });
+}
+
+function manualEffect(){
+  const s = state.manual.reduce((acc,m)=> acc + (m.amount||0), 0);
+  return (state.mode==='payMore') ? s : -s; // payMore: shortage - s, payLess: shortage + s
+}
+
+// ======= RESULT RENDER =======
+const resultView = document.getElementById('resultView');
+const deltaLine = document.getElementById('deltaLine');
+const detailView = document.getElementById('detailView');
+
+function updateResults(){
+  resultView.innerHTML=''; detailView.innerHTML='';
+  const manualByGroup = {}; state.groups.forEach(g=> manualByGroup[g.id]=[]);
+  state.manual.forEach(m=>{ if(manualByGroup[m.groupId]) manualByGroup[m.groupId].push({name:m.name||'（名前未入力）', amount:m.amount||0}); });
+
+  let sum = 0;
+  state.groups.forEach(g=>{
+    const groupTotal = g.perPerson * g.people;
+    const manualSum = manualByGroup[g.id].reduce((a,x)=>a+x.amount,0) * (state.mode==='payMore'? 1 : -1);
+    sum += groupTotal + manualSum;
+
+    const section = document.createElement('div');
+    section.className='card card-pink';
+    const unit = `<span class="mini">1人あたり</span> <b class="money">${yen(g.perPerson)}</b>円`;
+
+    let peopleBlock = '';
+    if(manualByGroup[g.id].length>0){
+      peopleBlock = manualByGroup[g.id].map(x=>{
+        const adj = (state.mode==='payMore'? '+' : '−') + yen(x.amount);
+        const val = state.mode==='payMore'? (g.perPerson + x.amount) : (g.perPerson - x.amount);
+        return `<div class="row" style="justify-content:space-between"><div>・${x.name} <span class=\"mini\">(${adj}円)</span></div><div class=\"money\">${yen(val)}円</div></div>`
+      }).join('');
+      const others = g.people - manualByGroup[g.id].length;
+      if(others>0){
+        peopleBlock += `<div class=\"row\" style=\"justify-content:space-between\"><div>・他メンバー <span class=\"mini\">(+0円)</span></div><div class=\"money\">${yen(g.perPerson)}円</div></div>`
+      }
+    }
+
+    section.innerHTML = `<div style="font-weight:800">${g.name} <span style="margin-left:10px">${unit}</span></div>${peopleBlock ? `<div class=\"stack\" style=\"margin-top:6px\">${peopleBlock}</div>`:''}`;
+    resultView.appendChild(section);
+
+    // details block
+    const d = document.createElement('div');
+    let lines = `<table class="k-table">`+
+      `<tr><td>${g.name}</td><td class="money" style="text-align:right">${yen(g.perPerson)}円 × ${g.people}人 = ${yen(groupTotal)}円</td></tr>`;
+    manualByGroup[g.id].forEach(x=>{ const sign = state.mode==='payMore'? '+' : '−'; lines += `<tr><td>${x.name}</td><td class="money" style="text-align:right">${sign}${yen(x.amount)}円</td></tr>` });
+    lines += `</table>`; d.innerHTML = lines; detailView.appendChild(d);
+  });
+
+  const delta = sum - state.total; // +多い / -足りない
+  if(delta===0){ deltaLine.innerHTML = `<b class="ok">差額 0 円（ピッタリ）</b>`; }
+  else if(delta>0){ deltaLine.innerHTML = `<span class="money">${yen(Math.abs(delta))}</span> 円 <b>多い</b>`; }
+  else { deltaLine.innerHTML = `<span class="money">${yen(Math.abs(delta))}</span> 円 <b>足りない</b>`; }
+
+  // details summary（同じカード内に合算を表示）
+  const totals = document.createElement('div');
+  totals.innerHTML = `
+    <hr class="sep"/>
+    <table class="k-table">
+      <tr><td>合計</td><td class="money" style="text-align:right">${yen(sum)}円</td></tr>
+      <tr><td>お会計金額</td><td class="money" style="text-align:right">${yen(state.total)}円</td></tr>
+      <tr><td>差額</td><td class="money" style="text-align:right">${delta>0? '+' : ''}${yen(delta)}円</td></tr>
+    </table>`;
+  detailView.appendChild(totals);
+
+  window.__copyText = buildCopyText(sum, delta);
+}
+
+function buildCopyText(sum, delta){
+  let t = `【KanziPlus 計算結果】\n合計: ${yen(state.total)} 円\n`;
+  state.groups.forEach(g=>{ t += `・${g.name}: 1人あたり ${yen(g.perPerson)}円 × ${g.people}人\n`; });
+  t += `合計(${yen(sum)}円) / 差額(${delta})`;
+  return t;
+}
+
+// ======= COPY =======
+document.getElementById('copyBtn').addEventListener('click',async()=>{
+  try{ await navigator.clipboard.writeText(window.__copyText||''); toast('コピーしました'); }catch(e){ toast('コピーに失敗しました'); }
+});
+
+// ======= RENDER ALL =======
+function renderAll(){
+  totalInput.value = state.total;
+  renderGroupsEditor(); const ws = weightsByBalance(state.groups.length); renderBars(ws);
+  if(state.groups.every(g=>!g.perPerson)) recompute();
+  renderAssign(); updateResults();
+}
+
+// ======= TESTS =======
+function runTests(){
+  const snapshot = JSON.stringify(state);
+  try{
+    // 1) payMore のときは合計が総額以下
+    state.mode='payMore'; recompute();
+    console.assert(groupsRoundedSum() <= state.total, 'payMore: 合計が総額を超えないはず');
+
+    // 2) payLess のときは合計が総額以上
+    state.mode='payLess'; recompute();
+    console.assert(groupsRoundedSum() >= state.total, 'payLess: 合計が総額以上になるはず');
+
+    // 3) 結果描画が行われる
+    updateResults();
+    console.assert(document.getElementById('resultView').children.length >= 1, '結果ビューが描画される');
+
+    // 4) 端数221不足 → 課長+100を2回で自動配分が走り、モードを維持（操作グループも受け取り対象）
+    (function(){
+      state.mode='payMore';
+      state.groups = [
+        {id:uid(), name:'部長グループ', people:1, perPerson:12000, fixed:false},
+        {id:uid(), name:'課長グループ', people:2, perPerson:9800, fixed:false},
+        {id:uid(), name:'一般社員グループ', people:3, perPerson:7500, fixed:false}
+      ];
+      state.total = 54321;
+      state.manual = []; state.manualDraft=[];
+      state.shortage = state.total - groupsRoundedSum();
+      console.assert(state.shortage === 221, '前提: 端数221不足');
+      clickAdjust(1, +100); // 課長 +100
+      console.assert(state.shortage === 21, '1回目+100後: 21不足');
+      clickAdjust(1, +100); // 課長 さらに+100 → 自動配分
+      console.assert(state.shortage === 421, '2回目+100後: 421不足（操作グループも受け取り）');
+      console.assert(state.groups[1].perPerson === 9900, '課長 1人あたり: 最終 9900');
+      console.assert(state.groups[0].perPerson === 11900 && state.groups[2].perPerson === 7400, '部長/一般: 各 −100 反映');
+    })();
+
+    // 5) payMore 維持テスト：複数回操作しても不足が負にならない
+    (function(){
+      state.mode='payMore';
+      recompute();
+      for(let i=0;i<5;i++){ clickAdjust(0, +100); }
+      console.assert(state.shortage >= 0, 'payMore維持: 不足>=0 のまま');
+    })();
+
+    // 6) payLess 維持テスト：複数回操作しても超過が正にならない
+    (function(){
+      state.mode='payLess';
+      recompute();
+      for(let i=0;i<5;i++){ clickAdjust(0, -100); }
+      console.assert(state.shortage <= 0, 'payLess維持: 超過<=0 のまま');
+    })();
+
+    // 7) manual: payMoreで個別指定しても不足>=0を維持し、文言は「足りない」
+    (function(){
+      state.mode='payMore';
+      state.groups = [
+        {id:uid(), name:'部長グループ', people:1, perPerson:12000, fixed:false},
+        {id:uid(), name:'課長グループ', people:2, perPerson:9800, fixed:false},
+        {id:uid(), name:'一般社員グループ', people:3, perPerson:7500, fixed:false}
+      ];
+      state.total = 54321; state.manual = []; state.manualDraft=[];
+      state.shortage = state.total - groupsRoundedSum();
+      console.assert(state.shortage === 221, '前提: 端数221不足');
+      state.manual.push({id:uid(), groupId: state.groups[0].id, name:'たくみ', amount:300});
+      const ok = tryRebalanceManual(0);
+      console.assert(ok, 'manual配分: payMoreで成功');
+      updateResults();
+      const remain = state.shortage - manualEffect();
+      console.assert(remain >= 0, 'payMore: 手動後も不足>=0');
+      console.assert(shortageLine.innerHTML.includes('足りない'), '文言: 足りない固定');
+    })();
+
+    // 8) manual: payLessで個別指定しても超過<=0を維持し、文言は「多い」
+    (function(){
+      state.mode='payLess';
+      state.groups = [
+        {id:uid(), name:'部長グループ', people:1, perPerson:12100, fixed:false},
+        {id:uid(), name:'課長グループ', people:2, perPerson:9900, fixed:false},
+        {id:uid(), name:'一般社員グループ', people:3, perPerson:7600, fixed:false}
+      ];
+      state.total = 54321; state.manual = []; state.manualDraft=[];
+      state.shortage = state.total - groupsRoundedSum();
+      console.assert(state.shortage <= 0, '前提: payLessで超過<=0');
+      state.manual.push({id:uid(), groupId: state.groups[0].id, name:'みく', amount:300});
+      const ok2 = tryRebalanceManual(0);
+      console.assert(ok2, 'manual配分: payLessで成功');
+      updateResults();
+      const remain2 = state.shortage - manualEffect();
+      console.assert(remain2 <= 0, 'payLess: 手動後も超過<=0');
+      console.assert(shortageLine.innerHTML.includes('多い'), '文言: 多い固定');
+    })();
+
+    // 9) manual具体例：不足300で Aさん+350（payMore）。課長は固定、Aさんは一般所属として（直接manual）
+    (function(){
+      state.mode='payMore';
+      state.groups = [
+        {id:uid(), name:'部長グループ', people:1, perPerson:2200, fixed:false},
+        {id:uid(), name:'課長グループ', people:2, perPerson:1800, fixed:true},
+        {id:uid(), name:'一般社員グループ', people:3, perPerson:1300, fixed:false}
+      ];
+      state.total = 10000; // 合計 9700 → 不足 300
+      state.manual = []; state.manualDraft=[];
+      state.shortage = state.total - groupsRoundedSum();
+      console.assert(state.shortage === 300, '前提: 10000まで300不足');
+      const generalId = state.groups[2].id;
+      state.manual.push({id:uid(), groupId: generalId, name:'Aさん', amount:350});
+      const ok3 = tryRebalanceManual(2);
+      console.assert(ok3, 'manual配分: 成功');
+      // 返金1ラウンドで 部長/一般 の基準単価が−100
+      console.assert(state.groups[0].perPerson === 2100, '部長: 2100に減額');
+      console.assert(state.groups[2].perPerson === 1200, '一般: 1200に減額');
+      // 表示上は不足が正（モード維持）。理論上の残りは 300-350+400=350不足
+      const remain3 = state.shortage - manualEffect();
+      console.assert(remain3 >= 0, '不足>=0を維持');
+    })();
+
+    // 10) UIフローの再現：manualDraft に入力→結果タブで確定→自動再配分が走る
+    (function(){
+      state.mode='payMore';
+      state.groups = [
+        {id:uid(), name:'部長グループ', people:1, perPerson:2200, fixed:false},
+        {id:uid(), name:'課長グループ', people:2, perPerson:1800, fixed:true},
+        {id:uid(), name:'一般社員グループ', people:3, perPerson:1300, fixed:false}
+      ];
+      state.total = 10000; // 9700 → 300不足
+      state.manual = []; state.manualDraft=[{id:uid(), groupId: state.groups[2].id, name:'Aさん', amount:350}];
+      state.shortage = state.total - groupsRoundedSum();
+      console.assert(state.shortage === 300, 'UI前提: 300不足');
+      // 結果タブへ（確定）
+      commitManualAndRebalance();
+      // ラウンド返金が入って perPerson が下がる
+      console.assert(state.groups[0].perPerson === 2100, 'UI: 部長2100');
+      console.assert(state.groups[2].perPerson === 1200, 'UI: 一般1200');
+      // 結果合計は 9700-400+350=9650 → 差額 -350
+      const sum = groupsRoundedSum() + manualEffect();
+      console.assert((sum - state.total) === -350, 'UI: 差額 -350');
+    })();
+
+    // 11) プレビュー検証：不足300 / Aさん+350（manualDraft）→ 合計9100 / 残り550不足（固定も含め全員ラウンド）
+    (function(){
+      state.mode='payMore';
+      state.groups = [
+        {id:uid(), name:'部長グループ', people:1, perPerson:2200, fixed:false},
+        {id:uid(), name:'課長グループ', people:2, perPerson:1800, fixed:true},
+        {id:uid(), name:'一般社員グループ', people:3, perPerson:1300, fixed:false}
+      ];
+      state.total = 10000; // 9700 → 300不足
+      state.manual = []; state.manualDraft=[{id:uid(), groupId: state.groups[2].id, name:'Aさん', amount:350}];
+      state.shortage = state.total - groupsRoundedSum();
+      const preview = computePreview({includeFixedInPreview:true});
+      console.assert(preview.sumPreview === 9100, 'preview: 合計9100');
+      console.assert(preview.remain === 550, 'preview: 残り550不足');
+    })();
+
+  }
+  catch(e){
+    console.error('テスト失敗', e);
+  }finally{
+    // 復元
+    const s = JSON.parse(snapshot);
+    state.total = s.total; state.mode = s.mode; state.balance = s.balance; state.groups = s.groups; state.manual = s.manual; state.manualDraft = s.manualDraft; state.shortage = s.shortage;
+    recompute(); renderAll();
+  }
+}
+
+
+// ======= INIT =======
+recompute();
+renderAll();
+// 簡易テスト実行
+setTimeout(runTests, 0);
 </script>
-
-<footer>
-
-    <div>
-      <a href="question.html">よくある質問</a>
-      <a href="form.html">お問い合わせ</a>
-      <a href="privacy.html">プライバシーポリシー</a>
-    </div>
-
-    <div>
-      <a href="kiyaku.html">利用規約</a>
-      <a href="about.html">運営者情報</a>
-    </div>
-
-    <div class="copyright">© 2025 KanziPlus. All rights reserved.</div>
-  </footer>
 </body>
-
 </html>
+
+
+
+
+
