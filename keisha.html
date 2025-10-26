@@ -58,17 +58,14 @@
   .result-card{background:#1e1a12;border:1px solid rgba(255,220,140,.18)}
   .k-table{width:100%;border-collapse:collapse}
   .k-table td{padding:6px 0;border-bottom:1px solid #343a48}
-  /* Night beer garden extras */
   header .wrap{position:relative}
   .brand-icon{font-size:28px; margin:0 8px; filter:drop-shadow(0 2px 6px rgba(248,210,122,.35))}
   .sky{position:absolute; inset:0; pointer-events:none}
   .star{position:absolute; width:3px; height:3px; background:#ffe8a3; border-radius:50%; opacity:.85; animation:twinkle 3s ease-in-out infinite}
   @keyframes twinkle{ 0%,100%{opacity:.4; transform:scale(.9)} 50%{opacity:1; transform:scale(1)} }
-  /* Hide number input spinners (direct input only) */
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
   input[type="number"]{ -moz-appearance:textfield; }
-  /* Bigger amount number inside shortage line */
   .big-num{ font-size:24px; }
 </style>
 </head>
@@ -86,9 +83,9 @@
         <span class="star" style="top:4px;left:90%;width:5px;height:5px"></span>
       </div>
       <div class="tabs">
-        <button class="tab active" data-tab="input">情報入力</button>
-        <button class="tab" data-tab="assign">割り振り</button>
-        <button class="tab" data-tab="result">結果出力</button>
+        <button class="tab active" data-tab="input" type="button">情報入力</button>
+        <button class="tab" data-tab="assign" type="button">割り振り</button>
+        <button class="tab" data-tab="result" type="button">結果出力</button>
       </div>
     </div>
   </header>
@@ -109,7 +106,7 @@
         <div id="groupsArea"></div>
         <div class="mini" style="margin-top:10px;margin-bottom:6px;">上のグループから多く払います</div>
         <div class="row" style="margin-top:0">
-          <button id="addGroup" class="btn outline-pink" style="width:100%">＋ グループを追加</button>
+          <button id="addGroup" class="btn outline-pink" style="width:100%" type="button">＋ グループを追加</button>
         </div>
       </div>
 
@@ -117,9 +114,9 @@
       <div class="card" style="grid-column:1 / -1;">
         <h3>グループごとの割り勘バランス</h3>
         <div class="toolbar" id="balanceBtns">
-          <button class="pill" data-balance="large">大きい</button>
-          <button class="pill active" data-balance="medium">普通</button>
-          <button class="pill" data-balance="small">小さい</button>
+          <button class="pill" data-balance="large" type="button">大きい</button>
+          <button class="pill active" data-balance="medium" type="button">普通</button>
+          <button class="pill" data-balance="small" type="button">小さい</button>
         </div>
         <div class="bars" id="bars"></div>
       </div>
@@ -128,14 +125,14 @@
       <div class="card" style="grid-column:1 / -1;">
         <h3>端数の扱いをどうする？</h3>
         <div class="toolbar" id="modeBtns">
-          <button class="pill active" data-mode="payMore">誰かが多く払う</button>
-          <button class="pill" data-mode="payLess">誰かを安くする</button>
+          <button class="pill active" data-mode="payMore" type="button">誰かが多く払う</button>
+          <button class="pill" data-mode="payLess" type="button">誰かを安くする</button>
         </div>
       </div>
 
       <!-- 次へ進む（分離） -->
       <div style="grid-column:1 / -1;" class="row">
-        <button class="btn accent" onclick="goTab('assign')" style="width:100%">つぎへ進む</button>
+        <button class="btn accent" onclick="goTab('assign')" style="width:100%" type="button">つぎへ進む</button>
       </div>
     </section>
 
@@ -156,13 +153,13 @@
         <div id="shortageLine" class="money" style="margin-bottom:8px"></div>
         <div id="manualList" class="stack"></div>
         <div class="row" style="margin-top:6px">
-          <button id="addPerson" class="btn outline-pink" style="width:100%">＋ 人を追加</button>
+          <button id="addPerson" class="btn outline-pink" style="width:100%" type="button">＋ 人を追加</button>
         </div>
       </div>
 
       <!-- 次へ進む（分離） -->
       <div style="grid-column:1 / -1;" class="row">
-        <button class="btn accent" onclick="goTab('result')" style="width:100%">つぎへ進む</button>
+        <button class="btn accent" onclick="goTab('result')" style="width:100%" type="button">つぎへ進む</button>
       </div>
     </section>
 
@@ -176,7 +173,7 @@
           <div id="deltaLine" class="money"></div>
         </div>
         <div class="row" style="margin-top:10px">
-          <button class="btn outline-pink" id="copyBtn" style="width:100%">結果をコピー</button>
+          <button class="btn outline-pink" id="copyBtn" style="width:100%" type="button">結果をコピー</button>
         </div>
       </div>
 
@@ -193,7 +190,7 @@
 // ======= STATE =======
 const state = {
   total: 10000,
-  mode: 'payMore', // payMore: floor to 100; payLess: ceil to 100
+  mode: 'payMore', // payMore: 不足を残す / payLess: 超過を残す
   balance: 'medium',
   groups: [
     {id: uid(), name: '部長グループ', people: 1, perPerson: 0, fixed:false},
@@ -201,7 +198,7 @@ const state = {
     {id: uid(), name: '一般社員グループ', people: 3, perPerson: 0, fixed:false},
   ],
   manual: [], // {id, groupId, name, amount}
-  manualDraft: [], // UI用の下書き（つぎへ進むで確定）
+  manualDraft: [], // UI用の下書き
   shortage: 0 // +不足, -超過
 }
 
@@ -212,14 +209,19 @@ function round100(x, dir){ const m = Math.floor(x/100)*100; if(dir==='down') ret
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1600) }
 
 // ======= TABS =======
-const tabBtns = document.querySelectorAll('.tab');
-for(const b of tabBtns){ b.addEventListener('click',()=>goTab(b.dataset.tab)) }
+// （イベントデリゲーションで確実に反応させる）
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.tab');
+  if (!btn) return;
+  e.preventDefault();
+  const dest = btn.dataset.tab;
+  if (dest) goTab(dest);
+});
+
 function commitManualAndRebalance(){
-  // 下書きを本採用し、最新の端数を基準に手動割り振りを反映→自動再配分
   state.manual = JSON.parse(JSON.stringify(state.manualDraft||[]));
-  // 念のため、現在の端数（端数を除いた合計ベース）を再計算してから実行
   state.shortage = state.total - groupsRoundedSum();
-  tryRebalanceManual(-1); // 手動割り振りを考慮してモード維持で±100/人ラウンド配分
+  tryRebalanceManual(-1);
 }
 
 function goTab(key){
@@ -229,7 +231,7 @@ function goTab(key){
   document.querySelectorAll('section[id^=tab-]').forEach(s=>s.style.display='none');
   const sec = document.getElementById('tab-'+key);
   if(sec) sec.style.display='grid';
-  tabBtns.forEach(b=>b.classList.toggle('active', b.dataset.tab===key));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===key));
   renderAll();
 }
 
@@ -249,7 +251,7 @@ function renderGroupsEditor(){
     row.innerHTML = `
       <input type="text" value="${g.name}" data-k="name" placeholder="グループ名"/>
       <select data-k="people">${Array.from({length:99},(_,i)=>`<option ${g.people===(i+1)?'selected':''} value="${i+1}">${i+1}人</option>`).join('')}</select>
-      <button class="btn small ghost del">×</button>`;
+      <button class="btn small ghost del" type="button">×</button>`;
     row.querySelector('[data-k=name]').addEventListener('input',e=>{ g.name=e.target.value; });
     row.querySelector('[data-k=name]').addEventListener('blur',()=>{ renderAll(); });
     row.querySelector('[data-k=people]').addEventListener('change',e=>{ g.people=parseInt(e.target.value); recompute(); renderAll() });
@@ -283,123 +285,155 @@ function renderBars(ws){
   const bars = document.getElementById('bars');
   const max = Math.max(...ws,1);
   bars.innerHTML = ws.map((w,i)=>{
-    const h = 30 + (w/max)*88; // 30..118 vertical (縦長/全体は小さめ)
+    const h = 30 + (w/max)*88;
     const colors = ['#D4AF37','#C0C0C0','#CD7F32'];
     const color = i<3 ? colors[i] : '#d1d5db';
     return `<div class=\"bar\" title=\"重み ${w.toFixed(2)}\" style=\"height:${h}px;background:${color}\"></div>`
   }).join('');
 }
 
-// ======= CORE CALC =======
+// ======= CORE CALC（ハミルトン法＋端数ポリシー厳守） =======
 function recompute(){
+  const U = 100;
   const ws = weightsByBalance(state.groups.length);
-  const denom = state.groups.reduce((acc,g,idx)=> acc + g.people*ws[idx], 0);
-  const X = denom>0 ? state.total/denom : 0;
-  state.groups.forEach((g,idx)=>{
-    const raw = ws[idx]*X; g.raw = raw;
-    g.perPerson = (state.mode==='payMore') ? round100(raw,'down') : round100(raw,'up');
+
+  state.groups.forEach(g => { if (g._bump == null) g._bump = 0; });
+
+  let fixedSum = 0;
+  const tempFixed = new Set();
+  state.groups.forEach((g) => { if (g.fixed) fixedSum += (g.perPerson||0)*(g.people||0); });
+  state.groups.forEach((g,i) => {
+    if (g._bump !== 0) {
+      const newPP = Math.max(0,(g.perPerson||0)+g._bump);
+      g.perPerson = newPP; fixedSum += newPP*(g.people||0); tempFixed.add(i);
+    }
   });
-  state.shortage = state.total - groupsRoundedSum(); // +不足 / -超過
-}
-function groupsRoundedSum(){ return state.groups.reduce((s,g)=> s + g.perPerson * g.people, 0); }
 
-function clickAdjust(idx, step){
-  if(step===0) return; const unit=100; const times=Math.abs(step)/unit; const sign=Math.sign(step);
-  for(let t=0;t<times;t++){
-    const g = state.groups[idx];
-    const deltaSum = sign*unit*g.people; // このグループの合計変化
-    // まず反映（クリックは常に通す）
-    g.perPerson += sign*unit;
-    state.shortage -= deltaSum; // 不足(+)／超過(-)
+  const remain = state.total - fixedSum;
+  let unitSum = 0;
+  state.groups.forEach((g,i)=>{ if(!(g.fixed||tempFixed.has(i))) unitSum += (g.people||0)*(ws[i]||0); });
+  const x = unitSum>0 ? remain/unitSum : 0;
 
-    if(state.mode==='payMore'){
-      if(!autoDistribute(idx, -unit)){
-        g.perPerson -= sign*unit; state.shortage += deltaSum; toast('割り振り先がありません（固定の解除をご確認ください）'); break;
+  const raws = [];
+  state.groups.forEach((g,i)=>{
+    if (g.fixed || tempFixed.has(i)) { raws[i] = g.perPerson||0; }
+    else {
+      const raw = (ws[i]||0)*x; raws[i]=raw;
+      g.perPerson = Math.max(0, Math.round(raw/U)*U);
+    }
+  });
+
+  let sum0 = 0; state.groups.forEach(g=> sum0 += (g.perPerson||0)*(g.people||0));
+  let diff = state.total - sum0;
+
+  const adjustableIdx = () => state.groups.map((g,i)=>({g,i}))
+    .filter(o => !(o.g.fixed||tempFixed.has(o.i)) && (o.g.people||0)>0);
+  const scoreOf = (i, sign) => sign>0 ? ((raws[i]||0)-(state.groups[i].perPerson||0))
+                                      : ((state.groups[i].perPerson||0)-(raws[i]||0));
+
+  function stepOnce(sign){
+    const cand = adjustableIdx()
+      .filter(o => sign>0 ? true : (o.g.perPerson||0) >= U)
+      .map(o => ({i:o.i,g:o.g,score:scoreOf(o.i,sign)}))
+      .sort((a,b)=>{
+        if (b.score!==a.score) return b.score-a.score;
+        const byCnt=(b.g.people||0)-(a.g.people||0); if (byCnt) return byCnt;
+        const byW=(ws[b.i]||0)-(ws[a.i]||0); if (byW) return byW;
+        return a.i-b.i;
+      });
+    for(const c of cand){
+      const step = sign>0 ? +U : -U;
+      const newP = (c.g.perPerson||0)+step; if(newP<0) continue;
+      const newDiff = diff - step*(c.g.people||0);
+      if (Math.abs(newDiff) < Math.abs(diff)) {
+        c.g.perPerson=newP; diff=newDiff; return true;
       }
-    }else{ // payLess
-      if(!autoDistribute(idx, +unit)){
-        g.perPerson -= sign*unit; state.shortage += deltaSum; toast('割り振り先がありません（固定の解除をご確認ください）'); break;
+    }
+    return false;
+  }
+
+  let guard=0;
+  while(Math.abs(diff)>=U){
+    const moved = stepOnce(diff>0?+1:-1);
+    if(!moved||++guard>4000) break;
+  }
+
+  function enforceSign(){
+    if (state.mode==='payMore' && diff<0){
+      const cand = adjustableIdx()
+        .filter(o => (o.g.perPerson||0) >= U)
+        .map(o => {
+          const nd = diff + U*(o.g.people||0);
+          return {i:o.i,g:o.g,newDiff:nd,incAbs:Math.abs(nd)};
+        })
+        .sort((a,b)=>{
+          if(a.incAbs!==b.incAbs) return a.incAbs-b.incAbs;
+          const byCnt=(a.g.people||0)-(b.g.people||0); if(byCnt) return byCnt;
+          const byW=(ws[a.i]||0)-(ws[b.i]||0); if(byW) return byW;
+          return a.i-b.i;
+        });
+      if(cand.length){
+        cand[0].g.perPerson -= U; diff = cand[0].newDiff;
+        if(diff<0) enforceSign();
+      }
+    }
+    if (state.mode==='payLess' && diff>0){
+      const cand = adjustableIdx()
+        .map(o => {
+          const nd = diff - U*(o.g.people||0);
+          return {i:o.i,g:o.g,newDiff:nd,incAbs:Math.abs(nd)};
+        })
+        .sort((a,b)=>{
+          if(a.incAbs!==b.incAbs) return a.incAbs-b.incAbs;
+          const byCnt=(a.g.people||0)-(b.g.people||0); if(byCnt) return byCnt;
+          const byW=(ws[a.i]||0)-(ws[b.i]||0); if(byW) return byW;
+          return a.i-b.i;
+        });
+      if(cand.length){
+        cand[0].g.perPerson += U; diff = cand[0].newDiff;
+        if(diff>0) enforceSign();
       }
     }
   }
+  enforceSign();
+
+  state.groups.forEach(g=>{ g._bump = 0; });
+  state.shortage = diff;
+}
+
+function groupsRoundedSum(){ return state.groups.reduce((s,g)=> s + (g.perPerson||0) * (g.people||0), 0); }
+
+// ======= ±ボタン：押したグループだけ厳密±し、他は再ハミルトン =======
+function clickAdjust(idx, step){
+  if (step === 0) return;
+  const g = state.groups[idx]; if (!g) return;
+  if (g._bump == null) g._bump = 0;
+  g._bump += step;
+  recompute();
   renderAll();
 }
 
-// eachDelta: 受け取り側グループの 1人あたりに加える差分（payMore時は -100、payLess時は +100）
-function autoDistribute(excludeIdx, eachDelta, useManual=false){
-  const unit=100; let safety=2000; // 念のための無限ループ対策
-  const needsAdjustPayMore = () => (useManual ? (state.shortage - manualEffect()) < 0 : state.shortage < 0);
-  const needsAdjustPayLess = () => (useManual ? (state.shortage - manualEffect()) > 0 : state.shortage > 0);
-  while( (state.mode==='payMore' && needsAdjustPayMore()) || (state.mode==='payLess' && needsAdjustPayLess()) ){
-    let recipientIdx = []; let personCount = 0;
-    for(let i=0;i<state.groups.length;i++){
-      const g = state.groups[i];
-      if(g.fixed) continue; // 固定は対象外
-      if(eachDelta<0 && g.perPerson<=0) continue; // 0円未満NG
-      recipientIdx.push(i); personCount += g.people; // 操作グループも固定でなければ含む
-    }
-    if(personCount===0) return false; // 分配不能
+// ======= 互換API：旧ロジックの呼び出し口を再計算に委譲 =======
+function autoDistribute(){ recompute(); return true; }
+function tryRebalanceManual(){ recompute(); return true; }
 
-    // 1ラウンド: 非固定メンバー全員に eachDelta（±100/人）
-    recipientIdx.forEach(i=>{ const gg=state.groups[i]; if(!(eachDelta<0 && gg.perPerson<=0)) gg.perPerson += eachDelta; });
-    const deltaSum = eachDelta * personCount; // sum 変化量 → shortage は -deltaSum
-    state.shortage -= deltaSum;
-
-    if(--safety<=0) break;
-  }
-  return true;
-}
-
-// manual rebalance helper (for individual assignments)
-function groupIdxById(id){ return state.groups.findIndex(g=>g.id===id); }
-function tryRebalanceManual(excludeIdx){
-  let safety=2000;
-  while( ((state.mode==='payMore') && (state.shortage - manualEffect()) < 0) || ((state.mode==='payLess') && (state.shortage - manualEffect()) > 0) ){
-    const ok = autoDistribute(excludeIdx, state.mode==='payMore' ? -100 : +100, true);
-    if(!ok) return false;
-    if(--safety<=0) break;
-  }
-  return true;
-}
-
-// ======= ASSIGN TAB RENDER =======
-// 事前プレビュー：manualDraft を反映し、モード維持のために±100/人のラウンド配分を仮適用
-function computePreview(opts={includeFixedInPreview:true}){
+// ======= プレビュー：現在の perPerson をベースに概算を返す =======
+function computePreview(){
+  const per = state.groups.map(g => g.perPerson||0);
+  const sumPreview = per.reduce((s,p,i)=> s + p*(state.groups[i].people||0), 0);
   const draft = state.manualDraft || [];
   const draftSum = draft.reduce((acc,m)=> acc + (Number(m.amount)||0), 0);
-  // 現在の perPerson をコピー
-  const per = state.groups.map(g=> g.perPerson);
-  // 手動適用後の残量（+不足 / -超過）
-  let remain = state.shortage - (state.mode==='payMore' ? draftSum : -draftSum);
-  let safety = 2000;
-  // 端数サイン維持のため、±100/人 ラウンドを仮適用
-  while( (state.mode==='payMore' && remain < 0) || (state.mode==='payLess' && remain > 0) ){
-    let idx = []; let cnt = 0;
-    for(let i=0;i<state.groups.length;i++){
-      const g = state.groups[i];
-      // プレビューでは includeFixedInPreview=true のとき固定も対象にする
-      if(!opts.includeFixedInPreview && g.fixed) continue;
-      if(state.mode==='payMore' && per[i]<=0) continue; // 0円未満防止
-      idx.push(i); cnt += g.people;
-    }
-    if(cnt===0) break; // これ以上調整できない
-    const eachDelta = (state.mode==='payMore')? -100 : +100;
-    idx.forEach(i=>{ per[i] += eachDelta; });
-    // shortage は合計変化 eachDelta*cnt を反映（total - sum）
-    remain -= eachDelta * cnt;
-    if(--safety<=0) break;
-  }
-  const sumPreview = per.reduce((s,p,i)=> s + p*state.groups[i].people, 0); // 端数を除いた合計（手動金額は含めない）
+  const remain = state.total - sumPreview;
   return { per, remain, sumPreview, draftSum };
 }
 
+// ======= ASSIGN TAB RENDER =======
 const adjustArea = document.getElementById('adjustArea');
 const sumRoundedEl = document.getElementById('sumRounded');
 const shortageLine = document.getElementById('shortageLine');
 
 function renderAssign(){
   adjustArea.innerHTML='';
-  // プレビュー値（manualDraftに基づく仮適用）※入力仕様は維持するため、入力中はupdateShortagePreview()で再描画しない
   const hasDraft = (state.manualDraft||[]).length>0 && (state.manualDraft||[]).some(m=>Number(m.amount)>0);
   const preview = computePreview();
 
@@ -416,25 +450,23 @@ function renderAssign(){
         </div>
         <div style="text-align:right">
           <div style="font-size:22px;font-weight:800" class=\"money\">${yen(displayPer)}円<span class=\"mini\">/1人<\/span><\/div>
-          <button class="${lockCls}" style="margin-top:6px">${g.fixed?'🔒 固定中':'🔓 固定なし'}</button>
+          <button class="${lockCls}" style="margin-top:6px" type="button">${g.fixed?'🔒 固定中':'🔓 固定なし'}</button>
         </div>
       </div>
       <div class="controls-grid">
-        <button class="btn small outline-pink" data-d="+100">＋100</button>
-        <button class="btn small outline-pink" data-d="-100">−100</button>
-        <button class="btn small outline-pink" data-d="+1000">＋1000</button>
-        <button class="btn small outline-pink" data-d="-1000">−1000</button>
+        <button class="btn small outline-pink" data-d="+100" type="button">＋100</button>
+        <button class="btn small outline-pink" data-d="-100" type="button">−100</button>
+        <button class="btn small outline-pink" data-d="+1000" type="button">＋1000</button>
+        <button class="btn small outline-pink" data-d="-1000" type="button">−1000</button>
       </div>`;
     row.querySelectorAll('button[data-d]').forEach(b=> b.addEventListener('click',()=>{ clickAdjust(idx, parseInt(b.dataset.d,10)); }));
     row.querySelector('.'+(g.fixed?'lock-on':'lock-off')).addEventListener('click',()=>{ g.fixed=!g.fixed; renderAll(); });
     adjustArea.appendChild(row);
   });
 
-  // 合計（端数を除いた合計）はプレビューの per を反映（手動の金額は含めない）
   const sumForView = hasDraft ? preview.sumPreview : groupsRoundedSum();
   sumRoundedEl.textContent = yen(sumForView);
 
-  // 残り表示：モードの文言は固定しつつ、プレビュー残量を採用（※入力中の再描画は行わない）
   const remain = hasDraft ? preview.remain : state.shortage;
   const absRemain = Math.abs(remain);
   const suffix = hasDraft && ((state.mode==='payMore' && remain<0) || (state.mode==='payLess' && remain>0)) ? '<span class="mini muted">（固定の解除が必要）</span>' : '';
@@ -448,7 +480,6 @@ function renderAssign(){
 }
 
 function updateShortagePreview(){
-  // 入力中でも、入力欄を壊さずに数値だけプレビュー更新
   const hasDraft = (state.manualDraft||[]).some(m=>Number(m.amount)>0);
   if(!hasDraft){
     sumRoundedEl.textContent = yen(groupsRoundedSum());
@@ -460,17 +491,13 @@ function updateShortagePreview(){
           : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain0)}</b> 円 多い`);
     return;
   }
-  // 直前の“良かった仕様”に合わせ、プレビューでは固定も含めてラウンド（=総人数ベース）
   const preview = computePreview({includeFixedInPreview:true});
-  // 調整後 per をカードの表示だけ差し替え（入力欄は再描画しない）
   const cards = adjustArea.querySelectorAll('.card.card-pink');
   cards.forEach((card, i)=>{
     const moneyEl = card.querySelector('.money');
     if(moneyEl && preview.per[i] != null){ moneyEl.innerHTML = yen(preview.per[i]) + '円<span class=\"mini\">/1人<\/span>'; }
   });
-  // 合計（端数を除いた合計）
   sumRoundedEl.textContent = yen(preview.sumPreview);
-  // 残り表示（文言は固定）
   const absRemain = Math.abs(preview.remain);
   const suffix = ((state.mode==='payMore' && preview.remain<0) || (state.mode==='payLess' && preview.remain>0)) ? '<span class="mini muted">（固定の解除が必要）</span>' : '';
   shortageLine.innerHTML = absRemain===0
@@ -505,10 +532,9 @@ function renderManualList(){
       <div class="row" style="margin-top:8px">
         <input class="amt" type="number" min="0" step="1" inputmode="numeric" value="${m.amount}"/>
         <div class="mini" style="flex:none">${tail}</div>
-        <button class="btn small ghost" style="flex:none">×</button>
+        <button class="btn small ghost" style="flex:none" type="button">×</button>
       </div>`;
 
-    // 下書きだけを編集（残り金額は変えない）
     box.querySelector('.gsel').addEventListener('change',e=>{ m.groupId = e.target.value; updateShortagePreview(); renderManualList(); });
     box.querySelector('.name').addEventListener('input',e=>{ m.name = e.target.value; updateShortagePreview(); });
     box.querySelector('.amt').addEventListener('input',e=>{ m.amount = Number(e.target.value||0); updateShortagePreview(); });
@@ -521,7 +547,7 @@ function renderManualList(){
 
 function manualEffect(){
   const s = state.manual.reduce((acc,m)=> acc + (m.amount||0), 0);
-  return (state.mode==='payMore') ? s : -s; // payMore: shortage - s, payLess: shortage + s
+  return (state.mode==='payMore') ? s : -s;
 }
 
 // ======= RESULT RENDER =======
@@ -560,7 +586,6 @@ function updateResults(){
     section.innerHTML = `<div style="font-weight:800">${g.name} <span style="margin-left:10px">${unit}</span></div>${peopleBlock ? `<div class=\"stack\" style=\"margin-top:6px\">${peopleBlock}</div>`:''}`;
     resultView.appendChild(section);
 
-    // details block
     const d = document.createElement('div');
     let lines = `<table class="k-table">`+
       `<tr><td>${g.name}</td><td class="money" style="text-align:right">${yen(g.perPerson)}円 × ${g.people}人 = ${yen(groupTotal)}円</td></tr>`;
@@ -573,7 +598,6 @@ function updateResults(){
   else if(delta>0){ deltaLine.innerHTML = `<span class="money">${yen(Math.abs(delta))}</span> 円 <b>多い</b>`; }
   else { deltaLine.innerHTML = `<span class="money">${yen(Math.abs(delta))}</span> 円 <b>足りない</b>`; }
 
-  // details summary（同じカード内に合算を表示）
   const totals = document.createElement('div');
   totals.innerHTML = `
     <hr class="sep"/>
@@ -607,181 +631,12 @@ function renderAll(){
   renderAssign(); updateResults();
 }
 
-// ======= TESTS =======
-function runTests(){
-  const snapshot = JSON.stringify(state);
-  try{
-    // 1) payMore のときは合計が総額以下
-    state.mode='payMore'; recompute();
-    console.assert(groupsRoundedSum() <= state.total, 'payMore: 合計が総額を超えないはず');
-
-    // 2) payLess のときは合計が総額以上
-    state.mode='payLess'; recompute();
-    console.assert(groupsRoundedSum() >= state.total, 'payLess: 合計が総額以上になるはず');
-
-    // 3) 結果描画が行われる
-    updateResults();
-    console.assert(document.getElementById('resultView').children.length >= 1, '結果ビューが描画される');
-
-    // 4) 端数221不足 → 課長+100を2回で自動配分が走り、モードを維持（操作グループも受け取り対象）
-    (function(){
-      state.mode='payMore';
-      state.groups = [
-        {id:uid(), name:'部長グループ', people:1, perPerson:12000, fixed:false},
-        {id:uid(), name:'課長グループ', people:2, perPerson:9800, fixed:false},
-        {id:uid(), name:'一般社員グループ', people:3, perPerson:7500, fixed:false}
-      ];
-      state.total = 54321;
-      state.manual = []; state.manualDraft=[];
-      state.shortage = state.total - groupsRoundedSum();
-      console.assert(state.shortage === 221, '前提: 端数221不足');
-      clickAdjust(1, +100); // 課長 +100
-      console.assert(state.shortage === 21, '1回目+100後: 21不足');
-      clickAdjust(1, +100); // 課長 さらに+100 → 自動配分
-      console.assert(state.shortage === 421, '2回目+100後: 421不足（操作グループも受け取り）');
-      console.assert(state.groups[1].perPerson === 9900, '課長 1人あたり: 最終 9900');
-      console.assert(state.groups[0].perPerson === 11900 && state.groups[2].perPerson === 7400, '部長/一般: 各 −100 反映');
-    })();
-
-    // 5) payMore 維持テスト：複数回操作しても不足が負にならない
-    (function(){
-      state.mode='payMore';
-      recompute();
-      for(let i=0;i<5;i++){ clickAdjust(0, +100); }
-      console.assert(state.shortage >= 0, 'payMore維持: 不足>=0 のまま');
-    })();
-
-    // 6) payLess 維持テスト：複数回操作しても超過が正にならない
-    (function(){
-      state.mode='payLess';
-      recompute();
-      for(let i=0;i<5;i++){ clickAdjust(0, -100); }
-      console.assert(state.shortage <= 0, 'payLess維持: 超過<=0 のまま');
-    })();
-
-    // 7) manual: payMoreで個別指定しても不足>=0を維持し、文言は「足りない」
-    (function(){
-      state.mode='payMore';
-      state.groups = [
-        {id:uid(), name:'部長グループ', people:1, perPerson:12000, fixed:false},
-        {id:uid(), name:'課長グループ', people:2, perPerson:9800, fixed:false},
-        {id:uid(), name:'一般社員グループ', people:3, perPerson:7500, fixed:false}
-      ];
-      state.total = 54321; state.manual = []; state.manualDraft=[];
-      state.shortage = state.total - groupsRoundedSum();
-      console.assert(state.shortage === 221, '前提: 端数221不足');
-      state.manual.push({id:uid(), groupId: state.groups[0].id, name:'たくみ', amount:300});
-      const ok = tryRebalanceManual(0);
-      console.assert(ok, 'manual配分: payMoreで成功');
-      updateResults();
-      const remain = state.shortage - manualEffect();
-      console.assert(remain >= 0, 'payMore: 手動後も不足>=0');
-      console.assert(shortageLine.innerHTML.includes('足りない'), '文言: 足りない固定');
-    })();
-
-    // 8) manual: payLessで個別指定しても超過<=0を維持し、文言は「多い」
-    (function(){
-      state.mode='payLess';
-      state.groups = [
-        {id:uid(), name:'部長グループ', people:1, perPerson:12100, fixed:false},
-        {id:uid(), name:'課長グループ', people:2, perPerson:9900, fixed:false},
-        {id:uid(), name:'一般社員グループ', people:3, perPerson:7600, fixed:false}
-      ];
-      state.total = 54321; state.manual = []; state.manualDraft=[];
-      state.shortage = state.total - groupsRoundedSum();
-      console.assert(state.shortage <= 0, '前提: payLessで超過<=0');
-      state.manual.push({id:uid(), groupId: state.groups[0].id, name:'みく', amount:300});
-      const ok2 = tryRebalanceManual(0);
-      console.assert(ok2, 'manual配分: payLessで成功');
-      updateResults();
-      const remain2 = state.shortage - manualEffect();
-      console.assert(remain2 <= 0, 'payLess: 手動後も超過<=0');
-      console.assert(shortageLine.innerHTML.includes('多い'), '文言: 多い固定');
-    })();
-
-    // 9) manual具体例：不足300で Aさん+350（payMore）。課長は固定、Aさんは一般所属として（直接manual）
-    (function(){
-      state.mode='payMore';
-      state.groups = [
-        {id:uid(), name:'部長グループ', people:1, perPerson:2200, fixed:false},
-        {id:uid(), name:'課長グループ', people:2, perPerson:1800, fixed:true},
-        {id:uid(), name:'一般社員グループ', people:3, perPerson:1300, fixed:false}
-      ];
-      state.total = 10000; // 合計 9700 → 不足 300
-      state.manual = []; state.manualDraft=[];
-      state.shortage = state.total - groupsRoundedSum();
-      console.assert(state.shortage === 300, '前提: 10000まで300不足');
-      const generalId = state.groups[2].id;
-      state.manual.push({id:uid(), groupId: generalId, name:'Aさん', amount:350});
-      const ok3 = tryRebalanceManual(2);
-      console.assert(ok3, 'manual配分: 成功');
-      // 返金1ラウンドで 部長/一般 の基準単価が−100
-      console.assert(state.groups[0].perPerson === 2100, '部長: 2100に減額');
-      console.assert(state.groups[2].perPerson === 1200, '一般: 1200に減額');
-      // 表示上は不足が正（モード維持）。理論上の残りは 300-350+400=350不足
-      const remain3 = state.shortage - manualEffect();
-      console.assert(remain3 >= 0, '不足>=0を維持');
-    })();
-
-    // 10) UIフローの再現：manualDraft に入力→結果タブで確定→自動再配分が走る
-    (function(){
-      state.mode='payMore';
-      state.groups = [
-        {id:uid(), name:'部長グループ', people:1, perPerson:2200, fixed:false},
-        {id:uid(), name:'課長グループ', people:2, perPerson:1800, fixed:true},
-        {id:uid(), name:'一般社員グループ', people:3, perPerson:1300, fixed:false}
-      ];
-      state.total = 10000; // 9700 → 300不足
-      state.manual = []; state.manualDraft=[{id:uid(), groupId: state.groups[2].id, name:'Aさん', amount:350}];
-      state.shortage = state.total - groupsRoundedSum();
-      console.assert(state.shortage === 300, 'UI前提: 300不足');
-      // 結果タブへ（確定）
-      commitManualAndRebalance();
-      // ラウンド返金が入って perPerson が下がる
-      console.assert(state.groups[0].perPerson === 2100, 'UI: 部長2100');
-      console.assert(state.groups[2].perPerson === 1200, 'UI: 一般1200');
-      // 結果合計は 9700-400+350=9650 → 差額 -350
-      const sum = groupsRoundedSum() + manualEffect();
-      console.assert((sum - state.total) === -350, 'UI: 差額 -350');
-    })();
-
-    // 11) プレビュー検証：不足300 / Aさん+350（manualDraft）→ 合計9100 / 残り550不足（固定も含め全員ラウンド）
-    (function(){
-      state.mode='payMore';
-      state.groups = [
-        {id:uid(), name:'部長グループ', people:1, perPerson:2200, fixed:false},
-        {id:uid(), name:'課長グループ', people:2, perPerson:1800, fixed:true},
-        {id:uid(), name:'一般社員グループ', people:3, perPerson:1300, fixed:false}
-      ];
-      state.total = 10000; // 9700 → 300不足
-      state.manual = []; state.manualDraft=[{id:uid(), groupId: state.groups[2].id, name:'Aさん', amount:350}];
-      state.shortage = state.total - groupsRoundedSum();
-      const preview = computePreview({includeFixedInPreview:true});
-      console.assert(preview.sumPreview === 9100, 'preview: 合計9100');
-      console.assert(preview.remain === 550, 'preview: 残り550不足');
-    })();
-
-  }
-  catch(e){
-    console.error('テスト失敗', e);
-  }finally{
-    // 復元
-    const s = JSON.parse(snapshot);
-    state.total = s.total; state.mode = s.mode; state.balance = s.balance; state.groups = s.groups; state.manual = s.manual; state.manualDraft = s.manualDraft; state.shortage = s.shortage;
-    recompute(); renderAll();
-  }
-}
-
-
 // ======= INIT =======
 recompute();
 renderAll();
-// 簡易テスト実行
-setTimeout(runTests, 0);
 </script>
 </body>
 </html>
-
 
 
 
