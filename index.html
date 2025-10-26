@@ -1,322 +1,320 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7292628789812881"
-     crossorigin="anonymous"></script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>幹事のためのアプリ｜KanziPlus（カンジプラス）</title>
-  <meta name="description" content="KanziPlus（カンジプラス）は、幹事に特化したアプリ。傾斜割り勘や履歴保存など便利な機能で幹事の負担を軽減します。">
-  <meta name="google-site-verification" content="eQuZ-6OPek2UkDdG_wErO68Hi_ycFQP9SAoEV657LNo" />
-
-  <link rel="canonical" href="https://kanziplus.jp/" />
-
-  <!-- ✅ favicon 各種対応 -->
-  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="shortcut icon" href="/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
-
-  <!-- ✅ Google Analytics (GA4) 設定 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-EXN7VZYJFG');
-  </script>
-
-  <!-- ✅ 構造化データ (JSON-LD) -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "KanziPlus",
-      "url": "https://kanziplus.jp",
-      "logo": "https://kanziplus.jp/images/kanziplus-icon.png"
-    }
-  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KanziPlus｜幹事のための割り勘アシスト</title>
+  <meta name="description" content="KanziPlus（カンジプラス）は、幹事の“めんどい”をゼロにする割り勘アシスト。傾斜割り勘やグループ別固定割り、端数処理まで直感操作で一瞬。" />
+  <meta name="theme-color" content="#151a22" />
+  <!-- OGP -->
+  <meta property="og:title" content="KanziPlus｜幹事のための割り勘アシスト" />
+  <meta property="og:description" content="傾斜割り勘・端数処理も直感操作で一瞬。今すぐ無料で使えます。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://kanziplus.jp/" />
+  <meta property="og:image" content="https://kanziplus.jp/ogp.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+    :root{
+      --bg:#0f131a;--bg2:#151a22;--card:#1b2029;--ink:#e9eaee;--muted:#b2b6bf;--accent:#f8d27a;--accent-2:#ffb455;--ok:#22c55e;--bad:#ef4444;--line:#2a3140;
+      --radius:18px;--shadow:0 18px 40px rgba(0,0,0,.30);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic UI",sans-serif;background:radial-gradient(1200px 600px at 20% -10%, #1b2029 0%, rgba(27,32,41,0) 60%),linear-gradient(180deg,#151a22 0%, #0f131a 100%);color:var(--ink);font-size:17px;line-height:1.6;scroll-behavior:smooth}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;height:auto;display:block}
+    header{position:sticky;top:0;z-index:50;background:rgba(21,26,34,.55);backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #232938}
+    .wrap{max-width:1080px;margin:0 auto;padding:14px 18px}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.6px;color:#ffe8a3;font-size:22px;text-shadow:0 2px 8px rgba(248,210,122,.25)}
+    .brand .emoji{filter:drop-shadow(0 2px 6px rgba(248,210,122,.35))}
+    .navlinks{display:flex;gap:18px;align-items:center}
+    .navlinks a{color:var(--muted);font-weight:700}
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    html, body {
-      height: 100%;
-    }
-    body {
-      min-height: 100vh;
-      font-family: 'Roboto', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      background-color: #000;
-    }
+    .btn{appearance:none;border:none;border-radius:12px;padding:12px 16px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#2a1b04;font-weight:900;cursor:pointer;box-shadow:0 12px 28px rgba(255,180,85,.22);display:inline-flex;align-items:center;gap:8px}
+    .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+    .btn.s{padding:8px 12px;border-radius:10px;font-size:14px}
 
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('images/party-bg.png') no-repeat center center/cover;
-      z-index: -2;
-    }
+    /* HERO */
+    .hero{position:relative;overflow:hidden}
+    .hero .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center;min-height:68vh}
+    .hero h1{font-size:40px;line-height:1.18;margin:10px 0}
+    .hero p.sub{color:var(--muted);margin:10px 0 20px}
+    .hero .cta{display:flex;gap:10px;flex-wrap:wrap}
+    .sky{position:absolute; inset:0; pointer-events:none}
+    .star{position:absolute; width:3px; height:3px; background:#ffe8a3; border-radius:50%; opacity:.85; animation:twinkle 3s ease-in-out infinite}
+    @keyframes twinkle{ 0%,100%{opacity:.4; transform:scale(.9)} 50%{opacity:1; transform:scale(1)} }
+    .glass{background:linear-gradient(180deg, rgba(255,220,140,.08), rgba(255,220,140,.05));border:1px solid rgba(255,220,140,.18);border-radius:16px;box-shadow:var(--shadow)}
+    .preview{padding:14px}
 
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 1rem 2rem;
-      background: rgba(0,0,0,0.6);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1000;
-    }
-    header .logo {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #ff6f3c;
-    }
-    header nav a {
-      margin-left: 1.5rem;
-      text-decoration: none;
-      color: #fff;
-      font-size: 0.95rem;
-    }
+    /* SECTIONS */
+    section{padding:56px 0;border-top:1px solid #1c2230}
+    h2{font-size:26px;margin:0 0 12px}
+    .muted{color:var(--muted)}
+    .grid{display:grid;gap:16px}
+    .two{grid-template-columns:1fr 1fr}
+    .three{grid-template-columns:repeat(3,1fr)}
+    .card{background:var(--card);border:1px solid #262c39;border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+    .k{font-variant-numeric:tabular-nums}
 
-    .hero {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 2rem;
-      position: relative;
-      z-index: 1;
-    }
-    .hero::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: -1;
-    }
+    /* Feature blocks */
+    .feat{display:flex;gap:12px;align-items:flex-start}
+    .feat .ico{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:#1e1a12;border:1px solid rgba(255,220,140,.18)}
+    .feat h3{margin:0 0 6px;font-size:18px}
 
-    .hero h1 {
-      font-size: 2.4rem;
-      color: #ff6f3c;
-      margin-bottom: 1rem;
-      opacity: 0;
-      transform: translateX(-100%);
-      animation: slideInLeft 1s forwards ease-out;
-    }
+    /* Steps */
+    .steps{counter-reset:step}
+    .step{position:relative;padding:16px;border:1px dashed #31384a;border-radius:16px}
+    .step:before{counter-increment:step;content:counter(step);position:absolute;left:-10px;top:-10px;width:32px;height:32px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#2a1b04;font-weight:900;display:grid;place-items:center;box-shadow:0 10px 22px rgba(255,180,85,.25)}
 
-    .description {
-      font-size: 1.25rem;
-      max-width: 800px;
-      line-height: 2;
-      margin-top: 1rem;
-      opacity: 0;
-      transform: translateX(100%);
-      animation: slideInRight 1s 0.5s forwards ease-out;
-      color: #fff;
-      text-align: left;
-    }
+    /* Testimonials */
+    .say{display:flex;gap:12px}
+    .say .avatar{width:44px;height:44px;border-radius:999px;background:#2a3140}
+    .say .bubble{flex:1;background:#181e28;border:1px solid #343a48;border-radius:14px;padding:12px}
 
-    .description p + p {
-      margin-top: 1em;
-    }
+    /* FAQ */
+    details{border:1px solid #343a48;border-radius:14px;padding:12px}
+    summary{cursor:pointer;font-weight:800}
 
-    @media screen and (max-width: 768px) {
-      .hero h1 {
-        font-size: 1.6rem;
-      }
-      .description {
-        font-size: 1rem;
-      }
-    }
+    /* Footer */
+    footer{padding:40px 0;border-top:1px solid #1c2230;color:var(--muted)}
 
-    @keyframes slideInLeft {
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes slideInRight {
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    .hero .start-btn {
-      margin-top: 2rem;
-      background-color: #ff6f3c;
-      color: white;
-      padding: 0.8rem 2rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      text-decoration: none;
-      animation: fadeInUp 2s ease-out;
-    }
-
-    @keyframes fadeInUp {
-      0% {opacity: 0; transform: translateY(20px);}
-      100% {opacity: 1; transform: translateY(0);}
-    }
-
-    .feature-section {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      margin-top: 3rem;
-      padding: 0 1rem;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .feature-card {
-      background-color: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      color: #fff;
-      animation: fadeInUp 1s ease;
-    }
-
-    .feature-card h2 {
-      color: #ffb88a;
-      font-size: 1.3rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .feature-card p {
-      font-size: 1rem;
-      line-height: 1.7;
-    }
-
-    @media (max-width: 768px) {
-      .feature-card h2 {
-        font-size: 1.1rem;
-      }
-      .feature-card p {
-        font-size: 0.95rem;
-      }
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.85rem;
-      color: #ddd;
-    }
-    footer a {
-      color: #ddd;
-      text-decoration: underline;
+    /* Responsive */
+    @media (max-width: 860px){
+      .hero .wrap{grid-template-columns:1fr}
+      .two{grid-template-columns:1fr}
+      .three{grid-template-columns:1fr}
+      .hero h1{font-size:32px}
     }
   </style>
 </head>
 <body>
-  <main class="hero">
-    <h1>幹事の「面倒くさい」をゼロに。<br>KanziPlus（カンジプラス）</h1>
-    <div class="description">
-      <p>KanziPlus（カンジプラス）は、これまで多数の幹事を経験してきた開発者による、幹事のためのサービスです。</p>
-<p>「傾斜割り勘」「履歴の保存」など、今まさに欲しかった機能を集約。飲み会、旅行、イベント…どんな場面でも使えて、これからも幹事を助ける機能をどんどん追加していきます。</p>
-<p>無料・ログイン不要で誰でもすぐに利用可能！！</p>
-<p>「誰も幹事をやりたがらず、会が開けなかった」。そんな経験から生まれたKanziPlusが、あなたの幹事ライフを支えます。</p>
-
+  <header>
+    <div class="wrap nav">
+      <div class="brand"><span class="emoji" aria-hidden="true">🍺</span>KanziPlus<span class="emoji" aria-hidden="true">✨</span></div>
+      <nav class="navlinks">
+        <a href="#features">特徴</a>
+        <a href="#how">使い方</a>
+        <a href="#faq">よくある質問</a>
+        <a class="btn s" href="/keisha">今すぐ始める</a>
+      </nav>
     </div>
-    <a href="/keisha" class="start-btn">今すぐ始める</a>
+  </header>
 
-
-
-    <div class="feature-section">
-      
-          
-        <div class="feature-card">
-            <h2>🗓️ 候補日・場所の通常投票</h2>
-            <p>
-              候補を入力するだけで、即シェア可能な投票ページを作成。<br>
-              回答はリアルタイムで集計され、参加者の希望がひと目でわかります。
-            </p>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="sky" aria-hidden="true">
+      <span class="star" style="top:6px;left:6%;width:4px;height:4px"></span>
+      <span class="star" style="top:18px;left:20%;width:3px;height:3px"></span>
+      <span class="star" style="top:10px;left:64%;width:5px;height:5px"></span>
+      <span class="star" style="top:26px;left:82%;width:3px;height:3px"></span>
+      <span class="star" style="top:30px;left:38%;width:4px;height:4px"></span>
+      <span class="star" style="top:14px;left:50%;width:6px;height:6px"></span>
+      <span class="star" style="top:4px;left:90%;width:5px;height:5px"></span>
+    </div>
+    <div class="wrap">
+      <div>
+        <p class="muted" style="margin:0">幹事の“めんどい”をゼロに</p>
+        <h1>傾斜割り勘・端数処理・<br/>グループ別調整まで、<br/>ぜんぶ一瞬。</h1>
+        <p class="sub">KanziPlus（カンジプラス）は、飲み会・打ち上げ・旅行の会計を<strong>美しく・速く・正確に</strong>仕上げる割り勘アシスト。直感UIで迷いゼロ。もちろん無料。</p>
+        <div class="cta">
+          <a class="btn" href="/keisha">今すぐ始める</a>
+          <a class="btn ghost" href="#features">できることを見る</a>
         </div>
-          
-        <div class="feature-card">
-            <h2>⭕❌ 参加可否の〇×投票</h2>
-            <p>
-              各イベントへの参加可否を〇×形式で簡単入力。<br>
-              誰が参加可能かが一覧で見えるので、出欠確認もスムーズです。
-            </p>
-        </div>
-        <div class="feature-card">
-          <h2>📊 傾斜割り勘計算</h2>
-          <p>
-            「年齢や立場に応じて支払い額を変えたい」そんな配慮も、係数を入力するだけでOK。<br>
-            全員が納得できる割り勘を実現します。
-          </p>
+        <p class="muted" style="margin-top:10px;font-size:14px">インストール不要・スマホ対応 / 作成者も幹事経験豊富 ✍️</p>
       </div>
-        
-      <div class="feature-card">
-          <h2>👥 グループ別割り勘</h2>
-          <p>
-            「役職や所属ごとに負担額を分けたい」時に便利な、固定金額のグループ割り勘機能。<br>
-            グループに分け、差額レベルも選べるため、場面に応じた柔軟な費用分担が可能です。
-          </p>
-      </div>  
-        <div class="feature-card">
-          <h2>✍️ 名前の自動連携</h2>
-          <p>
-            参加者が投票時に自分の名前を入力するため、<br>
-            幹事が一人ずつ名前を入力する必要はありません。<br>
-            投票後はそのまま割り勘計算に名前が反映され、手間なくスムーズ！
-          </p>
+      <div class="glass preview">
+        <div class="card" style="background:#1e1a12;border:1px solid rgba(255,220,140,.18)">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="font-weight:900;letter-spacing:.6px">KanziPlus</div>
+            <div style="font-size:12px;color:var(--muted)">Demo</div>
+          </div>
+          <hr style="border:none;border-top:1px solid #312a1a;margin:10px 0"/>
+          <div style="display:grid;gap:8px">
+            <div style="display:flex;justify-content:space-between"><span>お会計</span><b class="k">12,300円</b></div>
+            <div style="display:flex;justify-content:space-between"><span>部長グループ</span><b class="k">2,100円/人</b></div>
+            <div style="display:flex;justify-content:space-between"><span>課長グループ</span><b class="k">1,900円/人</b></div>
+            <div style="display:flex;justify-content:space-between"><span>一般社員グループ</span><b class="k">1,200円/人</b></div>
+            <a class="btn s" href="/keisha" style="justify-self:end">この条件で計算する →</a>
+          </div>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <div class="feature-card">
-            <h2>💡 KanziPlusの使い方（3ステップ）</h2>
-            <p>
-                ① 🔧 使いたい機能を選ぶ（割り勘 or 投票）<br>
-                ② 🧑‍🤝‍🧑 参加者や金額・候補日程などを入力 <br>
-                ③ 📤 計算結果や投票リンクをシェアするだけ
-            </p>
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="wrap">
+      <h2>できること</h2>
+      <p class="muted">現場で“本当に使う”機能だけを、快適なUIで</p>
+      <div class="grid three" style="margin-top:14px">
+        <div class="card feat">
+          <div class="ico">⚖️</div>
+          <div>
+            <h3>傾斜割り勘（重み付け）</h3>
+            <p class="muted">上位グループほど多く払う設定をワンタップ。<br>差は<strong>大/普/小</strong>から選ぶだけ。</p>
+          </div>
         </div>
+        <div class="card feat">
+          <div class="ico">🧮</div>
+          <div>
+            <h3>端数処理も自動でキレイ</h3>
+            <p class="muted">100円単位で切り上げ/切り下げを選べます。<br>不足・超過も自動で全体バランス再配分。</p>
+          </div>
+        </div>
+        <div class="card feat">
+          <div class="ico">👥</div>
+          <div>
+            <h3>グループ別固定＆個別調整</h3>
+            <p class="muted">「このグループは固定」「この人だけ±○○円」もOK。<br>ロック状態を保ったまま全体を最適化。</p>
+          </div>
+        </div>
+        <div class="card feat">
+          <div class="ico">📱</div>
+          <div>
+            <h3>スマホ最適・共有しやすい</h3>
+            <p class="muted">コピー用の結果整形済み。<br>そのままLINEやSlackに貼り付け。</p>
+          </div>
+        </div>
+        <div class="card feat">
+          <div class="ico">⚡</div>
+          <div>
+            <h3>サクサク動作</h3>
+            <p class="muted">インストール不要、ブラウザだけで即利用。<br>軽量フロントエンドでUXに集中。</p>
+          </div>
+        </div>
+        <div class="card feat">
+          <div class="ico">🔒</div>
+          <div>
+            <h3>安心の設計</h3>
+            <p class="muted">入力はブラウザ内で完結。<br>個人データをサーバに保存しません。</p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn" href="/keisha">無料で使ってみる</a>
+        <a class="btn ghost" href="#how">使い方を見る</a>
+      </div>
     </div>
-  </main>
+  </section>
 
-  <footer style="text-align: center; font-size: 0.75rem; color: #aaa; margin-top: 0.5rem; padding: 0.5rem 0;">
+  <!-- HOW TO USE -->
+  <section id="how">
+    <div class="wrap">
+      <h2>3ステップで完了</h2>
+      <div class="grid two" style="margin-top:12px">
+        <div class="step">
+          <h3>総額とグループを入力</h3>
+          <p class="muted">会計の総額、グループ名と人数を入力。上のグループほど多く払うルールです。</p>
+        </div>
+        <div class="step">
+          <h3>差の大きさ＆端数処理を選ぶ</h3>
+          <p class="muted">差は「大・普通・小」から。端数は100円単位で切り上げ/切り下げ。</p>
+        </div>
+        <div class="step">
+          <h3>必要があれば個別に微調整</h3>
+          <p class="muted">特定の人だけ±○○円も可能。ロック機能で固定したまま全体最適化。</p>
+        </div>
+        <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <div>
+            <p style="margin:0">できあがった結果をワンタップでコピー</p>
+            <p class="muted" style="margin:6px 0 0">LINEやSlack、メールにそのまま貼れます。</p>
+          </div>
+          <a class="btn s" href="/keisha">今すぐ計算する →</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <div style="margin-bottom: 0.5rem;">
-      <a href="question.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">よくある質問</a>
-      <a href="form.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">お問い合わせ</a>
-      <a href="privacy.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">プライバシーポリシー</a>
+  <!-- VOICES -->
+  <section>
+    <div class="wrap">
+      <h2>使ってくれた幹事さんの声</h2>
+      <div class="grid two" style="margin-top:12px">
+        <div class="say">
+          <div class="avatar" aria-hidden="true"></div>
+          <div class="bubble">
+            <p style="margin:0">傾斜設定が神。上司の面子を立てつつ若手の負担を減らせました。端数もキレイ！</p>
+            <p class="muted" style="margin:6px 0 0">— IT企業・幹事 歴5年</p>
+          </div>
+        </div>
+        <div class="say">
+          <div class="avatar" aria-hidden="true"></div>
+          <div class="bubble">
+            <p style="margin:0">個別±調整が便利。一次会だけ参加の人や遅刻組の処理が一瞬で終わる。</p>
+            <p class="muted" style="margin:6px 0 0">— 広告代理店・チームリーダー</p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:18px"><a class="btn" href="/keisha">無料で使ってみる</a></div>
     </div>
-    <div style="margin-bottom: 0.5rem;">
-      <a href="kiyaku.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">利用規約</a>
-      <a href="about.html" style="margin: 0 0.8rem; color: #aaa; text-decoration: none;">運営者情報</a>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <h2>よくある質問</h2>
+      <div class="grid two" style="margin-top:12px">
+        <details open>
+          <summary>無料で使えますか？</summary>
+          <div class="muted">はい、無料でご利用いただけます。今後の機能追加に伴い有料プランを提供する可能性はありますが、基本機能は無料のままを予定しています。</div>
+        </details>
+        <details>
+          <summary>データは保存されますか？</summary>
+          <div class="muted">ブラウザ内で完結し、サーバ側に個人データを保存しません。安心してお使いください。</div>
+        </details>
+        <details>
+          <summary>スマホでも使えますか？</summary>
+          <div class="muted">はい。スマホ・タブレットに最適化されています。</div>
+        </details>
+        <details>
+          <summary>グループは何個でも作れますか？</summary>
+          <div class="muted">はい。必要な数だけ追加可能です。</div>
+        </details>
+      </div>
     </div>
-    <div style="margin-top: 1rem;">© 2025 KanziPlus. All rights reserved.</div>
+  </section>
+
+  <footer>
+    <div class="wrap" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between">
+      <div class="muted">© <span id="year"></span> KanziPlus</div>
+      <div style="display:flex;gap:14px">
+        <a class="muted" href="/privacy" rel="nofollow">プライバシー</a>
+        <a class="muted" href="/terms" rel="nofollow">利用規約</a>
+        <a class="muted" href="https://x.com/" target="_blank" rel="noopener">X(Twitter)</a>
+      </div>
+    </div>
   </footer>
-  
+
+  <!-- JSON-LD (Organization & WebSite) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "KanziPlus",
+    "url": "https://kanziplus.jp/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://kanziplus.jp/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <script>
+    // 年号
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+  <!-- GA4（差し替え） -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-XXXXXXXXXX');
+  </script> -->
 </body>
 </html>
+
 
 
 
