@@ -95,6 +95,18 @@
       padding:0 12px;
       line-height:48px;      /* iOSでも高さが詰まらないように */
     }
+
+    /* 追加：端数の割り振り内の「グループ名セレクト」を個人名の縦幅に合わせる */
+    #manualList .gsel{
+      height:48px;
+      min-height:48px;
+      line-height:48px;
+    }
+
+    /* 3) 結果出力の差額行を必ず1行に */
+    .result-card .sumline{ gap:8px; }
+    .result-card .sumline .muted,
+    .result-card #deltaLine{ white-space:nowrap; font-size:14px; }
   }
 </style>
 </head>
@@ -250,7 +262,6 @@ function round100(x, dir){ const m = Math.floor(x/100)*100; if(dir==='down') ret
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1600) }
 
 // ======= TABS =======
-// （イベントデリゲーションで確実に反応させる）
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.tab');
   if (!btn) return;
@@ -470,9 +481,9 @@ function computePreview(){
   const sumPreview = per.reduce((s,p,i)=> s + p*(state.groups[i].people||0), 0);
   const draft = state.manualDraft || [];
   const draftSum = draft.reduce((acc,m)=> acc + (Number(m.amount)||0), 0);
-  const manualEffect = state.mode === 'payMore' ? draftSum : -draftSum;
-  const remain = state.total - (sumPreview + manualEffect);
-  return { per, remain, sumPreview, draftSum, manualEffect };
+  const draftEffect = (state.mode==='payMore') ? draftSum : -draftSum; // 端数の増減を反映
+  const remain = state.total - (sumPreview + draftEffect);            // +不足 / -超過
+  return { per, remain, sumPreview, draftSum };
 }
 
 // ======= ASSIGN TAB RENDER =======
@@ -513,7 +524,6 @@ function renderAssign(){
         </div>
       `}`;
 
-    // handlers
     row.querySelectorAll('button[data-d]')?.forEach(b=> b.addEventListener('click',()=>{ clickAdjust(idx, parseInt(b.dataset.d,10)); }));
     const lockBtn = row.querySelector('[data-lock]');
     if(lockBtn){ lockBtn.addEventListener('click', ()=>{ g.fixed = true; renderAll(); }); }
@@ -528,16 +538,14 @@ function renderAssign(){
   const sumForView = hasDraft ? preview.sumPreview : groupsRoundedSum();
   sumRoundedEl.textContent = yen(sumForView);
 
-  const remain = hasDraft ? preview.remain : state.shortage;
+  const remain = hasDraft ? preview.remain : state.shortage; // +不足 / -超過
   const absRemain = Math.abs(remain);
-  const suffix = hasDraft && ((state.mode==='payMore' && remain<0) || (state.mode==='payLess' && remain>0)) ? '<span class="mini muted">（固定の解除が必要）</span>' : '';
   shortageLine.innerHTML = absRemain===0
     ? '<b>ピッタリです</b>'
-    : (remain < 0
-        ? `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 多いです ${suffix}`
-        : `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 安いです ${suffix}`);
+    : (remain<0
+        ? `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 多いです`
+        : `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 安いです`);
 
-  // 追加ボタンの文言をモードに合わせる
   const addBtn = document.getElementById('addPerson');
   if(addBtn){ addBtn.textContent = state.mode==='payMore' ? '＋ 多く支払う人を追加' : '＋ 安くする人を追加'; }
 
@@ -548,16 +556,16 @@ function updateShortagePreview(){
   const hasDraft = (state.manualDraft||[]).some(m=>Number(m.amount)>0);
   if(!hasDraft){
     sumRoundedEl.textContent = yen(groupsRoundedSum());
+    const absRemain0 = Math.abs(state.shortage);
     const r0 = state.shortage;
-    const abs0 = Math.abs(r0);
-    shortageLine.innerHTML = abs0===0
+    shortageLine.innerHTML = absRemain0===0
       ? '<b>ピッタリです</b>'
-      : (r0 < 0
-          ? `お会計の総額より <b class="money big-num">${yen(abs0)}</b> 円 多いです`
-          : `お会計の総額より <b class="money big-num">${yen(abs0)}</b> 円 安いです`);
+      : (r0<0
+          ? `お会計の総額より <b class="money big-num">${yen(absRemain0)}</b> 円 多いです`
+          : `お会計の総額より <b class="money big-num">${yen(absRemain0)}</b> 円 安いです`);
     return;
   }
-  const preview = computePreview({includeFixedInPreview:true});
+  const preview = computePreview();
   const cards = adjustArea.querySelectorAll('.card.card-pink');
   cards.forEach((card, i)=>{
     const moneyEl = card.querySelector('.money');
@@ -565,12 +573,12 @@ function updateShortagePreview(){
   });
   sumRoundedEl.textContent = yen(preview.sumPreview);
   const absRemain = Math.abs(preview.remain);
-  const suffix = ((state.mode==='payMore' && preview.remain<0) || (state.mode==='payLess' && preview.remain>0)) ? '<span class="mini muted">（固定の解除が必要）</span>' : '';
+  const r = preview.remain;
   shortageLine.innerHTML = absRemain===0
     ? '<b>ピッタリです</b>'
-    : (preview.remain < 0
-        ? `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 多いです ${suffix}`
-        : `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 安いです ${suffix}`);
+    : (r<0
+        ? `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 多いです`
+        : `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 安いです`);
 }
 
 // ======= MANUAL ASSIGN =======
@@ -639,8 +647,7 @@ function updateResults(){
     section.className='card card-pink';
 
     const hasManual = manualByGroup[g.id].length>0;
-    const unit = `<span class="mini">1人あたり</span> <b class="money">${yen(g.perPerson)}</b>円`;
-    const header = hasManual ? `${g.name}` : `${g.name} <span style="margin-left:10px">${unit}</span>`;
+    const unit = hasManual ? '' : `<span class="mini">1人あたり</span> <b class="money">${yen(g.perPerson)}</b>円`;
 
     let peopleBlock = '';
     if(hasManual){
@@ -655,7 +662,7 @@ function updateResults(){
       }
     }
 
-    section.innerHTML = `<div style="font-weight:800">${header}</div>${peopleBlock ? `<div class="stack" style="margin-top:6px">${peopleBlock}</div>`:''}`;
+    section.innerHTML = `<div style="font-weight:800">${g.name}${unit?` <span style="margin-left:10px">${unit}</span>`:''}</div>${peopleBlock ? `<div class="stack" style="margin-top:6px">${peopleBlock}</div>`:''}`;
     resultView.appendChild(section);
 
     const d = document.createElement('div');
@@ -680,29 +687,35 @@ function updateResults(){
     </table>`;
   detailView.appendChild(totals);
 
-  window.__copyText = buildCopyText(sum, delta, manualByGroup);
+  window.__copyText = buildCopyText(sum, delta);
 }
 
-function buildCopyText(sum, delta, manualByGroup){
-  let t = `【KanziPlus 計算結果】\n合計: ${yen(state.total)} 円\n`;
+function buildCopyText(sum, delta){
+  let t = `【KanziPlus 計算結果】
+合計: ${yen(state.total)} 円
+`;
   state.groups.forEach(g=>{
-    const list = manualByGroup[g.id]||[];
-    if(list.length>0){
-      t += `\n${g.name}\n`;
-      list.forEach(x=>{
-        const sign = state.mode==='payMore'? '+' : '−';
-        const val = state.mode==='payMore'? (g.perPerson + x.amount) : (g.perPerson - x.amount);
-        t += `・${x.name} (${sign}${yen(x.amount)}円) ${yen(val)}円\n`;
+    const entries = state.manual.filter(m=>m.groupId===g.id);
+    if(entries.length>0){
+      t += `■${g.name}
+`;
+      entries.forEach(x=>{
+        const sign = state.mode==='payMore' ? '+' : '−';
+        const val = state.mode==='payMore' ? (g.perPerson + x.amount) : (g.perPerson - x.amount);
+        t += `・${x.name || '（名前未入力）'} (${sign}${yen(x.amount)}円) ${yen(val)}円
+`;
       });
-      const others = g.people - list.length;
-      if(others>0){ t += `・他メンバー (+0円) 1人あたり ${yen(g.perPerson)}円\n`; }
-    } else {
-      t += `\n${g.name}  1人あたり ${yen(g.perPerson)}円 × ${g.people}人\n`;
+      const others = g.people - entries.length;
+      if(others>0){
+        t += `・他メンバー (+0円) 1人あたり ${yen(g.perPerson)}円
+`;
+      }
+    }else{
+      t += `${g.name} 1人あたり ${yen(g.perPerson)}円
+`;
     }
   });
-  if(delta===0){ t += `\n差額 0 円（ピッタリ）`; }
-  else if(delta>0){ t += `\nお会計の総額より ${yen(Math.abs(delta))} 円 多い`; }
-  else { t += `\nお会計の総額より ${yen(Math.abs(delta))} 円 足りない`; }
+  t += `合計(${yen(sum)}円) / 差額(${delta>0? '+' : ''}${yen(delta)}円${delta===0?'・ピッタリ':''})`;
   return t;
 }
 
@@ -725,6 +738,7 @@ renderAll();
 </script>
 </body>
 </html>
+
 
 
 
