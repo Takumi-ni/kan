@@ -139,6 +139,28 @@
     .result-card .sumline{ gap:8px; }
     .result-card .sumline .muted,
     .result-card #deltaLine{ white-space:nowrap; font-size:14px; }
+
+    .result-card .stack .row{
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+  .result-card .stack .row > div:first-child{
+    flex: 1;              /* 左側(名前/他メンバー)に残り幅を与える */
+    min-width: 0;         /* flex 子要素を縮められるように */
+    white-space: nowrap;  /* 折り返し禁止 */
+    overflow: hidden;     /* はみ出しは省略 */
+    text-overflow: ellipsis;
+    font-size: 14px;      /* スマホでは少し小さく */
+  }
+  .result-card .stack .row > div:first-child .mini{
+    font-size: 12px;      /* (+○○円) のミニ文字も少し小さく */
+  }
+  .result-card .stack .row .money{
+    flex: 0 0 auto;       /* 右側の金額は幅固定で保持 */
+    white-space: nowrap;  /* 折り返し禁止 */
+    font-size: 16px;      /* 視認性は確保 */
+  }
+
   }
 </style>
 </head>
