@@ -14,7 +14,7 @@
   header{position:sticky;top:0;z-index:20;background:rgba(21,26,34,.55);backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid #232938}
   .wrap{max-width:420px;margin:0 auto;padding:16px}
   .brand{font-weight:900;letter-spacing:.8px;color:#ffe8a3;font-size:26px;text-align:center;text-shadow:0 2px 8px rgba(248,210,122,.25)}
-  .tabs{display:flex;gap:18px;margin-top:10px;justify-content:center}
+  .tabs{display:flex;gap:18px;margin-top:10px;justify-content:center;padding-bottom:0}
   .tab{appearance:none;border:none;background:transparent;padding:12px 18px;font-weight:700;color:var(--muted);cursor:pointer;position:relative;font-size:16px}
   .tab.active{color:var(--ink)}
   .tab.active:after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:3px}
@@ -28,6 +28,7 @@
   input[type="number"]{text-align:right}
   .row{display:flex;gap:10px;align-items:center}
   .row > *{flex:1}
+  .row-inline{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:nowrap}
   .btn{appearance:none;border:none;border-radius:12px;padding:10px 14px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#271b05;font-weight:800;cursor:pointer;box-shadow:0 10px 26px rgba(255,180,85,.22)}
   .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
   .btn.small{padding:8px 10px;border-radius:10px;font-size:13px}
@@ -43,7 +44,9 @@
   .pill.active{border-color:var(--accent);color:#ffe8a3;background:rgba(248,210,122,.10)}
   .muted{color:var(--muted)}
   .group-row{display:grid;grid-template-columns:1.6fr .7fr auto;gap:10px;align-items:center;margin-top:10px}
-  .group-row .del{width:40px}
+  .group-row .del{width:40px;height:48px;display:flex;align-items:center;justify-content:center}
+  .name-cell{display:flex;align-items:center;gap:8px}
+  .medal{font-size:18px;opacity:.9}
   .mini{font-size:13px;color:var(--muted)}
   hr.sep{border:none;border-top:1px dashed var(--line);margin:12px 0}
   .bars{display:flex;gap:8px;align-items:flex-end;justify-content:center;height:140px;padding:4px 2px;margin-top:14px}
@@ -52,13 +55,18 @@
   .money{font-variant-numeric:tabular-nums}
   .stack{display:flex;flex-direction:column;gap:8px}
   .controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  .controls-wrap{display:flex;gap:8px;align-items:stretch;margin-top:8px}
+  .btns4{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1}
+  .lock-pill{width:56px;border:1.5px solid var(--accent);border-radius:12px;background:transparent;color:#ffe8a3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:.9}
+  .lock-pill .mini{line-height:.85}
+  .fixed-banner{border:1.8px solid var(--accent);border-radius:12px;padding:10px 14px;text-align:center;color:#ffe8a3}
   .sumline{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:12px;background:#181e28;border:1px solid #343a48}
   .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:#111827;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
   .toast.show{opacity:1}
-  .result-card{background:#1e1a12;border:1px solid rgba(255,220,140,.18)}
+  .result-card{background:radial-gradient(120% 80% at 50% 0%, rgba(248,210,122,.10), rgba(30,26,18,.92) 60%), #1b1810;border:1px solid rgba(248,210,122,.38);box-shadow:inset 0 10px 28px rgba(248,210,122,.10), 0 6px 18px rgba(0,0,0,.25)}
   .k-table{width:100%;border-collapse:collapse}
   .k-table td{padding:6px 0;border-bottom:1px solid #343a48}
-  header .wrap{position:relative}
+  header .wrap{position:relative;padding:10px 16px 0}
   .brand-icon{font-size:28px; margin:0 8px; filter:drop-shadow(0 2px 6px rgba(248,210,122,.35))}
   .sky{position:absolute; inset:0; pointer-events:none}
   .star{position:absolute; width:3px; height:3px; background:#ffe8a3; border-radius:50%; opacity:.85; animation:twinkle 3s ease-in-out infinite}
@@ -67,6 +75,9 @@
   input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
   input[type="number"]{ -moz-appearance:textfield; }
   .big-num{ font-size:24px; }
+  .help-icon{width:22px;height:22px;border-radius:50%;border:1px solid #3a4050;background:transparent;color:#aeb4bf;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;margin-left:8px}
+.result-card h3{color:#ffe8a3;text-shadow:0 2px 6px rgba(248,210,122,.20)}
+.result-card .sumline{border-color:rgba(248,210,122,.35);background:rgba(248,210,122,.06)}
 </style>
 </head>
 <body>
@@ -94,31 +105,40 @@
     <!-- 情報入力 TAB -->
     <section id="tab-input" class="grid two">
       <div class="card">
-        <h3>お会計の総額を入力</h3>
-        <div class="row">
-          <input id="totalInput" type="number" min="0" step="1" value="10000"/>
-          <div class="mini">円</div>
+        <div class="row-inline">
+          <h3 style="margin:0">お会計の総額を入力</h3>
+          <div class="row" style="flex:0 0 48%;gap:8px;align-items:center">
+            <input id="totalInput" type="number" min="0" step="1" value="10000"/>
+            <div class="mini" style="flex:none">円</div>
+          </div>
         </div>
       </div>
 
       <div class="card" style="grid-column:1 / -1;">
         <h3>お支払いグループ名を入力</h3>
+        <div class="mini" style="margin:6px 0 8px;">上のグループから多く払います</div>
         <div id="groupsArea"></div>
-        <div class="mini" style="margin-top:10px;margin-bottom:6px;">上のグループから多く払います</div>
-        <div class="row" style="margin-top:0">
+        <div class="row" style="margin-top:6px">
           <button id="addGroup" class="btn outline-pink" style="width:100%" type="button">＋ グループを追加</button>
         </div>
       </div>
 
       <!-- 割り勘バランスカード -->
       <div class="card" style="grid-column:1 / -1;">
-        <h3>グループごとの割り勘バランス</h3>
+        <h3 style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <span>グループごとの割り勘バランス</span>
+          <button id="balanceHelpBtn" class="help-icon" type="button">?</button>
+        </h3>
         <div class="toolbar" id="balanceBtns">
           <button class="pill" data-balance="large" type="button">大きい</button>
           <button class="pill active" data-balance="medium" type="button">普通</button>
           <button class="pill" data-balance="small" type="button">小さい</button>
         </div>
         <div class="bars" id="bars"></div>
+        <div id="balanceHelpText" class="mini" style="display:none;margin-top:6px">
+          グループ間の1人当たりの支払いの差額の大きさを選びます<br/>
+          同じグループのメンバーの金額は同じです
+        </div>
       </div>
 
       <!-- 端数の扱いカード -->
@@ -177,7 +197,10 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="row" style="grid-column:1 / -1;">
+        <button id="toggleDetail" class="btn outline-pink" style="width:100%" type="button">計算詳細</button>
+      </div>
+      <div id="detailCard" class="card" style="display:none">
         <h3>計算詳細</h3>
         <div id="detailView" class="stack"></div>
       </div>
@@ -243,13 +266,16 @@ addGroupBtn.addEventListener('click',()=>{
   recompute(); renderAll();
 });
 
+function medalByIndex(i){ return ''; }
+
 function renderGroupsEditor(){
   groupsArea.innerHTML = '';
   state.groups.forEach((g,idx)=>{
     const row = document.createElement('div');
     row.className='group-row';
+    const medal = medalByIndex(idx);
     row.innerHTML = `
-      <input type="text" value="${g.name}" data-k="name" placeholder="グループ名"/>
+      <div class="name-cell">${medal?`<span class="medal">${medal}</span>`:''}<input type="text" value="${g.name}" data-k="name" placeholder="グループ名"/></div>
       <select data-k="people">${Array.from({length:99},(_,i)=>`<option ${g.people===(i+1)?'selected':''} value="${i+1}">${i+1}人</option>`).join('')}</select>
       <button class="btn small ghost del" type="button">×</button>`;
     row.querySelector('[data-k=name]').addEventListener('input',e=>{ g.name=e.target.value; });
@@ -264,6 +290,9 @@ function renderGroupsEditor(){
 const totalInput = document.getElementById('totalInput');
 const balanceBtns = document.getElementById('balanceBtns');
 const modeBtns = document.getElementById('modeBtns');
+const helpBtn = document.getElementById('balanceHelpBtn');
+const helpText = document.getElementById('balanceHelpText');
+if(helpBtn){ helpBtn.addEventListener('click',()=>{ helpText.style.display = helpText.style.display==='none'?'block':'none'; }); }
 
 totalInput.addEventListener('input',()=>{ state.total= Number(totalInput.value||0); recompute(); renderAll(); });
 ;['large','medium','small'].forEach(x=>{
@@ -288,7 +317,7 @@ function renderBars(ws){
     const h = 30 + (w/max)*88;
     const colors = ['#D4AF37','#C0C0C0','#CD7F32'];
     const color = i<3 ? colors[i] : '#d1d5db';
-    return `<div class=\"bar\" title=\"重み ${w.toFixed(2)}\" style=\"height:${h}px;background:${color}\"></div>`
+    return `<div class="bar" title="重み ${w.toFixed(2)}" style="height:${h}px;background:${color}"></div>`
   }).join('');
 }
 
@@ -440,27 +469,40 @@ function renderAssign(){
   state.groups.forEach((g,idx)=>{
     const row = document.createElement('div');
     row.className='card card-pink';
-    const lockCls = g.fixed ? 'btn small lock-on' : 'btn small lock-off';
     const displayPer = hasDraft ? preview.per[idx] : g.perPerson;
     row.innerHTML = `
       <div class="row" style="justify-content:space-between;align-items:flex-end">
         <div>
-          <div style=\"font-weight:800\">${g.name}<\/div>
-          <div class=\"mini muted\">${g.people}人<\/div>
+          <div style="font-weight:800">${g.name}</div>
+          <div class="mini muted">${g.people}人</div>
         </div>
         <div style="text-align:right">
-          <div style="font-size:22px;font-weight:800" class=\"money\">${yen(displayPer)}円<span class=\"mini\">/1人<\/span><\/div>
-          <button class="${lockCls}" style="margin-top:6px" type="button">${g.fixed?'🔒 固定中':'🔓 固定なし'}</button>
+          <div style="font-size:22px;font-weight:800" class="money">${yen(displayPer)}円<span class="mini">/1人</span></div>
         </div>
       </div>
-      <div class="controls-grid">
-        <button class="btn small outline-pink" data-d="+100" type="button">＋100</button>
-        <button class="btn small outline-pink" data-d="-100" type="button">−100</button>
-        <button class="btn small outline-pink" data-d="+1000" type="button">＋1000</button>
-        <button class="btn small outline-pink" data-d="-1000" type="button">−1000</button>
-      </div>`;
-    row.querySelectorAll('button[data-d]').forEach(b=> b.addEventListener('click',()=>{ clickAdjust(idx, parseInt(b.dataset.d,10)); }));
-    row.querySelector('.'+(g.fixed?'lock-on':'lock-off')).addEventListener('click',()=>{ g.fixed=!g.fixed; renderAll(); });
+      ${g.fixed ? `
+        <div class="fixed-banner">🔒 金額固定中</div>
+      ` : `
+        <div class="controls-wrap">
+          <div class="btns4">
+            <button class="btn small outline-pink" data-d="+100" type="button">＋100</button>
+            <button class="btn small outline-pink" data-d="-100" type="button">−100</button>
+            <button class="btn small outline-pink" data-d="+1000" type="button">＋1000</button>
+            <button class="btn small outline-pink" data-d="-1000" type="button">−1000</button>
+          </div>
+          <button class="lock-pill" data-lock="1" type="button">🔓<br><span class="mini">固定</span><br><span class="mini">なし</span></button>
+        </div>
+      `}`;
+
+    // handlers
+    row.querySelectorAll('button[data-d]')?.forEach(b=> b.addEventListener('click',()=>{ clickAdjust(idx, parseInt(b.dataset.d,10)); }));
+    const lockBtn = row.querySelector('[data-lock]');
+    if(lockBtn){ lockBtn.addEventListener('click', ()=>{ g.fixed = true; renderAll(); }); }
+    if(g.fixed){
+      const banner = row.querySelector('.fixed-banner');
+      banner.addEventListener('click',()=>{ g.fixed=false; renderAll(); });
+    }
+
     adjustArea.appendChild(row);
   });
 
@@ -473,8 +515,12 @@ function renderAssign(){
   shortageLine.innerHTML = absRemain===0
     ? '<b>ピッタリです</b>'
     : (state.mode==='payMore'
-        ? `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain)}</b> 円 足りない ${suffix}`
-        : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain)}</b> 円 多い ${suffix}`);
+        ? `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class="money big-num">${yen(absRemain)}</b> 円 足りない ${suffix}`
+        : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class="money big-num">${yen(absRemain)}</b> 円 多い ${suffix}`);
+
+  // 追加ボタンの文言をモードに合わせる
+  const addBtn = document.getElementById('addPerson');
+  if(addBtn){ addBtn.textContent = state.mode==='payMore' ? '＋ 多く支払う人を追加' : '＋ 安くする人を追加'; }
 
   renderManualList();
 }
@@ -487,15 +533,15 @@ function updateShortagePreview(){
     shortageLine.innerHTML = absRemain0===0
       ? '<b>ピッタリです</b>'
       : (state.mode==='payMore'
-          ? `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain0)}</b> 円 足りない`
-          : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain0)}</b> 円 多い`);
+          ? `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class="money big-num">${yen(absRemain0)}</b> 円 足りない`
+          : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class="money big-num">${yen(absRemain0)}</b> 円 多い`);
     return;
   }
   const preview = computePreview({includeFixedInPreview:true});
   const cards = adjustArea.querySelectorAll('.card.card-pink');
   cards.forEach((card, i)=>{
     const moneyEl = card.querySelector('.money');
-    if(moneyEl && preview.per[i] != null){ moneyEl.innerHTML = yen(preview.per[i]) + '円<span class=\"mini\">/1人<\/span>'; }
+    if(moneyEl && preview.per[i] != null){ moneyEl.innerHTML = yen(preview.per[i]) + '円<span class="mini">/1人</span>'; }
   });
   sumRoundedEl.textContent = yen(preview.sumPreview);
   const absRemain = Math.abs(preview.remain);
@@ -503,8 +549,8 @@ function updateShortagePreview(){
   shortageLine.innerHTML = absRemain===0
     ? '<b>ピッタリです</b>'
     : (state.mode==='payMore'
-        ? `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain)}</b> 円 足りない ${suffix}`
-        : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class=\"money big-num\">${yen(absRemain)}</b> 円 多い ${suffix}`);
+        ? `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class="money big-num">${yen(absRemain)}</b> 円 足りない ${suffix}`
+        : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class="money big-num">${yen(absRemain)}</b> 円 多い ${suffix}`);
 }
 
 // ======= MANUAL ASSIGN =======
@@ -554,6 +600,9 @@ function manualEffect(){
 const resultView = document.getElementById('resultView');
 const deltaLine = document.getElementById('deltaLine');
 const detailView = document.getElementById('detailView');
+const toggleDetailBtn = document.getElementById('toggleDetail');
+const detailCard = document.getElementById('detailCard');
+if(toggleDetailBtn){ toggleDetailBtn.addEventListener('click',()=>{ detailCard.style.display = detailCard.style.display==='none'?'block':'none'; }); }
 
 function updateResults(){
   resultView.innerHTML=''; detailView.innerHTML='';
@@ -575,15 +624,15 @@ function updateResults(){
       peopleBlock = manualByGroup[g.id].map(x=>{
         const adj = (state.mode==='payMore'? '+' : '−') + yen(x.amount);
         const val = state.mode==='payMore'? (g.perPerson + x.amount) : (g.perPerson - x.amount);
-        return `<div class="row" style="justify-content:space-between"><div>・${x.name} <span class=\"mini\">(${adj}円)</span></div><div class=\"money\">${yen(val)}円</div></div>`
+        return `<div class="row" style="justify-content:space-between"><div>・${x.name} <span class="mini">(${adj}円)</span></div><div class="money">${yen(val)}円</div></div>`
       }).join('');
       const others = g.people - manualByGroup[g.id].length;
       if(others>0){
-        peopleBlock += `<div class=\"row\" style=\"justify-content:space-between\"><div>・他メンバー <span class=\"mini\">(+0円)</span></div><div class=\"money\">${yen(g.perPerson)}円</div></div>`
+        peopleBlock += `<div class="row" style="justify-content:space-between"><div>・他メンバー <span class="mini">(+0円)</span></div><div class="money">${yen(g.perPerson)}円</div></div>`
       }
     }
 
-    section.innerHTML = `<div style="font-weight:800">${g.name} <span style="margin-left:10px">${unit}</span></div>${peopleBlock ? `<div class=\"stack\" style=\"margin-top:6px\">${peopleBlock}</div>`:''}`;
+    section.innerHTML = `<div style="font-weight:800">${g.name} <span style="margin-left:10px">${unit}</span></div>${peopleBlock ? `<div class="stack" style="margin-top:6px">${peopleBlock}</div>`:''}`;
     resultView.appendChild(section);
 
     const d = document.createElement('div');
@@ -612,8 +661,11 @@ function updateResults(){
 }
 
 function buildCopyText(sum, delta){
-  let t = `【KanziPlus 計算結果】\n合計: ${yen(state.total)} 円\n`;
-  state.groups.forEach(g=>{ t += `・${g.name}: 1人あたり ${yen(g.perPerson)}円 × ${g.people}人\n`; });
+  let t = `【KanziPlus 計算結果】
+合計: ${yen(state.total)} 円
+`;
+  state.groups.forEach(g=>{ t += `・${g.name}: 1人あたり ${yen(g.perPerson)}円 × ${g.people}人
+`; });
   t += `合計(${yen(sum)}円) / 差額(${delta})`;
   return t;
 }
@@ -637,6 +689,7 @@ renderAll();
 </script>
 </body>
 </html>
+
 
 
 
