@@ -79,6 +79,23 @@
   .help-icon{width:22px;height:22px;border-radius:50%;border:1px solid #3a4050;background:transparent;color:#aeb4bf;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;margin-left:8px}
 .result-card h3{color:#ffe8a3;text-shadow:0 2px 6px rgba(248,210,122,.20)}
 .result-card .sumline{border-color:rgba(248,210,122,.35);background:rgba(248,210,122,.06)}
+/* ====== Mobile fixes (<=420px) ====== */
+@media (max-width: 420px){
+  /* 1) 「お会計の総額を入力」を1行に収める */
+  .row-inline{ gap:8px; }
+  .row-inline h3{ white-space:nowrap; font-size:16px; } /* 見出しは折り返さない */
+  .row-inline .row{ flex:0 0 40%; max-width:160px; }     /* 金額入力の横幅を縮小 */
+  .row-inline .mini{ white-space:nowrap; }               /* 「円」も折り返さない */
+
+  /* 2) グループ人数セレクトの縦幅を他と合わせる（48px） */
+  .group-row select{
+    height:48px;           /* 既存のテキスト欄/×ボタンに合わせる */
+    min-height:48px;
+    padding:0 12px;
+    line-height:48px;      /* iOSでも高さが詰まらないように */
+  }
+}
+
 </style>
 </head>
 <body>
