@@ -281,7 +281,7 @@ function renderGroupsEditor(){
       <button class="btn small ghost del" type="button">×</button>`;
     row.querySelector('[data-k=name]').addEventListener('input',e=>{ g.name=e.target.value; });
     row.querySelector('[data-k=name]').addEventListener('blur',()=>{ renderAll(); });
-    row.querySelector('[data-k=people]').addEventListener('change',e=>{ g.people=parseInt(e.target.value); recompute(); renderAll() });
+    row.querySelector('[data-k=people]').addEventListener('change',e=>{ g.people=parseInt(e.target.value,10); recompute(); renderAll() });
     row.querySelector('.del').addEventListener('click',()=>{ if(state.groups.length<=1){ toast('グループは最低1つ必要です'); return } state.groups.splice(idx,1); recompute(); renderAll(); });
     groupsArea.appendChild(row);
   });
@@ -622,6 +622,7 @@ function updateResults(){
 
     let peopleBlock = '';
     if(manualByGroup[g.id].length>0){
+      // 個別調整がある場合：見出しはグループ名のみ、人ごとの行を表示
       peopleBlock = manualByGroup[g.id].map(x=>{
         const adj = (state.mode==='payMore'? '+' : '−') + yen(x.amount);
         const val = state.mode==='payMore'? (g.perPerson + x.amount) : (g.perPerson - x.amount);
@@ -629,11 +630,15 @@ function updateResults(){
       }).join('');
       const others = g.people - manualByGroup[g.id].length;
       if(others>0){
-        peopleBlock += `<div class="row" style="justify-content:space-between"><div>・他メンバー <span class="mini">(+0円)</span></div><div class="money">${yen(g.perPerson)}円</div></div>`
+        // ★ 要望：他メンバー行には「1人あたり」を付ける
+        peopleBlock += `<div class=\"row\" style=\"justify-content:space-between\"><div>・他メンバー <span class=\"mini\">(+0円)</span></div><div class=\"money\"><span class=\"mini\">1人あたり</span> ${yen(g.perPerson)}円</div></div>`
       }
+      section.innerHTML = `<div style="font-weight:800">${g.name}</div>${peopleBlock ? `<div class="stack" style="margin-top:6px">${peopleBlock}</div>`:''}`;
+    } else {
+      // 調整なし：見出しに「1人あたり」を表示
+      section.innerHTML = `<div style=\"font-weight:800\">${g.name} <span style=\"margin-left:10px\">${unit}</span></div>`;
     }
 
-    section.innerHTML = `<div style="font-weight:800">${g.name} <span style="margin-left:10px">${unit}</span></div>${peopleBlock ? `<div class="stack" style="margin-top:6px">${peopleBlock}</div>`:''}`;
     resultView.appendChild(section);
 
     const d = document.createElement('div');
@@ -662,13 +667,34 @@ function updateResults(){
 }
 
 function buildCopyText(sum, delta){
-  let t = `【KanziPlus 計算結果】
-合計: ${yen(state.total)} 円
-`;
-  state.groups.forEach(g=>{ t += `・${g.name}: 1人あたり ${yen(g.perPerson)}円 × ${g.people}人
-`; });
-  t += `合計(${yen(sum)}円) / 差額(${delta})`;
-  return t;
+  const manualByGroup = {}; state.groups.forEach(g=> manualByGroup[g.id]=[]);
+  state.manual.forEach(m=>{ if(manualByGroup[m.groupId]) manualByGroup[m.groupId].push({name:m.name||'（名前未入力）', amount:m.amount||0}); });
+
+  const lines = [];
+  lines.push(`【KanziPlus 計算結果】`);
+  lines.push(`合計: ${yen(state.total)} 円`);
+
+  state.groups.forEach(g=>{
+    const adjs = manualByGroup[g.id];
+    if(adjs.length>0){
+      lines.push(`▼ ${g.name}`);
+      adjs.forEach(x=>{
+        const sign = state.mode==='payMore'? '+' : '−';
+        const per = state.mode==='payMore'? (g.perPerson + x.amount) : (g.perPerson - x.amount);
+        lines.push(`・${x.name} (${sign}${yen(x.amount)}円) ${yen(per)}円`);
+      });
+      const others = g.people - adjs.length;
+      if(others>0){
+        // ★ コピー文言でも「1人あたり」を付ける
+        lines.push(`・他メンバー (+0円) 1人あたり ${yen(g.perPerson)}円`);
+      }
+    } else {
+      lines.push(`・${g.name}: 1人あたり ${yen(g.perPerson)}円 × ${g.people}人`);
+    }
+  });
+
+  lines.push(`合計(${yen(sum)}円) / 差額(${delta})`);
+  return lines.join('\n');
 }
 
 // ======= COPY =======
