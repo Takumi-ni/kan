@@ -77,25 +77,25 @@
   input[type="number"]{ -moz-appearance:textfield; }
   .big-num{ font-size:24px; }
   .help-icon{width:22px;height:22px;border-radius:50%;border:1px solid #3a4050;background:transparent;color:#aeb4bf;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;margin-left:8px}
-.result-card h3{color:#ffe8a3;text-shadow:0 2px 6px rgba(248,210,122,.20)}
-.result-card .sumline{border-color:rgba(248,210,122,.35);background:rgba(248,210,122,.06)}
-/* ====== Mobile fixes (<=420px) ====== */
-@media (max-width: 420px){
-  /* 1) 「お会計の総額を入力」を1行に収める */
-  .row-inline{ gap:8px; }
-  .row-inline h3{ white-space:nowrap; font-size:16px; } /* 見出しは折り返さない */
-  .row-inline .row{ flex:0 0 40%; max-width:160px; }     /* 金額入力の横幅を縮小 */
-  .row-inline .mini{ white-space:nowrap; }               /* 「円」も折り返さない */
+  .result-card h3{color:#ffe8a3;text-shadow:0 2px 6px rgba(248,210,122,.20)}
+  .result-card .sumline{border-color:rgba(248,210,122,.35);background:rgba(248,210,122,.06)}
 
-  /* 2) グループ人数セレクトの縦幅を他と合わせる（48px） */
-  .group-row select{
-    height:48px;           /* 既存のテキスト欄/×ボタンに合わせる */
-    min-height:48px;
-    padding:0 12px;
-    line-height:48px;      /* iOSでも高さが詰まらないように */
+  /* ====== Mobile fixes (<=420px) ====== */
+  @media (max-width: 420px){
+    /* 1) 「お会計の総額を入力」を1行に収める */
+    .row-inline{ gap:8px; }
+    .row-inline h3{ white-space:nowrap; font-size:16px; } /* 見出しは折り返さない */
+    .row-inline .row{ flex:0 0 40%; max-width:160px; }     /* 金額入力の横幅を縮小 */
+    .row-inline .mini{ white-space:nowrap; }               /* 「円」も折り返さない */
+
+    /* 2) グループ人数セレクトの縦幅を他と合わせる（48px） */
+    .group-row select{
+      height:48px;           /* 既存のテキスト欄/×ボタンに合わせる */
+      min-height:48px;
+      padding:0 12px;
+      line-height:48px;      /* iOSでも高さが詰まらないように */
+    }
   }
-}
-
 </style>
 </head>
 <body>
@@ -298,7 +298,7 @@ function renderGroupsEditor(){
       <button class="btn small ghost del" type="button">×</button>`;
     row.querySelector('[data-k=name]').addEventListener('input',e=>{ g.name=e.target.value; });
     row.querySelector('[data-k=name]').addEventListener('blur',()=>{ renderAll(); });
-    row.querySelector('[data-k=people]').addEventListener('change',e=>{ g.people=parseInt(e.target.value,10); recompute(); renderAll() });
+    row.querySelector('[data-k=people]').addEventListener('change',e=>{ g.people=parseInt(e.target.value); recompute(); renderAll() });
     row.querySelector('.del').addEventListener('click',()=>{ if(state.groups.length<=1){ toast('グループは最低1つ必要です'); return } state.groups.splice(idx,1); recompute(); renderAll(); });
     groupsArea.appendChild(row);
   });
@@ -470,8 +470,9 @@ function computePreview(){
   const sumPreview = per.reduce((s,p,i)=> s + p*(state.groups[i].people||0), 0);
   const draft = state.manualDraft || [];
   const draftSum = draft.reduce((acc,m)=> acc + (Number(m.amount)||0), 0);
-  const remain = state.total - sumPreview;
-  return { per, remain, sumPreview, draftSum };
+  const manualEffect = state.mode === 'payMore' ? draftSum : -draftSum;
+  const remain = state.total - (sumPreview + manualEffect);
+  return { per, remain, sumPreview, draftSum, manualEffect };
 }
 
 // ======= ASSIGN TAB RENDER =======
@@ -532,9 +533,9 @@ function renderAssign(){
   const suffix = hasDraft && ((state.mode==='payMore' && remain<0) || (state.mode==='payLess' && remain>0)) ? '<span class="mini muted">（固定の解除が必要）</span>' : '';
   shortageLine.innerHTML = absRemain===0
     ? '<b>ピッタリです</b>'
-    : (state.mode==='payMore'
-        ? `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class="money big-num">${yen(absRemain)}</b> 円 足りない ${suffix}`
-        : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class="money big-num">${yen(absRemain)}</b> 円 多い ${suffix}`);
+    : (remain < 0
+        ? `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 多いです ${suffix}`
+        : `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 安いです ${suffix}`);
 
   // 追加ボタンの文言をモードに合わせる
   const addBtn = document.getElementById('addPerson');
@@ -547,12 +548,13 @@ function updateShortagePreview(){
   const hasDraft = (state.manualDraft||[]).some(m=>Number(m.amount)>0);
   if(!hasDraft){
     sumRoundedEl.textContent = yen(groupsRoundedSum());
-    const absRemain0 = Math.abs(state.shortage);
-    shortageLine.innerHTML = absRemain0===0
+    const r0 = state.shortage;
+    const abs0 = Math.abs(r0);
+    shortageLine.innerHTML = abs0===0
       ? '<b>ピッタリです</b>'
-      : (state.mode==='payMore'
-          ? `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class="money big-num">${yen(absRemain0)}</b> 円 足りない`
-          : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class="money big-num">${yen(absRemain0)}</b> 円 多い`);
+      : (r0 < 0
+          ? `お会計の総額より <b class="money big-num">${yen(abs0)}</b> 円 多いです`
+          : `お会計の総額より <b class="money big-num">${yen(abs0)}</b> 円 安いです`);
     return;
   }
   const preview = computePreview({includeFixedInPreview:true});
@@ -566,9 +568,9 @@ function updateShortagePreview(){
   const suffix = ((state.mode==='payMore' && preview.remain<0) || (state.mode==='payLess' && preview.remain>0)) ? '<span class="mini muted">（固定の解除が必要）</span>' : '';
   shortageLine.innerHTML = absRemain===0
     ? '<b>ピッタリです</b>'
-    : (state.mode==='payMore'
-        ? `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class="money big-num">${yen(absRemain)}</b> 円 足りない ${suffix}`
-        : `お会計金額 <b class="money">${yen(state.total)}</b> 円まで、残り <b class="money big-num">${yen(absRemain)}</b> 円 多い ${suffix}`);
+    : (preview.remain < 0
+        ? `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 多いです ${suffix}`
+        : `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 安いです ${suffix}`);
 }
 
 // ======= MANUAL ASSIGN =======
@@ -635,11 +637,13 @@ function updateResults(){
 
     const section = document.createElement('div');
     section.className='card card-pink';
+
+    const hasManual = manualByGroup[g.id].length>0;
     const unit = `<span class="mini">1人あたり</span> <b class="money">${yen(g.perPerson)}</b>円`;
+    const header = hasManual ? `${g.name}` : `${g.name} <span style="margin-left:10px">${unit}</span>`;
 
     let peopleBlock = '';
-    if(manualByGroup[g.id].length>0){
-      // 個別調整がある場合：見出しはグループ名のみ、人ごとの行を表示
+    if(hasManual){
       peopleBlock = manualByGroup[g.id].map(x=>{
         const adj = (state.mode==='payMore'? '+' : '−') + yen(x.amount);
         const val = state.mode==='payMore'? (g.perPerson + x.amount) : (g.perPerson - x.amount);
@@ -647,15 +651,11 @@ function updateResults(){
       }).join('');
       const others = g.people - manualByGroup[g.id].length;
       if(others>0){
-        // ★ 要望：他メンバー行には「1人あたり」を付ける
-        peopleBlock += `<div class=\"row\" style=\"justify-content:space-between\"><div>・他メンバー <span class=\"mini\">(+0円)</span></div><div class=\"money\"><span class=\"mini\">1人あたり</span> ${yen(g.perPerson)}円</div></div>`
+        peopleBlock += `<div class="row" style="justify-content:space-between"><div>・他メンバー <span class="mini">(+0円)</span></div><div class="money"><span class="mini">1人あたり</span> ${yen(g.perPerson)}円</div></div>`
       }
-      section.innerHTML = `<div style="font-weight:800">${g.name}</div>${peopleBlock ? `<div class="stack" style="margin-top:6px">${peopleBlock}</div>`:''}`;
-    } else {
-      // 調整なし：見出しに「1人あたり」を表示
-      section.innerHTML = `<div style=\"font-weight:800\">${g.name} <span style=\"margin-left:10px\">${unit}</span></div>`;
     }
 
+    section.innerHTML = `<div style="font-weight:800">${header}</div>${peopleBlock ? `<div class="stack" style="margin-top:6px">${peopleBlock}</div>`:''}`;
     resultView.appendChild(section);
 
     const d = document.createElement('div');
@@ -680,38 +680,30 @@ function updateResults(){
     </table>`;
   detailView.appendChild(totals);
 
-  window.__copyText = buildCopyText(sum, delta);
+  window.__copyText = buildCopyText(sum, delta, manualByGroup);
 }
 
-function buildCopyText(sum, delta){
-  const manualByGroup = {}; state.groups.forEach(g=> manualByGroup[g.id]=[]);
-  state.manual.forEach(m=>{ if(manualByGroup[m.groupId]) manualByGroup[m.groupId].push({name:m.name||'（名前未入力）', amount:m.amount||0}); });
-
-  const lines = [];
-  lines.push(`【KanziPlus 計算結果】`);
-  lines.push(`合計: ${yen(state.total)} 円`);
-
+function buildCopyText(sum, delta, manualByGroup){
+  let t = `【KanziPlus 計算結果】\n合計: ${yen(state.total)} 円\n`;
   state.groups.forEach(g=>{
-    const adjs = manualByGroup[g.id];
-    if(adjs.length>0){
-      lines.push(`▼ ${g.name}`);
-      adjs.forEach(x=>{
+    const list = manualByGroup[g.id]||[];
+    if(list.length>0){
+      t += `\n${g.name}\n`;
+      list.forEach(x=>{
         const sign = state.mode==='payMore'? '+' : '−';
-        const per = state.mode==='payMore'? (g.perPerson + x.amount) : (g.perPerson - x.amount);
-        lines.push(`・${x.name} (${sign}${yen(x.amount)}円) ${yen(per)}円`);
+        const val = state.mode==='payMore'? (g.perPerson + x.amount) : (g.perPerson - x.amount);
+        t += `・${x.name} (${sign}${yen(x.amount)}円) ${yen(val)}円\n`;
       });
-      const others = g.people - adjs.length;
-      if(others>0){
-        // ★ コピー文言でも「1人あたり」を付ける
-        lines.push(`・他メンバー (+0円) 1人あたり ${yen(g.perPerson)}円`);
-      }
+      const others = g.people - list.length;
+      if(others>0){ t += `・他メンバー (+0円) 1人あたり ${yen(g.perPerson)}円\n`; }
     } else {
-      lines.push(`・${g.name}: 1人あたり ${yen(g.perPerson)}円 × ${g.people}人`);
+      t += `\n${g.name}  1人あたり ${yen(g.perPerson)}円 × ${g.people}人\n`;
     }
   });
-
-  lines.push(`合計(${yen(sum)}円) / 差額(${delta})`);
-  return lines.join('\n');
+  if(delta===0){ t += `\n差額 0 円（ピッタリ）`; }
+  else if(delta>0){ t += `\nお会計の総額より ${yen(Math.abs(delta))} 円 多い`; }
+  else { t += `\nお会計の総額より ${yen(Math.abs(delta))} 円 足りない`; }
+  return t;
 }
 
 // ======= COPY =======
@@ -733,6 +725,7 @@ renderAll();
 </script>
 </body>
 </html>
+
 
 
 
