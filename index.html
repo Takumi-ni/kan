@@ -100,7 +100,17 @@
 
     /* Footer */
     footer{padding:40px 0;border-top:1px solid #1c2230;color:var(--muted)}
-  </style>
+    /* ===== Device mock (スマホごと表示) ===== */
+  .device-wrap{position:relative;display:grid;place-items:center;margin-top:6px}
+  .device{--bez:14px;--radius:36px;--side:3px;width:min(360px,92vw);aspect-ratio:9/19.5;position:relative;border-radius:var(--radius);background:#000;padding:var(--bez);box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 var(--side) #111}
+  .device .screen{position:absolute;inset:var(--bez);border-radius:calc(var(--radius) - var(--bez));overflow:hidden;background:#000}
+  .device .screen img{width:100%;height:100%;object-fit:cover;display:block}
+  .device::before{content:"";position:absolute;top:calc(var(--bez)/2);left:50%;transform:translateX(-50%);width:120px;height:26px;background:#111;border-radius:14px;box-shadow:0 2px 4px rgba(0,0,0,.35) inset}
+  .device .glow{position:absolute;inset:-12%;background:radial-gradient(60% 30% at 50% 0%, rgba(248,210,122,.18), transparent 60%);filter:blur(10px);border-radius:inherit;pointer-events:none}
+  .float-card{position:absolute;background:#fff;color:#111;border-radius:16px;padding:12px;box-shadow:0 10px 40px rgba(0,0,0,.25);border:1px solid rgba(0,0,0,.06)}
+  .float-card.left{left:-6%;bottom:8%;width:min(48%,190px)}
+  .float-card.right{right:-6%;top:8%;width:min(48%,190px)}
+</style>
 </head>
 <body>
   <header>
@@ -140,10 +150,20 @@
         </div>
         <p class="muted" style="margin-top:10px;font-size:14px">インストール不要・スマホ最適 / 作成者も幹事経験豊富 ✍️</p>
       </div>
-      <div class="glass preview">
-        <div class="card" style="background:#1e1a12;border:1px solid rgba(255,220,140,.18)">
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <div style="font-weight:900;letter-spacing:.6px">KanziPlus</div>
+      <div class="device-wrap">
+  <div class="device">
+    <div class="screen"><img src="/images/tab-input.png" alt="KanziPlus アプリプレビュー"></div>
+    <div class="glow"></div>
+  </div>
+  <div class="float-card left" aria-hidden="true">
+    <h4 style="margin:0 0 6px">今週の割り勘分析</h4>
+    <p class="mini" style="margin:0;color:#666">部長 30% / 一般 70%</p>
+  </div>
+  <div class="float-card right" aria-hidden="true">
+    <strong style="display:block;margin-bottom:4px">ピッタリです！</strong>
+    <span class="mini" style="color:#666">コピーして共有できます</span>
+  </div>
+</div>
             <div style="font-size:12px;color:var(--muted)">Group-first Demo</div>
           </div>
           <hr style="border:none;border-top:1px solid #312a1a;margin:10px 0"/>
@@ -274,6 +294,7 @@
   </script>
 </body>
 </html>
+
 
 
 
