@@ -92,6 +92,18 @@
   #step3Frame, #step3Frame .screen{border:none!important;outline:none!important;box-shadow:none!important;background:transparent!important}
   #step3Frame .screen::before,#step3Frame .screen::after{content:none!important}
   #step3Frame img{display:block;border:none!important;outline:none!important;box-shadow:none!important}
+  /* Step3: forcefully remove any border/outline/shadow like steps 1/2/4 */
+  #step3Frame, #step3Frame *{
+    border:none !important;
+    outline:none !important;
+    box-shadow:none !important;
+    background-image:none !important;
+    filter:none !important;
+  }
+  #step3Frame::before, #step3Frame::after,
+  #step3Frame .screen::before, #step3Frame .screen::after{ content:none !important; }
+  #step3Frame .screen{ background:transparent !important; }
+  #step3Frame img{ display:block; background:transparent !important; border-radius:0 !important; }
 </style>
 <style id="patch-20251102">
 /* Center hero content */
@@ -276,6 +288,7 @@
 
 </body>
 </html>
+
 
 
 
