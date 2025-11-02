@@ -6,16 +6,6 @@
 <title>KanziPlus｜グループで管理する割り勘</title>
 <meta name="description" content="KanziPlusは大人数に強い“グループ管理”型の割り勘アプリ。名前入力なし・端数処理もワンタップ。無料・ログイン不要で今すぐ使えます。" />
 <meta name="theme-color" content="#151a22" />
-
-<!-- ✅ Google Analytics (GA4) 設定 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-EXN7VZYJFG');
-</script>
-
 <style>
   :root{
     --bg:#0f131a;--bg2:#151a22;--card:#1b2029;--ink:#e9eaee;--muted:#b2b6bf;--accent:#f8d27a;--accent-2:#ffb455;--ok:#22c55e;--line:#2a3140;
@@ -96,15 +86,18 @@
 .hero .device{position:relative}
 .hero .device .screen{position:relative}
 .hero .device .screen::after{
-  content:"グループ\A単位で支払い！";
+  content:"グループ\A単位で計算！"; /* ← 文言のみ変更 */
   position:absolute;left:68%;top:36%;
   width:88px;height:88px;display:flex;align-items:center;justify-content:center;text-align:center;
   background:#fff;color:#111;font-weight:900;font-size:10px;white-space:pre-line;
   border-radius:50%;padding:0;box-shadow:0 8px 24px rgba(0,0,0,.25);
 }
+/* 旧バブルが残っていた場合は非表示 */
 .hero .device .screen::before{display:none !important;}
-/* Hide old bubble node if still in DOM */
 .bubble{display:none!important}
+
+/* ★ 黄色のもや(glow)を完全に消す（全セクション共通） */
+.device .glow{display:none!important}
 
 /* Problem list: prevent weird spacing */
 .li{display:block;padding:12px 12px 12px 36px;background:var(--card);border:1px solid #262c39;border-radius:16px;box-shadow:var(--shadow);line-height:1.7;letter-spacing:0;word-break:normal;white-space:normal;text-align:left}
@@ -183,7 +176,7 @@ section:nth-of-type(2) .list > .li::before{ top:16px; }
           </div>
           <div class="glow"></div>
         </div>
-        <div class="bubble">グループ単位で計算！</div>
+        <div class="bubble">グループ単位で支払い！</div>
       </div>
       <div class="cta">
         <a class="btn block" href="/keisha">今すぐ無料で使う</a>
