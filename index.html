@@ -104,6 +104,9 @@
   #step3Frame .screen::before, #step3Frame .screen::after{ content:none !important; }
   #step3Frame .screen{ background:transparent !important; }
   #step3Frame img{ display:block; background:transparent !important; border-radius:0 !important; }
+  /* Step3: remove parent card/outline using :has() */
+  .card:has(#step3Frame){ border:none!important; outline:none!important; box-shadow:none!important; background:transparent!important }
+  section:has(#step3Frame){ border:none!important; outline:none!important }
 </style>
 <style id="patch-20251102">
 /* Center hero content */
@@ -288,6 +291,7 @@
 
 </body>
 </html>
+
 
 
 
