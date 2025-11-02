@@ -76,6 +76,7 @@
 
   .frames,.slider,.slides,[class*="auto" i]{animation:none!important}
 </style>
+
 <style id="patch-20251102">
 /* Center hero content */
 .hero .wrap{justify-items:center}
@@ -108,6 +109,49 @@
 
 /* Desktop sticky CTA width */
 @media (min-width:768px){.sticky-cta .inner{max-width:420px;margin:0 auto}}
+
+/* ---------- 問題リストの丸を小アイコンに置換 ---------- */
+section:nth-of-type(2) .list > .li:before{
+  background:none;
+  box-shadow:0 4px 10px rgba(0,0,0,.25);
+  border-radius:4px;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:18px 18px;
+}
+/* 1) メモ */
+section:nth-of-type(2) .list > .li:nth-child(1):before{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='6' y='7' width='12' height='13' rx='2' fill='%23f8d27a'/><rect x='8' y='3' width='8' height='4' rx='1' fill='%23f8d27a'/><rect x='9' y='10' width='6' height='1.6' rx='0.8' fill='%231a1f2a'/><rect x='9' y='13' width='6' height='1.6' rx='0.8' fill='%231a1f2a'/><rect x='9' y='16' width='4.5' height='1.6' rx='0.8' fill='%231a1f2a'/></svg>");
+}
+/* 2) 電卓 */
+section:nth-of-type(2) .list > .li:nth-child(2):before{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='5' y='4' width='14' height='16' rx='2' fill='%23f8d27a'/><rect x='8' y='6.5' width='8' height='2.5' rx='1.2' fill='%231a1f2a'/><rect x='8' y='10' width='3' height='3' rx='0.6' fill='%231a1f2a'/><rect x='12.5' y='10' width='3' height='3' rx='0.6' fill='%231a1f2a'/><rect x='8' y='14' width='3' height='3' rx='0.6' fill='%231a1f2a'/><rect x='12.5' y='14' width='3' height='3' rx='0.6' fill='%231a1f2a'/></svg>");
+}
+/* 3) スマホDL */
+section:nth-of-type(2) .list > .li:nth-child(3):before{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='6.5' y='3' width='11' height='18' rx='2' fill='%23f8d27a'/><circle cx='12' cy='18' r='0.9' fill='%231a1f2a'/><path d='M12 7v6m0 0l-3-3m3 3l3-3' stroke='%231a1f2a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+}
+/* 4) ¥コイン */
+section:nth-of-type(2) .list > .li:nth-child(4):before{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='9' fill='%23f8d27a'/><path d='M8 8l4 5 4-5M12 13v4M9 14h6M9 16h6' stroke='%231a1f2a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+}
+/* アイコンを少し下げる（2px） */
+section:nth-of-type(2) .list > .li::before{ top:16px; }
+
+/* ---------- PCだけ：HEROのCTA幅を下部と揃える ---------- */
+@media (min-width:768px){
+  .hero .cta{
+    width:calc(100% + 32px); /* wrapの左右padding 16px×2 を相殺 */
+    margin-left:-16px;
+    margin-right:-16px;
+  }
+  .hero .cta .btn.block{
+    display:flex;      /* 幅を縮めない */
+    width:100%;
+    align-items:center;
+    justify-content:center;
+  }
+}
 </style>
 </head>
 <body>
@@ -253,6 +297,12 @@
     </div>
   </section>
 
+  <!-- 固定フッターCTA（PC/スマホとも幅は不変） -->
+  <div class="sticky-cta">
+    <div class="inner">
+      <a class="btn block" href="/keisha">今すぐ無料で使う</a>
+    </div>
+  </div>
 
 </body>
 </html>
