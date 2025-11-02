@@ -41,7 +41,7 @@
   .bubble{position:absolute;left:-6%;top:10%;background:#fff;color:#111;border-radius:14px;padding:10px 12px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-weight:900}
   .bubble:after{content:"";position:absolute;left:16px;top:100%;border:8px solid transparent;border-top-color:#fff;filter:drop-shadow(0 2px 2px rgba(0,0,0,.1))}
 
-  /* Problems */
+  /* Sections */
   section{padding:26px 0;border-top:1px solid #1c2230}
   h2{font-size:22px;margin:0 0 10px}
   .list{display:grid;gap:10px}
@@ -60,9 +60,6 @@
   .slider{position:relative;overflow:hidden;border-radius:18px;border:1px solid #2b3141}
   .frames{display:flex;transition:transform .35s ease}
   .frames img{width:100%;aspect-ratio:9/19.5;object-fit:contain;object-position:center top;background:#000}
-  /* dots removed patch */
-  /* dot removed patch */
-  /* dot active removed patch */
 
   /* Sticky CTA at bottom */
   body{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 72px)}
@@ -75,38 +72,9 @@
     .catch .line2{display:block;white-space:nowrap;font-size:24px}
   }
 
-  .li:before{content:"";flex:0 0 18px;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #fff7d0 0%, #f8d27a 45%, #ffb455 100%);box-shadow:0 6px 16px rgba(255,180,85,.28);margin-top:2px}
+  .li:before{content:"";position:absolute;left:12px;top:14px;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #fff7d0 0%, #f8d27a 45%, #ffb455 100%);box-shadow:0 6px 16px rgba(255,180,85,.28)}
 
-  .frames img{width:100%;aspect-ratio:9/19.5;object-fit:contain;object-position:center top;background:#000}
-
-  .sticky-cta .inner{max-width:420px;margin:0 auto}
-/* dots removed patch */
-/* dot removed patch */
-/* dot active removed patch */
-.frames,.slider,.slides,[class*="auto" i]{animation:none!important}
-  /* Step3: match screen height to image (no extra space) */
-  #step3Frame{width:min(300px,78vw)}
-  #step3Frame .screen{padding:0;height:auto!important}
-  #step3Frame .screen img{width:100%;height:auto!important;aspect-ratio:auto!important;display:block}
-  /* Step3: remove any thin border/outline like other steps */
-  #step3Frame, #step3Frame .screen{border:none!important;outline:none!important;box-shadow:none!important;background:transparent!important}
-  #step3Frame .screen::before,#step3Frame .screen::after{content:none!important}
-  #step3Frame img{display:block;border:none!important;outline:none!important;box-shadow:none!important}
-  /* Step3: forcefully remove any border/outline/shadow like steps 1/2/4 */
-  #step3Frame, #step3Frame *{
-    border:none !important;
-    outline:none !important;
-    box-shadow:none !important;
-    background-image:none !important;
-    filter:none !important;
-  }
-  #step3Frame::before, #step3Frame::after,
-  #step3Frame .screen::before, #step3Frame .screen::after{ content:none !important; }
-  #step3Frame .screen{ background:transparent !important; }
-  #step3Frame img{ display:block; background:transparent !important; border-radius:0 !important; }
-  /* Step3: remove parent card/outline using :has() */
-  .card:has(#step3Frame){ border:none!important; outline:none!important; box-shadow:none!important; background:transparent!important }
-  section:has(#step3Frame){ border:none!important; outline:none!important }
+  .frames,.slider,.slides,[class*="auto" i]{animation:none!important}
 </style>
 <style id="patch-20251102">
 /* Center hero content */
@@ -129,9 +97,8 @@
 
 /* Problem list: prevent weird spacing */
 .li{display:block;padding:12px 12px 12px 36px;background:var(--card);border:1px solid #262c39;border-radius:16px;box-shadow:var(--shadow);line-height:1.7;letter-spacing:0;word-break:normal;white-space:normal;text-align:left}
-.li:before{content:"";position:absolute;left:12px;top:14px;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #fff7d0 0%, #f8d27a 45%, #ffb455 100%);box-shadow:0 6px 16px rgba(255,180,85,.28)}
 
-/* Step3: manual-only slider; disable any CSS animations */
+/* Manual slider: disable any CSS animations */
 #s3.frames{animation:none!important}
 .frames{animation:none!important}
 
@@ -260,16 +227,14 @@
 
       <div class="step">
         <h3>STEP 3｜必要に応じて金額を微調整</h3>
-        <div class="slider" id="s3">
-          <div class="frames">
-            <div id="step3Frame" class="device" style="margin:0 auto">
-  <div class="screen">
-    <img src="/images/warifuri_top.png" alt="Step3: 金額微調整（割り振り）">
-  </div>
-</div>
+        <div class="device-wrap">
+          <div class="device" id="step3Frame">
+            <div class="screen">
+              <img src="/images/warifuri_top.png" alt="Step3: 金額微調整（割り振り）" loading="lazy" decoding="async" />
+            </div>
+            <div class="glow"></div>
           </div>
         </div>
-        
       </div>
 
       <div class="step">
@@ -291,6 +256,7 @@
 
 </body>
 </html>
+
 
 
 
