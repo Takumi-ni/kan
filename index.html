@@ -32,9 +32,9 @@
 
   /* Device mock */
   .device-wrap{position:relative;display:grid;place-items:center;margin:14px 0 6px}
-  .device{--bez:14px;--radius:36px;--side:3px;width:min(360px,92vw);aspect-ratio:9/19.5;position:relative;border-radius:var(--radius);background:#000;padding:var(--bez);box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 var(--side) #111}
+  .device{--bez:14px;--radius:36px;--side:3px;width:min(300px,78vw);aspect-ratio:9/19.5;position:relative;border-radius:var(--radius);background:#000;padding:var(--bez);box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 var(--side) #111}
   .device .screen{position:absolute;inset:var(--bez);border-radius:calc(var(--radius) - var(--bez));overflow:hidden;background:#000}
-  .device .screen picture, .device .screen img{width:100%;height:100%;object-fit:cover;display:block}
+  .device .screen img{width:100%;height:100%;object-fit:contain;object-position:center top;display:block;background:#000}
   .device::before{content:"";position:absolute;top:calc(var(--bez)/2);left:50%;transform:translateX(-50%);width:120px;height:26px;background:#111;border-radius:14px;box-shadow:0 2px 4px rgba(0,0,0,.35) inset}
   .device .glow{position:absolute;inset:-12%;background:radial-gradient(60% 30% at 50% 0%, rgba(248,210,122,.18), transparent 60%);filter:blur(10px);border-radius:inherit;pointer-events:none}
 
@@ -59,11 +59,15 @@
   .step{display:grid;gap:12px;margin:16px 0}
   .slider{position:relative;overflow:hidden;border-radius:18px;border:1px solid #2b3141}
   .frames{display:flex;transition:transform .35s ease}
-  .frames picture,.frames img{width:100%;aspect-ratio:9/19.5;object-fit:cover}
+  .frames img{width:100%;aspect-ratio:9/19.5;object-fit:contain;object-position:center top;background:#000}
   .dots{display:flex;gap:8px;justify-content:center;margin-top:8px}
   .dot{width:8px;height:8px;border-radius:999px;background:#3a4154;border:1px solid #59607a}
   .dot.active{background:linear-gradient(90deg,var(--accent),var(--accent-2))}
 
+  /* Sticky CTA at bottom */
+  body{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 72px)}
+  .sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:60;background:linear-gradient(180deg, rgba(21,26,34,.0), rgba(21,26,34,.75) 18%, rgba(21,26,34,.95));backdrop-filter:saturate(140%) blur(6px);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid #232938}
+  .sticky-cta .btn{width:100%;box-shadow:0 14px 32px rgba(255,180,85,.28)}
 </style>
 </head>
 <body>
@@ -224,8 +228,12 @@
     root.addEventListener('mouseleave', ()=> t = setInterval(()=> set(i?0:1), 3000));
   })();
 </script>
+  <div class="sticky-cta">
+    <a class="btn" href="/keisha">今すぐ無料で使う</a>
+  </div>
 </body>
 </html>
+
 
 
 
