@@ -34,7 +34,7 @@
   .device-wrap{position:relative;display:grid;place-items:center;margin:14px 0 6px}
   .device{--bez:14px;--radius:36px;--side:3px;width:min(300px,78vw);position:relative;display:inline-block;border-radius:var(--radius);background:#000;padding:var(--bez);box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 var(--side) #111}
   .device .screen{position:relative;border-radius:calc(var(--radius) - var(--bez));overflow:hidden;background:#000}
-  .device .screen img{width:100%;height:auto;object-fit:contain;object-position:center top;display:block;background:#000}
+  .device .screen img{width:100%;height:auto;max-height:none;object-fit:contain;object-position:center top;display:block;background:#000}
   .device::before{content:"";position:absolute;top:calc(var(--bez)/2);left:50%;transform:translateX(-50%);width:120px;height:26px;background:#111;border-radius:14px;box-shadow:0 2px 4px rgba(0,0,0,.35) inset}
   .device .glow{position:absolute;inset:-12%;background:radial-gradient(60% 30% at 50% 0%, rgba(248,210,122,.18), transparent 60%);filter:blur(10px);border-radius:inherit;pointer-events:none}
 
@@ -264,6 +264,7 @@
 </script>
 </body>
 </html>
+
 
 
 
