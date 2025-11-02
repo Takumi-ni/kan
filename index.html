@@ -84,6 +84,10 @@
 /* dot removed patch */
 /* dot active removed patch */
 .frames,.slider,.slides,[class*="auto" i]{animation:none!important}
+  /* Step3: match screen height to image (no extra space) */
+  #step3Frame{width:min(300px,78vw)}
+  #step3Frame .screen{padding:0;height:auto!important}
+  #step3Frame .screen img{width:100%;height:auto!important;aspect-ratio:auto!important;display:block}
 </style>
 <style id="patch-20251102">
 /* Center hero content */
@@ -239,7 +243,7 @@
         <h3>STEP 3｜必要に応じて金額を微調整</h3>
         <div class="slider" id="s3">
           <div class="frames">
-            <div class="device" style="margin:0 auto">
+            <div id="step3Frame" class="device" style="margin:0 auto">
   <div class="screen">
     <img src="/images/warifuri_top.png" alt="Step3: 金額微調整（割り振り）">
   </div>
@@ -268,15 +272,6 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
 
 
 
