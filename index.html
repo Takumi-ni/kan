@@ -152,6 +152,9 @@ section:nth-of-type(2) .list > .li::before{ top:16px; }
     justify-content:center;
   }
 }
+
+/* ---------- もや（glow）を完全に無効化 ---------- */
+.device .glow{ display:none !important; }
 </style>
 </head>
 <body>
@@ -185,12 +188,12 @@ section:nth-of-type(2) .list > .li::before{ top:16px; }
   <section>
     <div class="wrap">
       <h2>こんな悩み、ありませんか？</h2>
-      <div class="list">
-        <div class="li">大人数の割り勘、ツールを使っても<b>一人ずつ名前入力や金額調整が必要</b>で面倒</div>
-        <div class="li">毎回の<b>端数計算</b>が大変、結局どこかでズレる</div>
-        <div class="li">アプリの<b>インストールやログイン</b>が手間</div>
-        <div class="li">良さそうなアプリは<b>有料</b>だったり制限が多い</div>
-      </div>
+    <div class="list">
+      <div class="li">大人数の割り勘、ツールを使っても<b>一人ずつ名前入力や金額調整が必要</b>で面倒</div>
+      <div class="li">毎回の<b>端数計算</b>が大変、結局どこかでズレる</div>
+      <div class="li">アプリの<b>インストールやログイン</b>が手間</div>
+      <div class="li">良さそうなアプリは<b>有料</b>だったり制限が多い</div>
+    </div>
     </div>
   </section>
 
@@ -306,16 +309,3 @@ section:nth-of-type(2) .list > .li::before{ top:16px; }
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
