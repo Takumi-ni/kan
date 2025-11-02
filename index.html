@@ -88,6 +88,10 @@
   #step3Frame{width:min(300px,78vw)}
   #step3Frame .screen{padding:0;height:auto!important}
   #step3Frame .screen img{width:100%;height:auto!important;aspect-ratio:auto!important;display:block}
+  /* Step3: remove any thin border/outline like other steps */
+  #step3Frame, #step3Frame .screen{border:none!important;outline:none!important;box-shadow:none!important;background:transparent!important}
+  #step3Frame .screen::before,#step3Frame .screen::after{content:none!important}
+  #step3Frame img{display:block;border:none!important;outline:none!important;box-shadow:none!important}
 </style>
 <style id="patch-20251102">
 /* Center hero content */
@@ -272,6 +276,7 @@
 
 </body>
 </html>
+
 
 
 
