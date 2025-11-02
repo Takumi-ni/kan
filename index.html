@@ -33,7 +33,7 @@
   /* Device mock */
   .device-wrap{position:relative;display:grid;place-items:center;margin:14px 0 6px}
   .device{--bez:14px;--radius:36px;--side:3px;width:min(300px,78vw);position:relative;display:inline-block;border-radius:var(--radius);background:#000;padding:var(--bez);box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 var(--side) #111}
-  .device .screen{position:relative;border-radius:calc(var(--radius) - var(--bez));overflow:hidden;background:#000}
+  .device .screen{position:relative;border-radius:calc(var(--radius) - var(--bez));overflow:hidden;background:#000;display:block;padding:0}
   .device .screen img{width:100%;height:auto;max-height:none;object-fit:contain;object-position:center top;display:block;background:#000}
   .device::before{content:"";position:absolute;top:calc(var(--bez)/2);left:50%;transform:translateX(-50%);width:120px;height:26px;background:#111;border-radius:14px;box-shadow:0 2px 4px rgba(0,0,0,.35) inset}
   .device .glow{position:absolute;inset:-12%;background:radial-gradient(60% 30% at 50% 0%, rgba(248,210,122,.18), transparent 60%);filter:blur(10px);border-radius:inherit;pointer-events:none}
@@ -60,9 +60,9 @@
   .slider{position:relative;overflow:hidden;border-radius:18px;border:1px solid #2b3141}
   .frames{display:flex;transition:transform .35s ease}
   .frames img{width:100%;aspect-ratio:9/19.5;object-fit:contain;object-position:center top;background:#000}
-  .dots{display:flex;gap:8px;justify-content:center;margin-top:8px}
-  .dot{width:8px;height:8px;border-radius:999px;background:#3a4154;border:1px solid #59607a}
-  .dot.active{background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+  /* dots removed patch */
+  /* dot removed patch */
+  /* dot active removed patch */
 
   /* Sticky CTA at bottom */
   body{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 72px)}
@@ -80,9 +80,9 @@
   .frames img{width:100%;aspect-ratio:9/19.5;object-fit:contain;object-position:center top;background:#000}
 
   .sticky-cta .inner{max-width:420px;margin:0 auto}
-.dots{display:flex;gap:8px;justify-content:center;margin-top:10px}
-.dot{width:8px;height:8px;border-radius:50%;border:1px solid #f8d27a;background:transparent}
-.dot.active{background:#f8d27a}
+/* dots removed patch */
+/* dot removed patch */
+/* dot active removed patch */
 .frames,.slider,.slides,[class*="auto" i]{animation:none!important}
 </style>
 <style id="patch-20251102">
@@ -95,12 +95,12 @@
 .hero .device .screen{position:relative}
 .hero .device .screen::after{
   content:"グループ\A単位で支払い！";
-  position:absolute;left:72%;top:36%;
-  width:110px;height:110px;display:flex;align-items:center;justify-content:center;text-align:center;
-  background:#fff;color:#111;font-weight:900;font-size:11px;white-space:pre-line;
+  position:absolute;left:68%;top:36%;
+  width:88px;height:88px;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:#fff;color:#111;font-weight:900;font-size:10px;white-space:pre-line;
   border-radius:50%;padding:0;box-shadow:0 8px 24px rgba(0,0,0,.25);
 }
-.hero .device .screen::before{display:none}
+.hero .device .screen::before{display:none !important;}
 /* Hide old bubble node if still in DOM */
 .bubble{display:none!important}
 
@@ -246,7 +246,7 @@
 </div>
           </div>
         </div>
-        <div class="dots"><span class="dot active"></span><span class="dot"></span></div>
+        
       </div>
 
       <div class="step">
@@ -268,6 +268,7 @@
 
 </body>
 </html>
+
 
 
 
