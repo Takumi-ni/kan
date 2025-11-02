@@ -23,7 +23,7 @@
 
   /* Hero */
   .hero{padding:22px 0 10px;border-bottom:1px solid #1c2230}
-  .catch{margin:8px 0 2px;font-weight:900;line-height:1;white-space:nowrap;font-size:clamp(22px,8.8vw,40px)}
+  .catch{margin:8px 0 2px;font-weight:900;line-height:1.15;font-size:clamp(22px,8.4vw,36px)}
   .catch .em{font-size:1.22em;letter-spacing:.5px;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
   .lead{color:var(--muted);margin:10px 0 16px}
   .cta{display:flex;gap:10px;flex-wrap:wrap}
@@ -32,9 +32,9 @@
 
   /* Device mock */
   .device-wrap{position:relative;display:grid;place-items:center;margin:14px 0 6px}
-  .device{--bez:14px;--radius:36px;--side:3px;width:min(300px,78vw);aspect-ratio:9/19.5;position:relative;border-radius:var(--radius);background:#000;padding:var(--bez);box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 var(--side) #111}
-  .device .screen{position:absolute;inset:var(--bez);border-radius:calc(var(--radius) - var(--bez));overflow:hidden;background:#000}
-  .device .screen img{width:100%;height:100%;object-fit:contain;object-position:center top;display:block;background:#000}
+  .device{--bez:14px;--radius:36px;--side:3px;width:min(300px,78vw);position:relative;display:inline-block;border-radius:var(--radius);background:#000;padding:var(--bez);box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 var(--side) #111}
+  .device .screen{position:relative;border-radius:calc(var(--radius) - var(--bez));overflow:hidden;background:#000}
+  .device .screen img{width:100%;height:auto;object-fit:contain;object-position:center top;display:block;background:#000}
   .device::before{content:"";position:absolute;top:calc(var(--bez)/2);left:50%;transform:translateX(-50%);width:120px;height:26px;background:#111;border-radius:14px;box-shadow:0 2px 4px rgba(0,0,0,.35) inset}
   .device .glow{position:absolute;inset:-12%;background:radial-gradient(60% 30% at 50% 0%, rgba(248,210,122,.18), transparent 60%);filter:blur(10px);border-radius:inherit;pointer-events:none}
 
@@ -45,7 +45,7 @@
   section{padding:26px 0;border-top:1px solid #1c2230}
   h2{font-size:22px;margin:0 0 10px}
   .list{display:grid;gap:10px}
-  .li{background:var(--card);border:1px solid #262c39;padding:12px;border-radius:16px;box-shadow:var(--shadow)}
+  .li{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid #262c39;padding:12px;border-radius:16px;box-shadow:var(--shadow)}
 
   /* Features */
   .feat{display:grid;gap:10px;margin:18px 0;padding:14px;border:1px solid #2b3141;border-radius:18px;background:linear-gradient(180deg, rgba(255,220,140,.06), rgba(255,220,140,.03));box-shadow:var(--shadow)}
@@ -68,6 +68,18 @@
   body{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 72px)}
   .sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:60;background:linear-gradient(180deg, rgba(21,26,34,.0), rgba(21,26,34,.75) 18%, rgba(21,26,34,.95));backdrop-filter:saturate(140%) blur(6px);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid #232938}
   .sticky-cta .btn{width:100%;box-shadow:0 14px 32px rgba(255,180,85,.28)}
+  .catch .line2{white-space:nowrap}
+  @media (max-width: 420px){
+    .catch{font-size:26px}
+    .catch .line1{display:block;margin-bottom:6px}
+    .catch .line2{display:block;white-space:nowrap;font-size:24px}
+  }
+
+  .li:before{content:"";flex:0 0 18px;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #fff7d0 0%, #f8d27a 45%, #ffb455 100%);box-shadow:0 6px 16px rgba(255,180,85,.28);margin-top:2px}
+
+  .frames img{width:100%;aspect-ratio:9/19.5;object-fit:contain;object-position:center top;background:#000}
+
+  .sticky-cta .inner{max-width:420px;margin:0 auto}
 </style>
 </head>
 <body>
@@ -80,7 +92,7 @@
   <!-- HERO -->
   <section class="hero">
     <div class="wrap">
-      <h1 class="catch">割り勘は<span class="em">グループ</span>で管理する時代</h1>
+      <h1 class="catch"><span class="line1">割り勘は、</span><span class="line2"><span class="em">グループ</span>で管理する時代</span></h1>
       <p class="lead">KanziPlusは、大人数向け割り勘アプリです。<br>他の割り勘アプリに多い<b>一人ずつの名前入力や金額調整が不要</b>。グループ単位で、速く・きれいに計算できます。</p>
       <div class="device-wrap">
         <div class="device">
@@ -228,11 +240,31 @@
     root.addEventListener('mouseleave', ()=> t = setInterval(()=> set(i?0:1), 3000));
   })();
 </script>
-  <div class="sticky-cta">
-    <a class="btn" href="/keisha">今すぐ無料で使う</a>
-  </div>
+  <div class="sticky-cta"><div class="inner">
+  <a class="btn" href="/keisha">今すぐ無料で使う</a>
+</div></div>
+<script>
+  // Step3 manual slider (no autoplay)
+  (function(){
+    const root = document.getElementById('s3');
+    if(!root) return; const frames = root.querySelector('.frames');
+    const dots = root.parentElement.querySelectorAll('.dot');
+    let i=0; function set(n){ i=Math.max(0,Math.min(1,n)); frames.style.transform=`translateX(${-100*i}%)`; dots.forEach((d,k)=>d.classList.toggle('active',k===i)); }
+    dots.forEach((d,k)=> d.addEventListener('click', ()=> set(k)));
+    let sx=null,dx=0; const start=e=>{sx=(e.touches?e.touches[0].clientX:e.clientX);};
+    const move=e=>{ if(sx==null) return; const x=(e.touches?e.touches[0].clientX:e.clientX); dx=x-sx; frames.style.transform=`translateX(calc(${-100*i}% + ${dx}px))`; };
+    const end=()=>{ if(sx==null) return; if(Math.abs(dx)>40){ set(i + (dx<0?1:-1)); } else { set(i); } sx=null; dx=0; };
+    root.addEventListener('touchstart',start,{passive:true});
+    root.addEventListener('touchmove',move,{passive:true});
+    root.addEventListener('touchend',end);
+    root.addEventListener('pointerdown',start);
+    root.addEventListener('pointermove',move);
+    root.addEventListener('pointerup',end);
+  })();
+</script>
 </body>
 </html>
+
 
 
 
