@@ -160,8 +160,12 @@
     white-space: nowrap;  /* 折り返し禁止 */
     font-size: 16px;      /* 視認性は確保 */
   }
-
+	  	  
   }
+
+	
+	
+	
 </style>
 </head>
 <body>
@@ -527,7 +531,7 @@ function clickAdjust(idx, step){
 
 // ======= 互換API：旧ロジックの呼び出し口を再計算に委譲 =======
 function autoDistribute(){ recompute(); return true; }
-function tryRebalanceManual(){ recompute(); return true; }
+function tryRebalanceManual(){ return true; }  /* ← ここだけ変更（再計算を行わない） */
 
 // ======= プレビュー：現在の perPerson をベースに概算を返す =======
 function computePreview(){
@@ -708,15 +712,28 @@ function updateResults(){
       peopleBlock = manualByGroup[g.id].map(x=>{
         const adj = (state.mode==='payMore'? '+' : '−') + yen(x.amount);
         const val = state.mode==='payMore'? (g.perPerson + x.amount) : (g.perPerson - x.amount);
-        return `<div class="row" style="justify-content:space-between"><div>・${x.name} <span class="mini">(${adj}円)</span></div><div class="money">${yen(val)}円</div></div>`
+		return `<div class="row" style="align-items:baseline">
+		  <div>・${x.name} <span class="mini">(${adj}円)</span></div>
+		  <div class="money" style="margin-left:auto;text-align:right">${yen(val)}円</div>
+		</div>`
       }).join('');
       const others = g.people - manualByGroup[g.id].length;
       if(others>0){
-        peopleBlock += `<div class="row" style="justify-content:space-between"><div>・他メンバー <span class="mini">(+0円)</span></div><div class="money"><span class="mini">1人あたり</span> ${yen(g.perPerson)}円</div></div>`
+        peopleBlock += `<div class="row" style="align-items:baseline">
+        <div>・他メンバー <span class="mini">(+0円)</span></div>
+        <div class="money" style="margin-left:auto;text-align:right"><span class="mini">1人あたり</span> ${yen(g.perPerson)}円</div>
+        </div>`
+
       }
     }
 
-    section.innerHTML = `<div style="font-weight:800">${g.name}${unit?` <span style="margin-left:10px">${unit}</span>`:''}</div>${peopleBlock ? `<div class="stack" style="margin-top:6px">${peopleBlock}</div>`:''}`;
+		section.innerHTML = `
+	  <div class="row" style="align-items:baseline">
+		<div style="font-weight:800">${g.name}</div>
+		${unit ? `<div style="flex:0 0 auto;margin-left:auto;text-align:right">${unit}</div>` : ``}
+	  </div>
+	  ${peopleBlock ? `<div class="stack" style="margin-top:6px">${peopleBlock}</div>` : ``}
+	`;
     resultView.appendChild(section);
 
     const d = document.createElement('div');
@@ -792,6 +809,7 @@ renderAll();
 </script>
 </body>
 </html>
+
 
 
 
