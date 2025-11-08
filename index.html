@@ -165,6 +165,30 @@ section:nth-of-type(2) .list > .li::before{ top:16px; }
   }
 }
 </style>
+
+<!-- ▼▼▼ フッター専用スタイル（追記） ▼▼▼ -->
+<style>
+/* Footer全体（他要素は変更なし） */
+.site-footer{border-top:1px solid #1c2230;padding:20px 0 28px;color:var(--muted);background:transparent}
+.site-footer .brand-mini{font-weight:800;color:#ffe8a3;margin-bottom:8px;text-align:center}
+.site-footer nav{display:block}
+.site-footer nav ul{margin:0 0 6px;padding:0;list-style:none}
+.site-footer nav ul.row{display:flex;gap:12px;justify-content:center;flex-wrap:nowrap}
+.site-footer nav ul.row-2{margin-top:4px}
+.site-footer a{
+  font-size:13px;
+  white-space:nowrap;      /* 途中改行させない */
+  word-break:keep-all;     /* 日本語の語中改行を抑制 */
+  overflow-wrap:normal;
+}
+.site-footer .copy{
+  text-align:center;
+  margin:10px 0 0;
+  font-size:12px;
+  white-space:nowrap;
+}
+</style>
+<!-- ▲▲▲ フッター専用スタイル（追記ここまで） ▲▲▲ -->
 </head>
 <body>
   <header>
@@ -185,7 +209,7 @@ section:nth-of-type(2) .list > .li::before{ top:16px; }
           </div>
           <div class="glow"></div>
         </div>
-        <div class="bubble">グループ単位で支払い！</div>
+        <div class="bubble">グループ単位で計算！</div>
       </div>
       <div class="cta">
         <a class="btn block" href="/keisha">今すぐ無料で使う</a>
@@ -308,6 +332,29 @@ section:nth-of-type(2) .list > .li::before{ top:16px; }
 
     </div>
   </section>
+
+  <!-- ▼▼▼ 追加したフッター（他は未変更） ▼▼▼ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="wrap">
+      <div class="brand-mini">🍺 KanziPlus</div>
+      <nav aria-label="フッターナビゲーション">
+        <!-- 1段目 -->
+        <ul class="row row-1">
+          <li><a href="/about.html">運営者情報</a></li>
+          <li><a href="/kiyaku.html">利用規約</a></li>
+          <li><a href="/question.html">よくある質問</a></li>
+        </ul>
+        <!-- 2段目 -->
+        <ul class="row row-2">
+          <li><a href="/form.html">お問い合わせフォーム</a></li>
+          <li><a href="/privacy.html">プライバシーポリシー</a></li>
+        </ul>
+      </nav>
+      <p class="copy">© <span id="y"></span> kanziplus.jp</p>
+    </div>
+  </footer>
+  <script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+  <!-- ▲▲▲ フッターここまで ▲▲▲ -->
 
   <!-- 固定フッターCTA（PC/スマホとも幅は不変） -->
   <div class="sticky-cta">
