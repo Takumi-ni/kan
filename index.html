@@ -198,6 +198,12 @@ section:nth-of-type(2) .list > .li::before{ top:16px; }
 .voice .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
 .voice .meta{font-weight:800}
 .voice blockquote{margin:2px 0 0;color:var(--muted)}
+.site-footer .brand-mini .ficon{
+  display:inline-block;
+  margin:0 6px;                    /* 左右の間隔を統一 */
+  filter:drop-shadow(0 2px 6px rgba(248,210,122,.35)); /* ヘッダーと同じ雰囲気 */
+}
+
 </style>
 <!-- ▲▲▲ ユーザーの声（スタイルここまで） ▲▲▲ -->
 </head>
@@ -386,7 +392,7 @@ section:nth-of-type(2) .list > .li::before{ top:16px; }
   <!-- ▼▼▼ 追加したフッター（他は未変更） ▼▼▼ -->
   <footer class="site-footer" role="contentinfo">
     <div class="wrap">
-      <div class="brand-mini">🍺 KanziPlus</div>
+      <div class="brand-mini"><span class="ficon" aria-hidden="true">🍺</span>KanziPlus<span class="ficon" aria-hidden="true">✨</span></div>
       <nav aria-label="フッターナビゲーション">
         <!-- 1段目 -->
         <ul class="row row-1">

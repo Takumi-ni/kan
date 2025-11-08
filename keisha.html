@@ -208,6 +208,12 @@
   word-break:keep-all;
   overflow-wrap:normal;
 }
+.site-footer .brand-mini .ficon{
+  display:inline-block;
+  margin:0 6px;                    /* 左右の間隔を統一 */
+  filter:drop-shadow(0 2px 6px rgba(248,210,122,.35)); /* ヘッダーと同じ雰囲気 */
+}
+
 
 
 </style>
@@ -856,7 +862,7 @@ renderAll();
   <!-- ▼▼▼ 参照ページと同じデザインのフッター ▼▼▼ -->
   <footer class="site-footer" role="contentinfo">
     <div class="wrap">
-      <div class="brand-mini">🍺 KanziPlus</div>
+      <div class="brand-mini"><span class="ficon" aria-hidden="true">🍺</span>KanziPlus<span class="ficon" aria-hidden="true">✨</span></div>
       <nav aria-label="フッターナビゲーション">
         <!-- 1段目 -->
         <ul class="row row-1">
