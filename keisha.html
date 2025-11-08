@@ -141,32 +141,77 @@
     .result-card #deltaLine{ white-space:nowrap; font-size:14px; }
 
     .result-card .stack .row{
-    flex-wrap: nowrap;
-    gap: 8px;
+      flex-wrap: nowrap;
+      gap: 8px;
+    }
+    .result-card .stack .row > div:first-child{
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 14px;
+    }
+    .result-card .stack .row > div:first-child .mini{
+      font-size: 12px;
+    }
+    .result-card .stack .row .money{
+      flex: 0 0 auto;
+      white-space: nowrap;
+      font-size: 16px;
+    }
   }
-  .result-card .stack .row > div:first-child{
-    flex: 1;              /* 左側(名前/他メンバー)に残り幅を与える */
-    min-width: 0;         /* flex 子要素を縮められるように */
-    white-space: nowrap;  /* 折り返し禁止 */
-    overflow: hidden;     /* はみ出しは省略 */
-    text-overflow: ellipsis;
-    font-size: 14px;      /* スマホでは少し小さく */
-  }
-  .result-card .stack .row > div:first-child .mini{
-    font-size: 12px;      /* (+○○円) のミニ文字も少し小さく */
-  }
-  .result-card .stack .row .money{
-    flex: 0 0 auto;       /* 右側の金額は幅固定で保持 */
-    white-space: nowrap;  /* 折り返し禁止 */
-    font-size: 16px;      /* 視認性は確保 */
-  }
-	  	  
-  }
-
-	
-	
-	
 </style>
+
+<!-- ▼▼▼ 参照ページと同じフッター用スタイル ▼▼▼ -->
+<style>
+.site-footer{border-top:1px solid #1c2230;padding:20px 0 28px;color:var(--muted);background:transparent}
+.site-footer .brand-mini{font-weight:800;color:#ffe8a3;margin-bottom:8px;text-align:center}
+.site-footer nav{display:block}
+.site-footer nav ul{margin:0 0 6px;padding:0;list-style:none}
+.site-footer nav ul.row{display:flex;gap:12px;justify-content:center;flex-wrap:nowrap}
+.site-footer nav ul.row-2{margin-top:4px}
+.site-footer a{
+  font-size:13px;
+  white-space:nowrap;
+  word-break:keep-all;
+  overflow-wrap:normal;
+  color:inherit;             /* ← 参照と同じく下線・色を消す */
+  text-decoration:none;      /* ← 参照と同じ */
+}
+.site-footer .copy{
+  text-align:center;
+  margin:10px 0 0;
+  font-size:12px;
+  white-space:nowrap;
+}
+/* === Footer の並びを固定（1段目3カラム / 2段目2カラム）=== */
+.site-footer nav ul.row-1{
+  display:grid;
+  grid-template-columns:repeat(3, max-content);
+  justify-content:center;
+  gap:32px;              /* 行内の間隔（必要なら微調整） */
+}
+.site-footer nav ul.row-2{
+  display:grid;
+  grid-template-columns:repeat(2, max-content);
+  justify-content:center;
+  gap:40px;              /* 2段目の左右間隔（必要なら微調整） */
+  margin-top:8px;
+}
+/* マーカー余白のぶれ防止 */
+.site-footer nav li{ list-style:none; margin:0; padding:0; }
+/* アンカー幅のばらつき防止（途中改行もしない） */
+.site-footer a{
+  display:inline-block;
+  white-space:nowrap;
+  word-break:keep-all;
+  overflow-wrap:normal;
+}
+
+
+</style>
+<!-- ▲▲▲ フッター用スタイルここまで ▲▲▲ -->
 </head>
 <body>
   <header>
@@ -408,7 +453,7 @@ function renderBars(ws){
   }).join('');
 }
 
-// ======= CORE CALC（ハミルトン法＋端数ポリシー厳守） =======
+// ======= CORE CALC =======
 function recompute(){
   const U = 100;
   const ws = weightsByBalance(state.groups.length);
@@ -519,7 +564,7 @@ function recompute(){
 
 function groupsRoundedSum(){ return state.groups.reduce((s,g)=> s + (g.perPerson||0) * (g.people||0), 0); }
 
-// ======= ±ボタン：押したグループだけ厳密±し、他は再ハミルトン =======
+// ======= ±ボタン =======
 function clickAdjust(idx, step){
   if (step === 0) return;
   const g = state.groups[idx]; if (!g) return;
@@ -529,18 +574,18 @@ function clickAdjust(idx, step){
   renderAll();
 }
 
-// ======= 互換API：旧ロジックの呼び出し口を再計算に委譲 =======
+// 互換API
 function autoDistribute(){ recompute(); return true; }
-function tryRebalanceManual(){ return true; }  /* ← ここだけ変更（再計算を行わない） */
+function tryRebalanceManual(){ return true; }
 
-// ======= プレビュー：現在の perPerson をベースに概算を返す =======
+// プレビュー
 function computePreview(){
   const per = state.groups.map(g => g.perPerson||0);
   const sumPreview = per.reduce((s,p,i)=> s + p*(state.groups[i].people||0), 0);
   const draft = state.manualDraft || [];
   const draftSum = draft.reduce((acc,m)=> acc + (Number(m.amount)||0), 0);
-  const draftEffect = (state.mode==='payMore') ? draftSum : -draftSum; // 端数の増減を反映
-  const remain = state.total - (sumPreview + draftEffect);            // +不足 / -超過
+  const draftEffect = (state.mode==='payMore') ? draftSum : -draftSum;
+  const remain = state.total - (sumPreview + draftEffect);
   return { per, remain, sumPreview, draftSum };
 }
 
@@ -807,14 +852,32 @@ function renderAll(){
 recompute();
 renderAll();
 </script>
+
+  <!-- ▼▼▼ 参照ページと同じデザインのフッター ▼▼▼ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="wrap">
+      <div class="brand-mini">🍺 KanziPlus</div>
+      <nav aria-label="フッターナビゲーション">
+        <!-- 1段目 -->
+        <ul class="row row-1">
+          <li><a href="/about.html">運営者情報</a></li>
+          <li><a href="/kiyaku.html">利用規約</a></li>
+          <li><a href="/question.html">よくある質問</a></li>
+        </ul>
+        <!-- 2段目 -->
+        <ul class="row row-2">
+          <li><a href="/form.html">お問い合わせフォーム</a></li>
+          <li><a href="/privacy.html">プライバシーポリシー</a></li>
+        </ul>
+      </nav>
+      <p class="copy">© <span id="y"></span> kanziplus.jp</p>
+    </div>
+  </footer>
+  <script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+  <!-- ▲▲▲ フッターここまで ▲▲▲ -->
+
 </body>
 </html>
-
-
-
-
-
-
 
 
 
