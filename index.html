@@ -189,6 +189,18 @@ section:nth-of-type(2) .list > .li::before{ top:16px; }
 }
 </style>
 <!-- ▲▲▲ フッター専用スタイル（追記ここまで） ▲▲▲ -->
+
+<!-- ▼▼▼ ユーザーの声（追加CSSのみ） ▼▼▼ -->
+<style>
+.voices .vlist{list-style:none;padding:0;margin:10px 0;display:grid;gap:10px}
+.voices .voice-card{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid #262c39;border-radius:16px;padding:12px;box-shadow:var(--shadow)}
+.voices .avatar{width:48px;height:48px;border-radius:50%;background:rgba(248,210,122,.14);display:grid;place-items:center;flex:none;box-shadow:0 6px 16px rgba(0,0,0,.22)}
+.voices .avatar svg{width:30px;height:30px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.18))}
+.voices .voice-body{font-size:15px}
+.voices .quote{font-weight:700}
+.voices .cite{font-size:12px;color:var(--muted);margin-top:4px}
+</style>
+<!-- ▲▲▲ ユーザーの声 ここまで ▲▲▲ -->
 </head>
 <body>
   <header>
@@ -333,6 +345,119 @@ section:nth-of-type(2) .list > .li::before{ top:16px; }
     </div>
   </section>
 
+  <!-- ▼▼▼ ユーザーの声（ここだけ追加） ▼▼▼ -->
+  <section class="voices">
+    <div class="wrap">
+      <h2>ユーザーの声</h2>
+      <ul class="vlist">
+        <li class="voice-card">
+          <div class="avatar" aria-hidden="true">
+            <!-- 男性アイコン -->
+            <!-- 男性アイコン（差し替え） -->
+<!-- 男性アイコン（ショートヘア＋Tシャツ） -->
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="男性ユーザーのイラスト">
+  <!-- 顔 -->
+  <circle cx="32" cy="24" r="12" fill="#ffe8a3"/>
+  <!-- 髪（ショート） -->
+  <path d="M20 24c0-8 10-14 22-9c-2 2-1 5-1 5c-2-1-4-1-6-.6c-5 .8-8 3.3-9 4.6c-.8 1-2 0-6 0z" fill="#f4b73f"/>
+  <!-- 眉 -->
+  <path d="M24.5 22.2h5M34.5 22.2h5" stroke="#1a1f2a" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- 目 -->
+  <circle cx="27" cy="25" r="1.6" fill="#1a1f2a"/>
+  <circle cx="37" cy="25" r="1.6" fill="#1a1f2a"/>
+  <!-- 鼻 -->
+  <path d="M32 26.5v3" stroke="#d49c4a" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- 口 -->
+  <path d="M26.5 31.5q5.5 4 11 0" fill="none" stroke="#1a1f2a" stroke-width="2" stroke-linecap="round"/>
+  <!-- 耳 -->
+  <circle cx="20" cy="24" r="2" fill="#ffe8a3"/>
+  <circle cx="44" cy="24" r="2" fill="#ffe8a3"/>
+  <!-- 服（クルーネック） -->
+  <rect x="18" y="36" width="28" height="16" rx="8" fill="#f8d27a"/>
+  <path d="M24 38c5 3 11 3 16 0" fill="none" stroke="#1a1f2a" stroke-width="1.6" stroke-linecap="round"/>
+</svg>
+
+
+          </div>
+          <div class="voice-body">
+            <div class="quote">「人数だけ入れて30秒で完了。二次会の精算もスムーズでした。」</div>
+            <div class="cite">Y.T. さん（飲み会幹事・2025/11）</div>
+          </div>
+        </li>
+        <li class="voice-card">
+          <div class="avatar" aria-hidden="true">
+            <!-- 女性アイコン -->
+            <!-- 女性アイコン（差し替え） -->
+<!-- 女性アイコン（ボブ＋丸襟ブラウス） -->
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="女性ユーザーのイラスト">
+  <!-- 顔 -->
+  <circle cx="32" cy="24" r="12" fill="#ffe8a3"/>
+  <!-- 髪（ボブ＆前髪） -->
+  <path d="M20 26c0-7 7-12 12-12c9 0 14 7 12 16c-2.5-1.3-6.5-2-12-2s-9.5.7-12 2z" fill="#f8d27a"/>
+  <path d="M21 23c3-4 8-6 18-4" fill="none" stroke="#ffb455" stroke-width="2" stroke-linecap="round"/>
+  <!-- 眉＋まつ毛 -->
+  <path d="M24.3 22.6h4.6M35.1 22.6h4.6" stroke="#1a1f2a" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M26.4 25.2l-1.6-.6M37.6 25.2l1.6-.6" stroke="#1a1f2a" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- 目 -->
+  <circle cx="27" cy="25" r="1.5" fill="#1a1f2a"/>
+  <circle cx="37" cy="25" r="1.5" fill="#1a1f2a"/>
+  <!-- 鼻 -->
+  <path d="M32 26.5v3" stroke="#d49c4a" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- 口（やさしい微笑） -->
+  <path d="M27.5 31.5q4.5 3 9 0" fill="none" stroke="#1a1f2a" stroke-width="2" stroke-linecap="round"/>
+  <!-- 服（丸襟ブラウス） -->
+  <rect x="18" y="36" width="28" height="16" rx="8" fill="#ffb455"/>
+  <!-- 襟 -->
+  <path d="M26 38c1.8 2 4.2 2.8 6 2.8S36.2 40 38 38" fill="#e9eaee"/>
+  <circle cx="32" cy="41.2" r="1.3" fill="#e9eaee"/>
+</svg>
+
+
+          </div>
+          <div class="voice-body">
+            <div class="quote">「グループ別で金額差をつけられるのが便利。名前入力が不要なのも助かる。」</div>
+            <div class="cite">M.K. さん（サークル代表・2025/11）</div>
+          </div>
+        </li>
+        <li class="voice-card">
+          <div class="avatar" aria-hidden="true">
+            <!-- 男性アイコン（別色） -->
+            <!-- 男性アイコン（差し替え・別ヘア） -->
+<!-- 男性アイコン（サイドパート＋パーカー） -->
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="男性ユーザーのイラスト">
+  <!-- 顔 -->
+  <circle cx="32" cy="24" r="12" fill="#ffe8a3"/>
+  <!-- 髪（サイドパート） -->
+  <path d="M20 24c2-6 10-10 20-7c-5 1-8 3-9.5 5.2c5-1.6 9.5-.8 13.5 1.8c-1 2.2-3.5 3-6 3c-8 0-14.5-1.2-18-3z" fill="#ffb455"/>
+  <path d="M31 19.5c-2.2 1.2-4.5 3.4-5.6 5.1" stroke="#f4b73f" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+  <!-- 眉 -->
+  <path d="M24.6 22.3h4.8M34.8 22.3h4.8" stroke="#1a1f2a" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- 目 -->
+  <circle cx="27" cy="25" r="1.6" fill="#1a1f2a"/>
+  <circle cx="37" cy="25" r="1.6" fill="#1a1f2a"/>
+  <!-- 鼻 -->
+  <path d="M32 26.5v3" stroke="#d49c4a" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- 口（にっこり） -->
+  <path d="M26.5 31q5.5 4 11 0" fill="none" stroke="#1a1f2a" stroke-width="2" stroke-linecap="round"/>
+  <!-- 服（フーディー） -->
+  <path d="M18 44c0-5 5-8 14-8s14 3 14 8v8H18v-8z" fill="#f8d27a" />
+  <!-- フード＆紐 -->
+  <path d="M22 38c2.5 2.8 5.8 4.2 10 4.2s7.5-1.4 10-4.2" fill="none" stroke="#1a1f2a" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M30 39v5M34 39v5" stroke="#1a1f2a" stroke-width="1.8" stroke-linecap="round"/>
+</svg>
+
+
+          </div>
+          <div class="voice-body">
+            <div class="quote">「旅行の割り勘が揉めない。±ボタンで微調整してピッタリにできました。」</div>
+            <div class="cite">A.S. さん（旅行幹事・2025/10）</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+  <!-- ▲▲▲ ユーザーの声 ここまで ▲▲▲ -->
+
   <!-- ▼▼▼ 追加したフッター（他は未変更） ▼▼▼ -->
   <footer class="site-footer" role="contentinfo">
     <div class="wrap">
@@ -365,4 +490,5 @@ section:nth-of-type(2) .list > .li::before{ top:16px; }
 
 </body>
 </html>
+
 
