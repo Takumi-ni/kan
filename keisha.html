@@ -4,6 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>KanziPlus</title>
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7292628789812881" crossorigin="anonymous"></script>
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -188,22 +190,15 @@
   display:grid;
   grid-template-columns:repeat(3, max-content);
   justify-content:center;
-  column-gap:18px;
-  row-gap:4px;              /* 行内の間隔（必要なら微調整） */
+  gap:32px;              /* 行内の間隔（必要なら微調整） */
 }
 .site-footer nav ul.row-2{
   display:grid;
-  grid-template-columns:repeat(3, max-content);
+  grid-template-columns:repeat(2, max-content);
   justify-content:center;
-  column-gap:18px;   /* 横の間隔 → かなり狭め */
-  row-gap:4px;       /* 縦の間隔は少しだけ */
-  margin-top:6px;
+  gap:40px;              /* 2段目の左右間隔（必要なら微調整） */
+  margin-top:8px;
 }
-
-
-
-
-
 /* マーカー余白のぶれ防止 */
 .site-footer nav li{ list-style:none; margin:0; padding:0; }
 /* アンカー幅のばらつき防止（途中改行もしない） */
@@ -213,12 +208,6 @@
   word-break:keep-all;
   overflow-wrap:normal;
 }
-.site-footer .brand-mini .ficon{
-  display:inline-block;
-  margin:0 6px;                    /* 左右の間隔を統一 */
-  filter:drop-shadow(0 2px 6px rgba(248,210,122,.35)); /* ヘッダーと同じ雰囲気 */
-}
-
 
 
 </style>
@@ -298,6 +287,8 @@
       <div style="grid-column:1 / -1;" class="row">
         <button class="btn accent" onclick="goTab('assign')" style="width:100%" type="button">つぎへ進む</button>
       </div>
+
+  
     </section>
 
     <!-- 割り振り TAB -->
@@ -350,6 +341,24 @@
       </div>
     </section>
   </main>
+
+  <div class="wrap">
+    <div class="adstir-banner">
+      <script type="text/javascript">
+        var adstir_vars = {
+          ver: "4.0",
+          app_id: "MEDIA-6f769d8e",
+          ad_spot: 1,
+          center: false
+        };
+      </script>
+      <script type="text/javascript" src="https://js.ad-stir.com/js/adstir.js"></script>
+    </div>
+  </div>
+
+
+
+
 
   <div id="toast" class="toast"></div>
 
@@ -867,7 +876,7 @@ renderAll();
   <!-- ▼▼▼ 参照ページと同じデザインのフッター ▼▼▼ -->
   <footer class="site-footer" role="contentinfo">
     <div class="wrap">
-      <div class="brand-mini"><span class="ficon" aria-hidden="true">🍺</span>KanziPlus<span class="ficon" aria-hidden="true">✨</span></div>
+      <div class="brand-mini">🍺 KanziPlus</div>
       <nav aria-label="フッターナビゲーション">
         <!-- 1段目 -->
         <ul class="row row-1">
@@ -879,9 +888,11 @@ renderAll();
         <ul class="row row-2">
           <li><a href="/form.html">お問い合わせフォーム</a></li>
           <li><a href="/privacy.html">プライバシーポリシー</a></li>
+        </ul>
+        <!-- 3段目 -->
+        <ul class="row row-3">
           <li><a href="/blog.html">幹事コラム</a></li>
         </ul>
-        
       </nav>
       <p class="copy">© <span id="y"></span> kanziplus.jp</p>
     </div>
