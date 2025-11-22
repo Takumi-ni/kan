@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- ✅ Google Analytics (GA4) 設定（IDは必要に応じて変更） -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EXN7VZYJFG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-EXN7VZYJFG');
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>幹事さん向けコラム｜KanziPlus</title>
+  <meta name="description" content="会社の飲み会・送別会・合宿などの幹事さん向けコラム。割り勘の工夫や段取りのコツ、KanziPlusの活用方法を、運営者の実体験をもとにご紹介します。">
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-soft: #0b1020;
+      --card-bg: #111827;
+      --accent: #fbbf24;
+      --accent-soft: #f59e0b;
+      --text-main: #e5e7eb;
+      --text-sub: #9ca3af;
+      --border-subtle: rgba(249, 250, 251, 0.06);
+      --radius-lg: 18px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.7);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background: radial-gradient(circle at top, #141726 0, #050816 55%, #020617 100%);
+      color: var(--text-main);
+      line-height: 1.7;
+    }
+
+    a { color: inherit; }
+
+    /* ===== Header ===== */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(to bottom,
+        rgba(15, 23, 42, 0.98),
+        rgba(15, 23, 42, 0.9),
+        transparent
+      );
+      border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0.6rem 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      background: radial-gradient(circle at top left, #f97316, #facc15 40%, #a16207 90%);
+      color: #111827;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-decoration: none;
+      box-shadow: 0 0 25px rgba(248, 250, 252, 0.35);
+      white-space: nowrap;
+    }
+    .logo span.icon { font-size: 1.1rem; }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--text-sub);
+      position: relative;
+      padding-bottom: 0.15rem;
+    }
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(to right, #facc15, #f97316);
+      transition: width 0.2s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link-active {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .nav-link-active::after { width: 100%; }
+
+    @media (max-width: 640px) {
+      .header-inner { padding-inline: 0.8rem; }
+      .nav { gap: 0.8rem; font-size: 0.8rem; }
+      .logo { padding-inline: 0.7rem; font-size: 0.8rem; }
+    }
+
+    /* ===== Layout ===== */
+    /* ===== Layout ===== */
+main {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 2.2rem 1.1rem 3.5rem;
+}
+
+/* スマホ（横幅640px以下）のときだけ細めのカラムにする */
+@media (max-width: 640px) {
+  main {
+    max-width: 320px;          /* ★スマホ時は横幅をきゅっと細く */
+    padding: 1.8rem 1rem 3rem; /* 上下左右の余白を少し調整       */
+  }
+
+  .hero,
+  .post-card,
+  .post-detail {
+    padding-inline: 1rem;      /* カード内の左右余白も少し細めに */
+  }
+
+  body {
+    line-height: 1.8;          /* 行間ちょい広めで読みやすく     */
+    line-break: strict;        /* 対応ブラウザで変な改行を抑える  */
+  }
+}
+
+
+    .hero {
+      background: radial-gradient(circle at top left,
+          rgba(251, 191, 36, 0.2),
+          rgba(15, 23, 42, 0.95));
+      border-radius: 24px;
+      padding: 1.5rem 1.6rem 1.6rem;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(248, 250, 252, 0.08);
+      margin-bottom: 2rem;
+    }
+    .hero-kicker {
+      font-size: 0.8rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(252, 211, 77, 0.96);
+      margin-bottom: 0.4rem;
+    }
+    .hero h1 {
+      font-size: clamp(1.5rem, 5vw, 1.9rem);
+      margin: 0 0 0.6rem;
+    }
+    .hero-lead {
+      font-size: 0.92rem;
+      color: var(--text-sub);
+      margin-bottom: 0.6rem;
+    }
+    .hero-note {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+    }
+
+    /* ===== List ===== */
+    .post-list { margin-bottom: 2.4rem; }
+    .post-list h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
+    }
+    .post-list-lead {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-bottom: 1.1rem;
+    }
+    .post-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .post-card {
+      background: linear-gradient(145deg, #020617, #020617 40%, #0f172a 100%);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1rem 1.1rem;
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.75);
+    }
+    .post-card h3 {
+      font-size: 0.98rem;
+      margin: 0 0 0.3rem;
+    }
+    .post-card-link {
+      text-decoration: none;
+      color: inherit;
+    }
+    .post-card-link:hover { text-decoration: underline; }
+    .post-meta {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      margin-bottom: 0.3rem;
+    }
+    .post-excerpt {
+      font-size: 0.86rem;
+      margin-bottom: 0.4rem;
+    }
+    .post-more {
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ===== Detail ===== */
+    .post-detail {
+      background: rgba(11, 17, 32, 0.96);
+      border-radius: 22px;
+      padding: 1.6rem 1.5rem 1.8rem;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 2rem;
+      display: none; /* 初期状態は非表示 */
+    }
+    .post-detail.active {
+      display: block;
+    }
+    .post-detail h2 {
+      font-size: 1.3rem;
+      margin-top: 0;
+      margin-bottom: 0.4rem;
+    }
+    .post-detail .post-meta { margin-bottom: 0.8rem; }
+
+    .summary-box {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 14px;
+      padding: 0.8rem 0.9rem;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.86rem;
+      margin-bottom: 1rem;
+    }
+    .summary-box ul {
+      margin: 0.3rem 0 0;
+      padding-left: 1.3rem;
+    }
+
+    .post-detail p,
+    .post-detail li {
+      font-size: 0.92rem;
+      color: #e5e7eb;
+    }
+    .post-detail p { margin: 0 0 0.9rem; }
+
+    .post-detail h3 {
+      font-size: 1rem;
+      margin-top: 1.2rem;
+      margin-bottom: 0.35rem;
+    }
+    .post-detail h4 {
+      font-size: 0.95rem;
+      margin-top: 1rem;
+      margin-bottom: 0.2rem;
+    }
+    .post-detail ul,
+    .post-detail ol {
+      margin: 0 0 0.9rem;
+      padding-left: 1.3rem;
+    }
+
+    /* 画像の代わりのモックアップ（CSSだけ） */
+    .mock-screenshot {
+      margin: 0.9rem 0 1.2rem;
+      border-radius: 20px;
+      padding: 0.8rem;
+      background: radial-gradient(circle at top left, rgba(249, 115, 22, 0.25), rgba(15, 23, 42, 1));
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+      font-size: 0.8rem;
+    }
+    .mock-screenshot-header {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      margin-bottom: 0.5rem;
+    }
+    .mock-screenshot-body {
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.95);
+      padding: 0.6rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+    .mock-screenshot-row {
+      height: 16px;
+      border-radius: 999px;
+      background: linear-gradient(to right, rgba(250, 204, 21, 0.7), rgba(248, 113, 22, 0.2));
+    }
+    .mock-screenshot-caption {
+      margin-top: 0.4rem;
+      font-size: 0.75rem;
+      color: var(--text-sub);
+    }
+
+    .author-box {
+      margin-top: 1.3rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 0.86rem;
+    }
+    .author-box-title {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .back-to-top {
+      text-align: right;
+      margin-top: 0.6rem;
+      font-size: 0.8rem;
+    }
+    .back-to-top a {
+      color: var(--accent-soft);
+      text-decoration: none;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      border-top: 1px solid rgba(148, 163, 184, 0.28);
+      padding: 1.6rem 1.1rem 2.2rem;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+    }
+    .footer-inner {
+      max-width: 820px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.9rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.8rem;
+    }
+    .footer-links a {
+      text-decoration: none;
+      color: var(--text-sub);
+    }
+    .footer-links a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="icon">📱</span>
+        <span>KanziPlus</span>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">割り勘ツール</a>
+        <a href="blog.html" class="nav-link nav-link-active">コラム</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+      <p class="hero-kicker">for 幹事さん</p>
+      <h1>飲み会の「ちょっと面倒」を減らす幹事コラム</h1>
+      <p class="hero-lead">
+        KanziPlus の開発者が、実際に会社の飲み会や友人との集まりで幹事をしてきた経験をもとに、
+        割り勘の工夫や段取りのコツをまとめました。<br>
+        ツールだけでなく、考え方やリアルな失敗談も含めてお伝えします。
+      </p>
+      <p class="hero-note">
+        ※ 本コラムは筆者個人の経験や一般的な考え方に基づくものであり、所属企業の公式見解ではありません。
+      </p>
+    </section>
+
+    <!-- ===== List ===== -->
+    <section class="post-list">
+      <h2>コラム一覧</h2>
+      <p class="post-list-lead">
+        気になるテーマからお読みください。KanziPlus の詳しい使い方や、幹事の段取りチェックリストなどを順次追加していきます。
+      </p>
+
+      <div class="post-cards">
+        <!-- 1 -->
+        <article class="post-card">
+          <h3>
+            <a href="#post-company-party" class="post-card-link" data-target="post-company-party">
+              【会社の飲み会編】“割り勘はグループで管理する時代”―KanziPlusがあれば、幹事はもっと楽しめる
+            </a>
+          </h3>
+          <p class="post-meta">公開日：2025年11月8日｜カテゴリ：体験談・ストーリー</p>
+          <p class="post-excerpt">
+            「部長は多めで」「新人は少なめにしてあげて」…そんな調整に毎回追われていた私が、KanziPlus を使って気付いた「幹事は場を楽しんでいい」という話です。
+          </p>
+          <a href="#post-company-party" class="post-more post-card-link" data-target="post-company-party">この記事を読む</a>
+        </article>
+
+        <!-- 2 -->
+        <article class="post-card">
+          <h3>
+            <a href="#post-keisha-basic" class="post-card-link" data-target="post-keisha-basic">
+              傾斜割り勘の基本と、よくある失敗パターン3選
+            </a>
+          </h3>
+          <p class="post-meta">公開日：2025年11月9日｜カテゴリ：割り勘の工夫</p>
+          <p class="post-excerpt">
+            「上司には多めに払ってもらいたいけど、金額差はどれくらいが妥当？」。傾斜割り勘の考え方と、幹事がやりがちな落とし穴を整理しました。
+          </p>
+          <a href="#post-keisha-basic" class="post-more post-card-link" data-target="post-keisha-basic">この記事を読む</a>
+        </article>
+
+        <!-- 3 -->
+        <article class="post-card">
+          <h3>
+            <a href="#post-checklist" class="post-card-link" data-target="post-checklist">
+              初めての幹事でも安心。飲み会当日までの段取りチェックリスト
+            </a>
+          </h3>
+          <p class="post-meta">公開日：2025年11月10日｜カテゴリ：段取り・準備</p>
+          <p class="post-excerpt">
+            日程調整、お店選び、当日の会計…。抜け漏れを減らすためのチェックリストを、KanziPlusの活用シーンとあわせてご紹介します。
+          </p>
+          <a href="#post-checklist" class="post-more post-card-link" data-target="post-checklist">この記事を読む</a>
+        </article>
+
+        <!-- 4 -->
+        <article class="post-card">
+          <h3>
+            <a href="#post-goukon" class="post-card-link" data-target="post-goukon">
+              合コン・少人数飲み会で失敗しない会費設定と、さりげない割り勘マナー
+            </a>
+          </h3>
+          <p class="post-meta">公開日：2025年11月11日｜カテゴリ：少人数飲み会</p>
+          <p class="post-excerpt">
+            4〜8人くらいの少人数飲み会は、1人あたりの金額がダイレクトに印象に残ります。雰囲気を壊さずに会費を決めるコツをまとめました。
+          </p>
+          <a href="#post-goukon" class="post-more post-card-link" data-target="post-goukon">この記事を読む</a>
+        </article>
+
+        <!-- 5 -->
+        <article class="post-card">
+          <h3>
+            <a href="#post-bigparty" class="post-card-link" data-target="post-bigparty">
+              20人以上の大人数飲み会を回すコツ。席配置・受付・会計のベストプラクティス
+            </a>
+          </h3>
+          <p class="post-meta">公開日：2025年11月12日｜カテゴリ：大人数イベント</p>
+          <p class="post-excerpt">
+            人数が増えるほど、幹事1人では手が回らなくなります。役割分担とKanziPlusを組み合わせて、大人数の会をスムーズに運営するポイントです。
+          </p>
+          <a href="#post-bigparty" class="post-more post-card-link" data-target="post-bigparty">この記事を読む</a>
+        </article>
+
+        <!-- 6 -->
+        <article class="post-card">
+          <h3>
+            <a href="#post-camp" class="post-card-link" data-target="post-camp">
+              サークル合宿・旅行編。交通費・宿泊費・食費の「まとめて割り勘」術
+            </a>
+          </h3>
+          <p class="post-meta">公開日：2025年11月13日｜カテゴリ：旅行・合宿</p>
+          <p class="post-excerpt">
+            1泊2日の旅行になると、費目が一気に増えます。誰かが立替えたお金を、最後にまとめて精算するためのシンプルな考え方です。
+          </p>
+          <a href="#post-camp" class="post-more post-card-link" data-target="post-camp">この記事を読む</a>
+        </article>
+
+        <!-- 7 -->
+        <article class="post-card">
+          <h3>
+            <a href="#post-online" class="post-card-link" data-target="post-online">
+              オンライン飲み会やリモート懇親会でのスマートな支払い方法
+            </a>
+          </h3>
+          <p class="post-meta">公開日：2025年11月14日｜カテゴリ：オンライン飲み会</p>
+          <p class="post-excerpt">
+            それぞれが別の場所から参加するオンライン飲み会。出前代をどう割り勘するか、キャッシュレス時代ならではの工夫をまとめました。
+          </p>
+          <a href="#post-online" class="post-more post-card-link" data-target="post-online">この記事を読む</a>
+        </article>
+
+        <!-- 8 -->
+        <article class="post-card">
+          <h3>
+            <a href="#post-line-template" class="post-card-link" data-target="post-line-template">
+              幹事のLINEはこれで十分。誘い文句・リマインド・会費案内のテンプレ集
+            </a>
+          </h3>
+          <p class="post-meta">公開日：2025年11月15日｜カテゴリ：連絡・コミュニケーション</p>
+          <p class="post-excerpt">
+            「なんてメッセージを送ればいいか毎回迷う…」という方向けに、実際に使っているLINE文面をテンプレとして紹介します。
+          </p>
+          <a href="#post-line-template" class="post-more post-card-link" data-target="post-line-template">この記事を読む</a>
+        </article>
+
+        <!-- 9 -->
+        <article class="post-card">
+          <h3>
+            <a href="#post-uncollected" class="post-card-link" data-target="post-uncollected">
+              会費の未回収をなくすために、幹事が最初に決めておきたい3つのルール
+            </a>
+          </h3>
+          <p class="post-meta">公開日：2025年11月16日｜カテゴリ：お金のトラブル防止</p>
+          <p class="post-excerpt">
+            「そういえばあの人からまだもらってない…」を防ぐには、最初のルールづくりが大事です。ゆるく・でも確実に回収するための工夫です。
+          </p>
+          <a href="#post-uncollected" class="post-more post-card-link" data-target="post-uncollected">この記事を読む</a>
+        </article>
+
+        <!-- 10 -->
+        <article class="post-card">
+          <h3>
+            <a href="#post-restaurant" class="post-card-link" data-target="post-restaurant">
+              お店とのやり取り完全ガイド。キャンセルポリシー確認から当日の支払いまで
+            </a>
+          </h3>
+          <p class="post-meta">公開日：2025年11月17日｜カテゴリ：お店とのやり取り</p>
+          <p class="post-excerpt">
+            幹事にとって一番心強い味方は、実はお店のスタッフさんです。予約〜支払いまで、最低限押さえておきたいポイントを整理しました。
+          </p>
+          <a href="#post-restaurant" class="post-more post-card-link" data-target="post-restaurant">この記事を読む</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== Detail articles（初期は非表示／クリックで表示） ===== -->
+
+    <!-- 1: 会社の飲み会編（モック「添付」付き） -->
+    <article id="post-company-party" class="post-detail">
+      <h2>【会社の飲み会編】“割り勘はグループで管理する時代”―KanziPlusがあれば、幹事はもっと楽しめる</h2>
+      <p class="post-meta">
+        公開日：2025年11月8日｜カテゴリ：体験談・ストーリー｜読了目安：5分
+      </p>
+
+      <div class="summary-box">
+        <strong>この記事でわかること</strong>
+        <ul>
+          <li>「グループごとに金額を変える」割り勘のリアルな使いどころ</li>
+          <li>KanziPlus を使うと、幹事がどこまで楽になるのか</li>
+          <li>幹事は「電卓係」ではなく、「場を楽しむ人」であっていいという考え方</li>
+        </ul>
+      </div>
+
+      <p>
+        「部長は多めで」「新人は少なめにしてあげて」――。<br>
+        大企業で働く私の役割は、いつの間にか「飲み会の会計調整係」になっていました。
+      </p>
+      <p>
+        みんなが楽しそうにグラスを傾けている横で、私はスマホと電卓アプリをにらめっこ。<br>
+        会が盛り上がれば盛り上がるほど、レシートは長くなり、頭の中はどんどん混乱していきます。
+      </p>
+
+      <p>
+        そんな私を見て、ある先輩が一言。<br>
+        「<strong>人数が多いときは、グループで割った方が楽だよ。KanziPlus、使ってる？</strong>」
+      </p>
+
+      <h3>「人」ではなく「グループ」で考える割り勘</h3>
+      <p>
+        先輩が見せてくれたスマホ画面には、参加者の名前ではなく、こんなグループが並んでいました。
+      </p>
+      <ul>
+        <li>部長グループ</li>
+        <li>課長グループ</li>
+        <li>一般社員グループ</li>
+        <li>若手グループ</li>
+      </ul>
+
+      <p>
+        「同じくらいの金額を払ってもらう人は、同じグループにまとめちゃえばいい。<br>
+        細かい金額の差は、アプリがいい感じに調整してくれるから」と先輩。
+      </p>
+
+      <p>
+        そのまま私は、合計金額と人数をKanziPlusに入力し、<br>
+        「部長はプラス1000円、若手はマイナス500円」のように、グループごとの傾斜をタップして設定しました。
+      </p>
+      <p>
+        数秒後、画面にはグループごとの1人あたり金額が、役割ごとに“違和感のない差”で並びました。<br>
+        そのまま結果をコピーしてチャットに貼ると、みんながすぐに確認できます。
+      </p>
+
+      <p>
+        「早い」「わかりやすい」「じゃあこの金額で」――。<br>
+        さっきまで私の手元に集中していた視線が、再び会話とグラスに戻っていきました。
+      </p>
+
+      <h3>【やり方】超かんたん3ステップ</h3>
+      <ol>
+        <li>合計金額と人数を入れる</li>
+        <li>グループごとに傾斜（増減）を設定する</li>
+        <li>表示された金額どおりに集めるだけ</li>
+      </ol>
+
+      <p>
+        人を1人ずつ並べて金額を決めるのではなく、
+        <strong>「似た条件の人をグループに分けて考える」</strong>だけで、計算の手間は一気に軽くなります。
+      </p>
+
+      <h3>具体的な金額差のイメージ</h3>
+      <p>例えば、1人あたりの標準金額が5,000円のとき、次のような差をつけることが多いです。</p>
+      <ul>
+        <li>A：部長グループ …… +2,000円（7,000円）</li>
+        <li>B：課長グループ …… +1,000円（6,000円）</li>
+        <li>C：一般社員グループ …… ±0円（5,000円）</li>
+        <li>D：若手グループ …… −1,000〜1,500円（3,500〜4,000円）</li>
+      </ul>
+      <p>
+        もちろん、メンバー構成や社風によって変わりますが、<br>
+        「誰かが極端に損をしているように見えない範囲」で差をつけるのがコツです。
+      </p>
+
+      <h3>幹事は「電卓係」ではなく、場を楽しむ人でいい</h3>
+      <p>
+        この日、私は気付きました。<br>
+        幹事の仕事は、電卓を叩き続けることではなく、
+        <strong>みんなの時間がスムーズに進むように段取りを整えること</strong>だと。
+      </p>
+      <p>
+        割り勘は、もう「1人ずつ金額を決める時代」ではありません。<br>
+        <strong>グループで管理する時代</strong>です。
+      </p>
+      <p>
+        KanziPlus は、そのための小さな道具にすぎませんが、<br>
+        私のように「会計のことで頭がいっぱいだった幹事」が、少しでも早く乾杯に戻れるなら嬉しいと思っています。
+      </p>
+
+      <div class="author-box">
+        <div class="author-box-title">この記事を書いた人</div>
+        <p>
+          KanziPlus 運営者。会社の飲み会・送別会・合宿など、これまで数十回以上の幹事を担当。
+          「割り勘が面倒だから幹事をやりたくない」という自分の気持ちから、KanziPlus を作り始めました。
+        </p>
+        <p>
+          詳しいプロフィールやお問い合わせ先は
+          <a href="operator.html">運営者情報ページ</a>をご覧ください。
+        </p>
+      </div>
+
+      <p class="back-to-top"><a href="#top">▲ コラム一覧に戻る</a></p>
+    </article>
+
+    <!-- 2: 傾斜割り勘の基本 -->
+    <article id="post-keisha-basic" class="post-detail">
+      <h2>傾斜割り勘の基本と、よくある失敗パターン3選</h2>
+      <p class="post-meta">
+        公開日：2025年11月9日｜カテゴリ：割り勘の工夫｜読了目安：6分
+      </p>
+
+      <div class="summary-box">
+        <strong>この記事でわかること</strong>
+        <ul>
+          <li>「傾斜割り勘」とは何か、通常の割り勘との違い</li>
+          <li>幹事が陥りがちな、よくある失敗パターン</li>
+          <li>KanziPlus を使って、失敗を減らすための考え方</li>
+        </ul>
+      </div>
+
+      <h3>傾斜割り勘とは？</h3>
+      <p>
+        傾斜割り勘とは、<strong>グループや属性ごとに支払額に差をつける割り勘の方法</strong>です。<br>
+        代表的な例としては、次のようなケースがあります。
+      </p>
+      <ul>
+        <li>上司・先輩には少し多めに払ってもらい、後輩や新入社員の負担を軽くする</li>
+        <li>既婚者と独身で金額を変える</li>
+        <li>ほとんど飲まない人の金額を少し安くする</li>
+      </ul>
+      <p>
+        「みんな完全に同じ金額」という公平さよりも、
+        <strong>「状況に合わせた納得感」</strong>を重視した考え方です。
+      </p>
+
+      <h3>よくある失敗パターン3つ</h3>
+
+      <h4>1. 差をつけすぎてしまう</h4>
+      <p>
+        「上司だからたくさん払ってもらおう」と考えすぎて、
+        一部の人だけ極端に高い金額になってしまうパターンです。<br>
+        本人が納得していればまだ良いのですが、毎回続くとモヤモヤの原因になります。
+      </p>
+      <p>
+        目安としては、<strong>一番高い人と一番安い人の差が2〜3倍以上にならない程度</strong>に
+        とどめておくと、空気が荒れにくくなります。
+      </p>
+
+      <h4>2. 条件を後から変えてしまう</h4>
+      <p>
+        会が終わったあとに「あの人はほとんど飲んでなかったから安くしてあげよう」など、
+        後から個別調整をし始めるとカオスになりがちです。
+      </p>
+      <p>
+        割り勘のルールは、できれば
+        <strong>「会の前」または「会の途中のタイミング」</strong>でざっくり説明しておき、
+        あとから条件を変えない方がトラブルになりにくいです。
+      </p>
+
+      <h4>3. 手計算で複雑にしすぎる</h4>
+      <p>
+        グループの人数や金額差が増えてくると、頭の中だけで計算するのはほぼ不可能です。<br>
+        「あれ、この人はいくらだったっけ？」となり、最後に合計金額が合わなくなることも…。
+      </p>
+      <p>
+        こうしたミスを減らすためにも、
+        <strong>最初から「ツールで計算する前提」でルールを決めておく</strong>のがおすすめです。
+      </p>
+
+      <h3>KanziPlus を使った傾斜割り勘の考え方</h3>
+      <p>
+        KanziPlus では、次のような流れで傾斜割り勘を行います。
+      </p>
+      <ol>
+        <li>合計金額と参加人数を入力する</li>
+        <li>グループA/B/Cなどに人数を分ける</li>
+        <li>「差のつき方（大・中・小）」を選んで計算する</li>
+      </ol>
+      <p>
+        計算自体はアプリが自動で行ってくれるため、幹事は
+        <strong>「誰をどのグループに入れるか」</strong>に集中できます。
+      </p>
+
+      <h3>具体例：4万円の飲み会を傾斜割り勘する場合</h3>
+      <p>例えば、次のような構成の飲み会を考えてみます。</p>
+      <ul>
+        <li>合計金額：40,000円</li>
+        <li>参加者：8人</li>
+        <li>内訳：部長1人、課長2人、一般社員3人、新人2人</li>
+      </ul>
+      <p>これを次の3グループに分けるとします。</p>
+      <ul>
+        <li>グループA（多め）：部長1人、課長2人</li>
+        <li>グループB（標準）：一般社員3人</li>
+        <li>グループC（少なめ）：新人2人</li>
+      </ul>
+      <p>
+        KanziPlus で「差のつき方：中」を選んだときのイメージとしては、
+        次のような金額になることが多いです（※あくまで一例です）。
+      </p>
+      <ul>
+        <li>グループA：1人あたり 6,500円</li>
+        <li>グループB：1人あたり 5,000円</li>
+        <li>グループC：1人あたり 3,500円</li>
+      </ul>
+
+      <p>
+        合計すると 6,500×3 + 5,000×3 + 3,500×2 = 40,000円 となり、差をつけつつも全体の整合性が取れます。
+      </p>
+
+      <h3>「誰がいくら払うか」を先に共有しておくと楽</h3>
+      <p>
+        KanziPlus で金額を出したら、<strong>会が始まる前か途中のタイミングで、ざっくり金額帯を共有</strong>しておくとスムーズです。
+      </p>
+      <p>
+        例：
+        「今日は部長・課長のグループがちょっと多めで7,000円前後、一般社員は5,000円くらい、
+        新人は3,500円くらいのイメージで割らせてもらいますね」
+      </p>
+      <p>
+        こうしておくと、会計のときに「思っていたより高い／安い」というギャップが生まれにくくなります。
+      </p>
+
+      <div class="author-box">
+        <div class="author-box-title">この記事を書いた人</div>
+        <p>
+          KanziPlus 運営者。数字やシステムの設計が好きで、趣味で割り勘ロジックを試算しているタイプの幹事。
+          「難しい計算はツールに任せて、幹事は人に向き合うべき」が口癖です。
+        </p>
+        <p>
+          「こういうパターンの割り勘も対応できる？」といったご質問があれば、
+          <a href="contact.html">お問い合わせフォーム</a>からお気軽にご連絡ください。
+        </p>
+      </div>
+
+      <p class="back-to-top"><a href="#top">▲ コラム一覧に戻る</a></p>
+    </article>
+
+    <!-- 3: チェックリスト -->
+    <article id="post-checklist" class="post-detail">
+      <h2>初めての幹事でも安心。飲み会当日までの段取りチェックリスト</h2>
+      <p class="post-meta">
+        公開日：2025年11月10日｜カテゴリ：段取り・準備｜読了目安：7分
+      </p>
+
+      <div class="summary-box">
+        <strong>この記事でわかること</strong>
+        <ul>
+          <li>飲み会幹事の「やること」を時系列で整理したチェックリスト</li>
+          <li>抜け漏れが起こりやすいポイントと、シンプルな対策</li>
+          <li>KanziPlus をどのタイミングで使うと会計が楽になるか</li>
+        </ul>
+      </div>
+
+      <h3>1. 日程調整と参加メンバーの確定</h3>
+      <p>
+        まずは、<strong>「誰が参加するか」と「いつやるか」</strong>を決めるところから始まります。
+      </p>
+      <ul>
+        <li>主役（送別会なら送られる人など）の都合を最優先する</li>
+        <li>候補日を2〜3日ほど用意して共有する</li>
+        <li>グループチャットや日程調整ツールで、回答締切日を決めておく</li>
+      </ul>
+
+      <h3>2. お店選びのポイント</h3>
+      <p>お店選びでは、次の4つを押さえておくと失敗しにくくなります。</p>
+      <ul>
+        <li>駅からの距離（できれば徒歩5分以内）</li>
+        <li>予算とコース内容（飲み放題の有無、時間）</li>
+        <li>席のタイプ（個室・半個室・禁煙など）</li>
+        <li>アレルギー・苦手な食材への配慮</li>
+      </ul>
+
+      <h3>3. 事前連絡で伝えておくと良いこと</h3>
+      <p>参加者への案内メッセージには、最低限次の情報を入れておきます。</p>
+      <ul>
+        <li>日時（曜日と開始時間、終了目安）</li>
+        <li>お店の名前・住所・地図リンク</li>
+        <li>会費の目安（金額確定でなくても「◯◯円前後」を伝える）</li>
+        <li>ドレスコードや持ち物があれば一言</li>
+      </ul>
+      <p>
+        会費の目安を伝えるときは、<br>
+        「最終的な金額は当日の参加人数次第で変わる可能性があります」と一言添えておくと、
+        後からのズレも許容してもらいやすくなります。
+      </p>
+
+      <h3>4. 当日の動き方（幹事のマインドセット）</h3>
+      <p>
+        当日は、幹事がすべてを抱え込む必要はありません。<br>
+        受付担当・乾杯の挨拶・二次会担当など、<strong>役割を小さく分けてお願いする</strong>と楽です。
+      </p>
+      <ul>
+        <li>開始10分前にはお店に到着し、席配置や支払い方法を確認</li>
+        <li>会社負担の有無や、会計のやり方をスタッフに共有</li>
+        <li>途中でドリンクの遅れなどがないか、さりげなく確認</li>
+      </ul>
+
+      <h3>5. 会計時に KanziPlus を使うタイミング</h3>
+      <p>
+        会計の直前に慌てて計算を始めると、どうしてもミスが出やすくなります。<br>
+        おすすめなのは、<strong>ラストオーダー前後のタイミングで、一度席を立って計算しておくこと</strong>です。
+      </p>
+      <ol>
+        <li>伝票または概算の金額を確認する</li>
+        <li>参加者の最終人数を数える</li>
+        <li><a href="index.html">KanziPlus</a> に合計金額と人数を入力し、グループごとの傾斜を設定する</li>
+        <li>結果をチャットやメモアプリにコピーしておく</li>
+      </ol>
+      <p>
+        こうしておけば、会計時には「事前に出した金額どおりに集めるだけ」なので、終盤のバタバタをかなり減らせます。
+      </p>
+
+      <h3>6. 振り返りと次回のためのメモ</h3>
+      <p>
+        幹事を何度かやっていると、「あのときこうしておけばよかった」という学びが溜まっていきます。<br>
+        それを忘れないうちに、次のような項目をメモしておくと便利です。
+      </p>
+      <ul>
+        <li>お店の良かった点・イマイチだった点</li>
+        <li>予算感と実際の1人あたり金額</li>
+        <li>盛り上がった企画や、逆に反応が薄かった企画</li>
+        <li>自分が楽だった点・大変だった点</li>
+      </ul>
+
+      <div class="author-box">
+        <div class="author-box-title">この記事を書いた人</div>
+        <p>
+          KanziPlus 運営者。仕事でもプライベートでも「なぜか幹事を頼まれやすい人」。
+          自分と同じように、幹事経験の少ない人でも安心して回せるような仕組みづくりを目指しています。
+        </p>
+        <p>
+          KanziPlus の使い方や、こんなチェックリストがほしい、といったご要望があれば、
+          <a href="contact.html">お問い合わせフォーム</a>から教えていただけると嬉しいです。
+        </p>
+      </div>
+
+      <p class="back-to-top"><a href="#top">▲ コラム一覧に戻る</a></p>
+    </article>
+
+    <!-- 4: 合コン・少人数飲み会 -->
+    <article id="post-goukon" class="post-detail">
+      <h2>合コン・少人数飲み会で失敗しない会費設定と、さりげない割り勘マナー</h2>
+      <p class="post-meta">
+        公開日：2025年11月11日｜カテゴリ：少人数飲み会｜読了目安：5分
+      </p>
+
+      <div class="summary-box">
+        <strong>この記事でわかること</strong>
+        <ul>
+          <li>4〜8人くらいの少人数飲み会での会費設定のコツ</li>
+          <li>「男性多め」など、よくあるパターンの落とし穴</li>
+          <li>KanziPlus を使って雰囲気を壊さずに金額を決める方法</li>
+        </ul>
+      </div>
+
+      <h3>少人数だからこそ、1人あたりの金額が印象に残る</h3>
+      <p>
+        合コンや友人同士の飲み会など、4〜8人くらいの少人数の場では、
+        1人あたりの会費がダイレクトに印象に残ります。
+      </p>
+      <p>
+        「男性が多めに払う」という暗黙のルールがある場もまだありますが、
+        それが強すぎると、逆に気を遣わせてしまうこともあります。
+      </p>
+
+      <h3>パターン別の考え方</h3>
+      <h4>1. 男女比が偏っている場合</h4>
+      <p>
+        例えば「男性6人・女性2人」のように偏っている場合、
+        一律で「男性多め」にしてしまうと、負担がかなり重くなることがあります。
+      </p>
+      <p>
+        そんなときは、次のような考え方もあります。
+      </p>
+      <ul>
+        <li>会社の飲み会に近い位置づけなら、役職で差をつける</li>
+        <li>あくまで友人同士なら、男女差は小さめにする（±500円程度）</li>
+      </ul>
+
+      <h4>2. ほとんど飲まない人が混ざっている場合</h4>
+      <p>
+        「1杯だけ付き合いで」といった人がいるときは、
+        その人の金額を少しだけ軽くしてあげると喜ばれます。
+      </p>
+      <p>
+        KanziPlus では、「ほとんど飲まない人グループ」をひとつ作っておき、
+        他の人より少し安く設定しておくと楽です。
+      </p>
+
+      <h3>会費の伝え方で雰囲気は変わる</h3>
+      <p>
+        金額を伝えるときは、<strong>理由をひと言添える</strong>だけで印象が変わります。
+      </p>
+      <p>例：</p>
+      <ul>
+        <li>「男性陣には少し多めに出してもらっていますが、その分次の機会でお返ししますね」</li>
+        <li>「ほとんど飲んでいない人は少し軽くしてあります」</li>
+      </ul>
+      <p>
+        こうした一言があると、「なんとなくモヤモヤする」を防ぎやすくなります。
+      </p>
+
+      <div class="author-box">
+        <div class="author-box-title">この記事を書いた人</div>
+        <p>
+          KanziPlus 運営者。友人との少人数飲み会でもよく会計係を任されるタイプ。
+          「変にカッコつけず、でもスマートに割り勘する」がモットーです。
+        </p>
+      </div>
+
+      <p class="back-to-top"><a href="#top">▲ コラム一覧に戻る</a></p>
+    </article>
+
+    <!-- 5: 大人数飲み会 -->
+    <article id="post-bigparty" class="post-detail">
+      <h2>20人以上の大人数飲み会を回すコツ。席配置・受付・会計のベストプラクティス</h2>
+      <p class="post-meta">
+        公開日：2025年11月12日｜カテゴリ：大人数イベント｜読了目安：6分
+      </p>
+
+      <div class="summary-box">
+        <strong>この記事でわかること</strong>
+        <ul>
+          <li>20人以上の飲み会で幹事が押さえておきたい流れ</li>
+          <li>受付と会費回収をスムーズにするための役割分担</li>
+          <li>KanziPlus を使った「事前計算」と「当日微調整」のやり方</li>
+        </ul>
+      </div>
+
+      <h3>幹事1人で抱え込まない前提を作る</h3>
+      <p>
+        20人を超えると、幹事1人ではどうしても手が回りません。
+        最初から「チーム幹事」にしておく方が、お互いに楽です。
+      </p>
+      <ul>
+        <li>メイン幹事 … 全体の調整・お店との連絡</li>
+        <li>受付担当 … 入り口で会費回収・名簿チェック</li>
+        <li>場づくり担当 … 乾杯、締めの挨拶、簡単なゲームなど</li>
+      </ul>
+
+      <h3>受付のコツとKanziPlusの使いどころ</h3>
+      <p>
+        会場に入る前の受付で、あらかじめ「標準の会費」を回収しておくと、
+        終盤の会計がかなり楽になります。
+      </p>
+      <ol>
+        <li>事前に概算で1人あたりの金額を決めておく（例：5,000円）</li>
+        <li>受付で基本の会費を回収し、伝票を見て不足分があれば後で調整する</li>
+        <li>不足や余りが出た場合は、KanziPlusでグループごとに調整する</li>
+      </ol>
+
+      <p>
+        例えば、部長・課長が多い飲み会なら、
+        不足分を「上の役職グループ」で少し多めに負担してもらう、といった使い方ができます。
+      </p>
+
+      <h3>席配置で会の雰囲気も変わる</h3>
+      <p>
+        大人数の場合、席配置は「会話のしやすさ」に直結します。
+        幹事が簡単なルールだけ決めておくと、場が回りやすくなります。
+      </p>
+      <ul>
+        <li>各テーブルに最低1人は「話しやすい盛り上げ役」を配置する</li>
+        <li>主役に近い席には、関係性の深いメンバーを優先して座ってもらう</li>
+        <li>途中で席替えを1回だけ入れる（自由移動でもOK）</li>
+      </ul>
+
+      <div class="author-box">
+        <div class="author-box-title">この記事を書いた人</div>
+        <p>
+          KanziPlus 運営者。部署横断の懇親会や送別会など、
+          20〜40人規模の飲み会の幹事経験が多めです。
+        </p>
+      </div>
+
+      <p class="back-to-top"><a href="#top">▲ コラム一覧に戻る</a></p>
+    </article>
+
+    <!-- 6: 合宿・旅行 -->
+    <article id="post-camp" class="post-detail">
+      <h2>サークル合宿・旅行編。交通費・宿泊費・食費の「まとめて割り勘」術</h2>
+      <p class="post-meta">
+        公開日：2025年11月13日｜カテゴリ：旅行・合宿｜読了目安：6分
+      </p>
+
+      <div class="summary-box">
+        <strong>この記事でわかること</strong>
+        <ul>
+          <li>泊まりがけイベントでお金の管理をシンプルにする方法</li>
+          <li>立替えが発生したときのメモと精算のコツ</li>
+          <li>KanziPlus で「1次会・2次会」以外にも応用するアイデア</li>
+        </ul>
+      </div>
+
+      <h3>費目が増えるほど「立替え一覧」が重要になる</h3>
+      <p>
+        合宿や旅行では、次のように費目が一気に増えます。
+      </p>
+      <ul>
+        <li>交通費（電車・レンタカー・高速代など）</li>
+        <li>宿泊費</li>
+        <li>食費（BBQ・朝食・昼食など）</li>
+        <li>レジャー費（施設利用料・レンタル代など）</li>
+      </ul>
+      <p>
+        それぞれをその場で割り勘していると、終わる頃には
+        「誰にいくら払ったか」がわからなくなりがちです。
+      </p>
+
+      <h3>立替えは「代表者を決めて一本化」する</h3>
+      <p>
+        おすすめなのは、<strong>立替え担当を1〜2人に絞ること</strong>です。
+      </p>
+      <ul>
+        <li>宿泊費と交通費は幹事がまとめて支払う</li>
+        <li>現地での細かい買い出しは、もう1人の立替え担当に任せる</li>
+      </ul>
+      <p>
+        そして、支払いをするたびにスマホのメモやスプレッドシートに
+        「日付／内容／金額／立替えた人」を記録しておきます。
+      </p>
+
+      <h3>最後にまとめて割り勘する流れ</h3>
+      <ol>
+        <li>合計の立替え金額を集計する</li>
+        <li>参加日数が違う人がいれば、日数ごとに金額を按分する</li>
+        <li>最終的な「1人あたりの支払額」を出す</li>
+      </ol>
+      <p>
+        ここで KanziPlus を使う場合は、<br>
+        「よく飲むメンバー」「そうでもないメンバー」などのグループに分けて、
+        最後の食費部分だけ傾斜をつける、といった使い方ができます。
+      </p>
+
+      <div class="author-box">
+        <div class="author-box-title">この記事を書いた人</div>
+        <p>
+          KanziPlus 運営者。学生時代のサークル合宿から社会人になってからの旅行まで、
+          何かと精算担当を任されがちでした。今思えば、この頃からKanziPlusの原型を考えていました。
+        </p>
+      </div>
+
+      <p class="back-to-top"><a href="#top">▲ コラム一覧に戻る</a></p>
+    </article>
+
+    <!-- 7: オンライン飲み会 -->
+    <article id="post-online" class="post-detail">
+      <h2>オンライン飲み会やリモート懇親会でのスマートな支払い方法</h2>
+      <p class="post-meta">
+        公開日：2025年11月14日｜カテゴリ：オンライン飲み会｜読了目安：5分
+      </p>
+
+      <div class="summary-box">
+        <strong>この記事でわかること</strong>
+        <ul>
+          <li>オンラインならではの割り勘の考え方</li>
+          <li>キャッシュレス決済を使うときの注意点</li>
+          <li>KanziPlusで「計算だけ任せる」使い方</li>
+        </ul>
+      </div>
+
+      <h3>それぞれの場所で頼むからこそ、ルールを先に決める</h3>
+      <p>
+        オンライン飲み会では、参加者がそれぞれ好きな料理や飲み物を頼むことが多く、
+        完全に「自腹」にしてしまうパターンもあります。
+      </p>
+      <p>
+        一方で、会社主催のオンライン懇親会などでは、
+        「上限◯◯円まで会社負担」「超えた分は割り勘」といったケースもあります。
+      </p>
+
+      <h3>キャッシュレスで送金するときのポイント</h3>
+      <ul>
+        <li>使えるサービス（PayPay／銀行振込など）を事前に共有する</li>
+        <li>送金先は1つにまとめておく（幹事代表のアカウント）</li>
+        <li>送金名のルールを決める（苗字＋会の名前など）</li>
+      </ul>
+      <p>
+        金額を決める際には、KanziPlusで合計金額を計算し、
+        「会社負担分を除いた残りを、グループごとに割り振る」ような使い方も可能です。
+      </p>
+
+      <div class="author-box">
+        <div class="author-box-title">この記事を書いた人</div>
+        <p>
+          KanziPlus 運営者。コロナ禍でオンライン飲み会が一気に増えたとき、
+          毎回の精算に悩み、ツール化したいと思うきっかけになりました。
+        </p>
+      </div>
+
+      <p class="back-to-top"><a href="#top">▲ コラム一覧に戻る</a></p>
+    </article>
+
+    <!-- 8: LINEテンプレ -->
+    <article id="post-line-template" class="post-detail">
+      <h2>幹事のLINEはこれで十分。誘い文句・リマインド・会費案内のテンプレ集</h2>
+      <p class="post-meta">
+        公開日：2025年11月15日｜カテゴリ：連絡・コミュニケーション｜読了目安：6分
+      </p>
+
+      <div class="summary-box">
+        <strong>この記事でわかること</strong>
+        <ul>
+          <li>幹事がよく使うLINEメッセージのテンプレ</li>
+          <li>誘い文句・リマインド・会費案内の書き分け方</li>
+          <li>一言添えると角が立たないフレーズ</li>
+        </ul>
+      </div>
+
+      <h3>1. 最初の「お誘いメッセージ」テンプレ</h3>
+      <p>例えば、送別会のお誘いメッセージはこんな感じです。</p>
+      <p>
+        「◯◯さんの送別会を企画しています。<br>
+        日程は◯/◯(◯) 19:00〜を予定しています。<br>
+        参加できそうな方は、このグループでリアクションいただけると助かります！」
+      </p>
+
+      <h3>2. 日程確定後の「正式案内」テンプレ</h3>
+      <p>
+        「日程が◯/◯(◯) 19:00〜に確定しました。<br>
+        会場：◯◯（◯◯駅から徒歩◯分）<br>
+        会費目安：◯◯円前後（人数によって多少前後する可能性があります）<br>
+        体調不良などでのキャンセルは、前日までにご連絡いただけると助かります。」
+      </p>
+
+      <h3>3. 当日のお知らせ＋会費案内</h3>
+      <p>
+        「本日よろしくお願いします！<br>
+        19:00スタートなので、できれば5分前くらいを目安にお越しください。<br>
+        会費は一律◯◯円を予定していますが、当日の飲み方次第で少し調整するかもしれません。<br>
+        （その場合はKanziPlusでグループごとに計算します）」 
+      </p>
+
+      <div class="author-box">
+        <div class="author-box-title">この記事を書いた人</div>
+        <p>
+          KanziPlus 運営者。社内外の飲み会用に、自分用のLINEテンプレ集を作っていたら、
+          そのまま記事にできそうだったので整理してみました。
+        </p>
+      </div>
+
+      <p class="back-to-top"><a href="#top">▲ コラム一覧に戻る</a></p>
+    </article>
+
+    <!-- 9: 未回収防止 -->
+    <article id="post-uncollected" class="post-detail">
+      <h2>会費の未回収をなくすために、幹事が最初に決めておきたい3つのルール</h2>
+      <p class="post-meta">
+        公開日：2025年11月16日｜カテゴリ：お金のトラブル防止｜読了目安：5分
+      </p>
+
+      <div class="summary-box">
+        <strong>この記事でわかること</strong>
+        <ul>
+          <li>会費未回収が起きやすいシチュエーション</li>
+          <li>最初に決めておくと安心な3つのルール</li>
+          <li>KanziPlusで「誰がいくら払ったか」をメモしておくアイデア</li>
+        </ul>
+      </div>
+
+      <h3>よくある未回収パターン</h3>
+      <ul>
+        <li>受付でバタバタしていて、何人かから受け取り忘れる</li>
+        <li>二次会だけ参加・途中参加の人の金額があいまいになる</li>
+        <li>「後で払うね」と言われたまま連絡しづらくなる</li>
+      </ul>
+
+      <h3>ルール1：基本は「受付で回収」</h3>
+      <p>
+        会費は、可能であれば<strong>入店前の受付で回収</strong>しておくのがベストです。<br>
+        途中参加者がいる場合も、「合流したタイミングで受付担当が回収する」と決めておきます。
+      </p>
+
+      <h3>ルール2：二次会は別会計にする</h3>
+      <p>
+        一次会と二次会を同じ財布で管理しようとすると、一気に複雑になります。<br>
+        二次会は「参加した人だけで割り勘」にして、一次会とは切り離して考える方がシンプルです。
+      </p>
+
+      <h3>ルール3：「あとで払う」をメモしておく</h3>
+      <p>
+        やむを得ず「あとで払う」パターンになった場合は、
+        名前と金額をその場でメモしておきます。
+      </p>
+      <p>
+        KanziPlusで計算した結果画面のメモ欄に、
+        「◯◯さん：あとで◯◯円」と書いておくのも一つの方法です。
+      </p>
+
+      <div class="author-box">
+        <div class="author-box-title">この記事を書いた人</div>
+        <p>
+          KanziPlus 運営者。過去に未回収をそのまま自腹でかぶった苦い経験から、
+          いかにトラブルを減らすかをずっと考えてきました。
+        </p>
+      </div>
+
+      <p class="back-to-top"><a href="#top">▲ コラム一覧に戻る</a></p>
+    </article>
+
+    <!-- 10: お店とのやり取り -->
+    <article id="post-restaurant" class="post-detail">
+      <h2>お店とのやり取り完全ガイド。キャンセルポリシー確認から当日の支払いまで</h2>
+      <p class="post-meta">
+        公開日：2025年11月17日｜カテゴリ：お店とのやり取り｜読了目安：6分
+      </p>
+
+      <div class="summary-box">
+        <strong>この記事でわかること</strong>
+        <ul>
+          <li>予約時にお店へ確認しておくべきポイント</li>
+          <li>キャンセルポリシーのチェック方法</li>
+          <li>当日の支払いをスムーズに終わらせるための一言</li>
+        </ul>
+      </div>
+
+      <h3>予約時に確認しておきたい3つのこと</h3>
+      <ul>
+        <li>コース内容（料理・飲み放題の有無・時間制）</li>
+        <li>人数変更の締切とキャンセル料のルール</li>
+        <li>支払い方法（現金・クレジットカード・分割会計の可否）</li>
+      </ul>
+      <p>
+        特にキャンセルポリシーは、<strong>「いつまでなら無料で人数調整できるか」</strong>をメモしておきましょう。
+      </p>
+
+      <h3>人数変更の連絡は早めに</h3>
+      <p>
+        参加者の予定は直前まで動くものですが、
+        お店としては食材や席の確保があるため、直前変更には限界があります。
+      </p>
+      <p>
+        目安として、<strong>2〜3日前にはほぼ確定人数を伝える</strong>つもりで動くと、
+        お店側とも良い関係を築きやすくなります。
+      </p>
+
+      <h3>当日の支払いをスムーズにする一言</h3>
+      <p>
+        会計前に、店員さんへこう伝えておくとスムーズです。
+      </p>
+      <p>
+        「今日は幹事でまとめて支払いますので、合計金額だけまとめていただけますか。<br>
+        細かい割り勘は、こちらでアプリを使って計算します。」 
+      </p>
+      <p>
+        こうすることで、レジ前で「個別会計で…」「この人は飲み放題なしで…」といったやり取りを
+        最小限にできます。
+      </p>
+
+      <div class="author-box">
+        <div class="author-box-title">この記事を書いた人</div>
+        <p>
+          KanziPlus 運営者。お店側の負担も減らしつつ、参加者も楽しめる形を試行錯誤してきました。
+          幹事とお店がうまく協力できると、会自体の満足度も上がります。
+        </p>
+      </div>
+
+      <p class="back-to-top"><a href="#top">▲ コラム一覧に戻る</a></p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="operator.html">運営者情報</a>
+        <a href="terms.html">利用規約</a>
+        <a href="faq.html">よくある質問</a>
+        <a href="contact.html">お問い合わせフォーム</a>
+        <a href="privacy.html">プライバシーポリシー</a>
+      </div>
+      <div>© 2025 kanziplus.jp</div>
+    </div>
+  </footer>
+
+  <script>
+    // コラムカードをクリックしたときに、該当記事だけを表示する
+    document.addEventListener("DOMContentLoaded", function() {
+      const links = document.querySelectorAll(".post-card-link");
+      const articles = document.querySelectorAll(".post-detail");
+
+      function showArticle(id) {
+        articles.forEach(a => {
+          if (a.id === id) {
+            a.classList.add("active");
+          } else {
+            a.classList.remove("active");
+          }
+        });
+        const target = document.getElementById(id);
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+
+      links.forEach(link => {
+        link.addEventListener("click", function(e) {
+          e.preventDefault();
+          const id = this.getAttribute("data-target");
+          if (id) {
+            showArticle(id);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
