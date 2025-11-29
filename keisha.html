@@ -94,6 +94,99 @@
   .sumline{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:12px;background:#181e28;border:1px solid #343a48}
   .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:#111827;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
   .toast.show{opacity:1}
+
+  /* ★ ピッタリ強調用のバッジ＆アニメーション ★ */
+   /* ★ ピッタリ強調用のバッジ＆クラッカーアニメーション ★ */
+   .perfect-highlight{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:4px 12px 4px 12px;
+    border-radius:999px;
+    background:rgba(248,210,122,.14);       /* やわらかいゴールド系 */
+    border:1px solid rgba(255,180,85,.9);   /* アクセントと合わせる */
+    font-size:14px;
+    font-weight:700;
+    color:var(--ink);
+    overflow:hidden;
+  }
+
+  .perfect-highlight .emoji{
+    font-size:16px;
+    display:inline-block;
+    transform-origin:bottom left;
+    animation:crackerEmoji .7s cubic-bezier(.17,.67,.35,1.4) 0s 1;
+  }
+
+  /* クラッカーから飛び散る紙吹雪（簡易） */
+  .perfect-highlight::before,
+  .perfect-highlight::after{
+    content:"";
+    position:absolute;
+    width:3px;
+    height:10px;
+    border-radius:999px;
+    opacity:0;
+  }
+
+  .perfect-highlight::before{
+    right:10px;
+    top:4px;
+    background:var(--accent-2); /* #ffb455系 */
+    animation:confettiShot1 .7s ease-out .05s 1 forwards;
+  }
+
+  .perfect-highlight::after{
+    right:18px;
+    top:6px;
+    background:var(--accent);   /* #f8d27a系 */
+    animation:confettiShot2 .7s ease-out .1s 1 forwards;
+  }
+
+  @keyframes crackerEmoji{
+    0%{
+      transform:translateY(4px) scale(.9) rotate(-8deg);
+    }
+    40%{
+      transform:translateY(-6px) scale(1.1) rotate(6deg);
+    }
+    100%{
+      transform:translateY(0) scale(1) rotate(0deg);
+    }
+  }
+
+  @keyframes confettiShot1{
+    0%{
+      opacity:0;
+      transform:translate(0,0) scale(.6) rotate(0deg);
+    }
+    40%{
+      opacity:1;
+      transform:translate(-3px,-10px) scale(1) rotate(-25deg);
+    }
+    100%{
+      opacity:0;
+      transform:translate(-8px,-18px) scale(.9) rotate(-40deg);
+    }
+  }
+
+  @keyframes confettiShot2{
+    0%{
+      opacity:0;
+      transform:translate(0,0) scale(.6) rotate(0deg);
+    }
+    40%{
+      opacity:1;
+      transform:translate(-2px,-8px) scale(1) rotate(18deg);
+    }
+    100%{
+      opacity:0;
+      transform:translate(-6px,-16px) scale(.9) rotate(35deg);
+    }
+  }
+
+
   .result-card{background:radial-gradient(120% 80% at 50% 0%, rgba(248,210,122,.10), rgba(30,26,18,.92) 60%), #1b1810;border:1px solid rgba(248,210,122,.38);box-shadow:inset 0 10px 28px rgba(248,210,122,.10), 0 6px 18px rgba(0,0,0,.25)}
   .k-table{width:100%;border-collapse:collapse}
   .k-table td{padding:6px 0;border-bottom:1px solid #343a48}
@@ -374,6 +467,7 @@
 
 <script>
 // ======= STATE =======
+// （ロジック部分は一切変更していません）
 const state = {
   total: 10000,
   mode: 'payMore', // payMore: 不足を残す / payLess: 超過を残す
@@ -389,6 +483,7 @@ const state = {
 }
 
 // ======= UTIL =======
+// （ここも元のまま）
 function uid(){ return Math.random().toString(36).slice(2,9) }
 function yen(n){ return (Math.round(n)).toLocaleString('ja-JP') }
 function round100(x, dir){ const m = Math.floor(x/100)*100; if(dir==='down') return m; if(dir==='up') return (x%100===0)? x : m+100; return Math.round(x/100)*100 }
@@ -673,11 +768,14 @@ function renderAssign(){
 
   const remain = hasDraft ? preview.remain : state.shortage; // +不足 / -超過
   const absRemain = Math.abs(remain);
-  shortageLine.innerHTML = absRemain===0
-    ? '<b>ピッタリです</b>'
-    : (remain<0
+  if (absRemain === 0) {
+    shortageLine.innerHTML =
+      '<span class="perfect-highlight"><span class="emoji">🎉</span><b>ピッタリです</b></span>';
+  } else {
+    shortageLine.innerHTML = (remain<0
         ? `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 多いです`
         : `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 安いです`);
+  }
 
   const addBtn = document.getElementById('addPerson');
   if(addBtn){ addBtn.textContent = state.mode==='payMore' ? '＋ 多く支払う人を追加' : '＋ 安くする人を追加'; }
@@ -691,11 +789,14 @@ function updateShortagePreview(){
     sumRoundedEl.textContent = yen(groupsRoundedSum());
     const absRemain0 = Math.abs(state.shortage);
     const r0 = state.shortage;
-    shortageLine.innerHTML = absRemain0===0
-      ? '<b>ピッタリです</b>'
-      : (r0<0
+    if (absRemain0 === 0) {
+      shortageLine.innerHTML =
+        '<span class="perfect-highlight"><span class="emoji">🎉</span><b>ピッタリです</b></span>';
+    } else {
+      shortageLine.innerHTML = (r0<0
           ? `お会計の総額より <b class="money big-num">${yen(absRemain0)}</b> 円 多いです`
           : `お会計の総額より <b class="money big-num">${yen(absRemain0)}</b> 円 安いです`);
+    }
     return;
   }
   const preview = computePreview();
@@ -707,11 +808,14 @@ function updateShortagePreview(){
   sumRoundedEl.textContent = yen(preview.sumPreview);
   const absRemain = Math.abs(preview.remain);
   const r = preview.remain;
-  shortageLine.innerHTML = absRemain===0
-    ? '<b>ピッタリです</b>'
-    : (r<0
+  if (absRemain === 0) {
+    shortageLine.innerHTML =
+      '<span class="perfect-highlight"><span class="emoji">🎉</span><b>ピッタリです</b></span>';
+  } else {
+    shortageLine.innerHTML = (r<0
         ? `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 多いです`
         : `お会計の総額より <b class="money big-num">${yen(absRemain)}</b> 円 安いです`);
+  }
 }
 
 // ======= MANUAL ASSIGN =======
@@ -819,9 +923,14 @@ function updateResults(){
   });
 
   const delta = sum - state.total; // +多い / -足りない
-  if(delta===0){ deltaLine.innerHTML = `<b class="ok">差額 0 円（ピッタリ）</b>`; }
-  else if(delta>0){ deltaLine.innerHTML = `<span class="money">${yen(Math.abs(delta))}</span> 円 <b>多い</b>`; }
-  else { deltaLine.innerHTML = `<span class="money">${yen(Math.abs(delta))}</span> 円 <b>足りない</b>`; }
+  if (delta === 0) {
+    deltaLine.innerHTML =
+      `<span class="perfect-highlight"><span class="emoji">🎉</span><b>差額 0 円（ピッタリ）</b></span>`;
+  } else if(delta>0){
+    deltaLine.innerHTML = `<span class="money">${yen(Math.abs(delta))}</span> 円 <b>多い</b>`;
+  } else {
+    deltaLine.innerHTML = `<span class="money">${yen(Math.abs(delta))}</span> 円 <b>足りない</b>`;
+  }
 
   const totals = document.createElement('div');
   totals.innerHTML = `
@@ -909,6 +1018,3 @@ renderAll();
 
 </body>
 </html>
-
-
-
