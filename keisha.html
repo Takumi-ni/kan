@@ -7,8 +7,6 @@
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7292628789812881" crossorigin="anonymous"></script>
 
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <title>KanziPlus 大人数向け割り勘アプリ</title>
 <meta name="description" content="KanziPlusは大人数向けの割り勘アプリ！サークルや会社の飲み会で大活躍！">
@@ -176,8 +174,8 @@
   white-space:nowrap;
   word-break:keep-all;
   overflow-wrap:normal;
-  color:inherit;             /* ← 参照と同じく下線・色を消す */
-  text-decoration:none;      /* ← 参照と同じ */
+  color:inherit;
+  text-decoration:none;
 }
 .site-footer .copy{
   text-align:center;
@@ -190,15 +188,15 @@
   display:grid;
   grid-template-columns:repeat(3, max-content);
   justify-content:center;
-  column-gap:18px;   /* 横の間隔 → かなり狭め */
-  row-gap:4px;       /* 縦の間隔は少しだけ */
+  column-gap:18px;
+  row-gap:4px;
 }
 
 .site-footer nav ul.row-2{
   display:grid;
   grid-template-columns:repeat(3, max-content);
   justify-content:center;
-  column-gap:18px;   /* 横の間隔を同じに */
+  column-gap:18px;
   row-gap:4px;
   margin-top:6px;
 }
@@ -211,6 +209,13 @@
   white-space:nowrap;
   word-break:keep-all;
   overflow-wrap:normal;
+}
+
+/* ▼ PCWEB にだけ表示する adstir バナー ▼ */
+.adstir-banner{
+  display:flex;
+  justify-content:center;
+  margin:16px 0 0;
 }
 
 
@@ -291,8 +296,6 @@
       <div style="grid-column:1 / -1;" class="row">
         <button class="btn accent" onclick="goTab('assign')" style="width:100%" type="button">つぎへ進む</button>
       </div>
-
-  
     </section>
 
     <!-- 割り振り TAB -->
@@ -346,12 +349,17 @@
     </section>
   </main>
 
-  <div class="wrap">
+   <!-- ▼▼▼ adstir バナー（スマホ＋PC両方に表示） ▼▼▼ -->
+   <div class="wrap">
     <div class="adstir-banner">
       <script type="text/javascript">
+        // スマホ判定（LP と同じ条件）
+        var isSmartphone = /Android.+Mobile|iPhone|iPod/i.test(navigator.userAgent);
+  
         var adstir_vars = {
           ver: "4.0",
-          app_id: "MEDIA-6f769d8e",
+          // スマホWEB: MEDIA-6f769d8e / PCWEB: MEDIA-e491314
+          app_id: isSmartphone ? "MEDIA-6f769d8e" : "MEDIA-e491314",
           ad_spot: 1,
           center: false
         };
@@ -359,10 +367,8 @@
       <script type="text/javascript" src="https://js.ad-stir.com/js/adstir.js"></script>
     </div>
   </div>
-
-
-
-
+  
+  <!-- ▲ PCWEB専用 adstir ここまで ▲ -->
 
   <div id="toast" class="toast"></div>
 
